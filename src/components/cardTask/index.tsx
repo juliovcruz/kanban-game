@@ -3,21 +3,34 @@ import { CardTaskClass } from "../../model/CardTask";
 import { PontuationComponent } from "./pontuation/pontuation";
 import { ActionType } from "../../model/ActionType";
 import { useState } from "react";
-import {Draggable} from "react-beautiful-dnd";
+import { Draggable } from "react-beautiful-dnd";
+import { RoundInfo } from "../../App";
 
 export interface Params {
   cardTask: CardTaskClass;
   index: number;
   actualColumnType: ActionType;
+  roundInfo: RoundInfo;
+  usePoint: (type: ActionType) => Boolean;
 }
 
-export function CardTaskComponent(params: Params) {
-  const [card, setState] = useState<CardTaskClass>(params.cardTask);
+export const CardTaskComponent: React.FC<Params> = ({
+  cardTask,
+  index,
+  actualColumnType,
+  usePoint,
+  roundInfo,
+}) => {
+  const [card, setState] = useState<CardTaskClass>(cardTask);
 
   function addAnalysis() {
     const novoCard = Object.assign({}, card);
 
-    if (novoCard.addPointAnalysis(params.actualColumnType)) {
+    if (novoCard.addPointAnalysis(actualColumnType)) {
+      if (!usePoint(actualColumnType)) {
+        console.log("acabou os pontos");
+        return;
+      }
       setState(novoCard);
       console.log("adicionei em analysis");
     }
@@ -26,7 +39,12 @@ export function CardTaskComponent(params: Params) {
   function addDeveloper() {
     const novoCard = Object.assign({}, card);
 
-    if (novoCard.addPointDevelop(params.actualColumnType)) {
+    if (novoCard.addPointDevelop(actualColumnType)) {
+      if (!usePoint(actualColumnType)) {
+        console.log("acabou os pontos");
+        return;
+      }
+
       setState(novoCard);
       console.log("adicionei em develop");
     }
@@ -34,8 +52,11 @@ export function CardTaskComponent(params: Params) {
 
   function addTest() {
     const novoCard = Object.assign({}, card);
-
-    if (novoCard.addPointTest(params.actualColumnType)) {
+    if (novoCard.addPointTest(actualColumnType)) {
+      if (!usePoint(actualColumnType)) {
+        console.log("acabou os pontos");
+        return;
+      }
       setState(novoCard);
       console.log("adicionei em test");
     }
@@ -43,7 +64,7 @@ export function CardTaskComponent(params: Params) {
 
   // TODO: usar header
   return (
-    <Draggable key={card.id} draggableId={card.id} index={params.index}>
+    <Draggable key={card.id} draggableId={card.id} index={index}>
       {(provided, snapshot) => (
         <Container
           ref={provided.innerRef}
@@ -85,4 +106,4 @@ export function CardTaskComponent(params: Params) {
       )}
     </Draggable>
   );
-}
+};

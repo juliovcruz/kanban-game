@@ -1,20 +1,18 @@
 import { Container } from "./styles";
 import { ListTask } from "../listTask";
-import {
-  DragDropContext,
-  DropResult,
-} from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
 import { CardTaskClass } from "../../model/CardTask";
 import { useEffect, useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
+import { RoundInfo } from "../../App";
 
 export type Column = {
   id: string;
   name: string;
   cards: CardTaskClass[];
-  type: ActionType
+  type: ActionType;
 };
 
 export type ColumnIndex = {
@@ -22,11 +20,15 @@ export type ColumnIndex = {
   index: number;
 };
 
-export const CardBoard: React.FC = () => {
+export type Params = {
+  roundInfo: RoundInfo,
+  usePoint: (type: ActionType) => void
+}
+
+export const CardBoard: React.FC<Params> = ({roundInfo, usePoint}) => {
   const [columns, setColumns] = useState<Column[]>();
 
   if (columns === undefined) {
-    console.log("resetado");
     setColumns(generateColumns());
   }
 
@@ -72,7 +74,7 @@ export const CardBoard: React.FC = () => {
 
     const card = start.column.cards[source.index];
 
-    if(!card.canBeMoveTo(finish.column.type, start.column.type, true)) return
+    if (!card.canBeMoveTo(finish.column.type, start.column.type, roundInfo.todayCanBeDeploy())) return;
 
     const newFinishColumnCards = finish.column.cards;
     newFinishColumnCards.splice(destination.index, 0, card);
@@ -104,8 +106,7 @@ export const CardBoard: React.FC = () => {
     <Container>
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
-          // <ListTask cards={item.cards} id={item.id} name={item.name}></ListTask>
-          <ListTask column={item}></ListTask>
+          <ListTask column={item} usePoint={usePoint}></ListTask>
         ))}
         {console.log(columns)}
       </DragDropContext>
@@ -119,37 +120,37 @@ function generateColumns(): Column[] {
       id: uuidv4(),
       name: "Backlog",
       cards: generateCards(),
-      type: ActionType.BACKLOG
+      type: ActionType.BACKLOG,
     },
     {
       id: uuidv4(),
       name: "Em análise",
       cards: generateCards(),
-      type: ActionType.PRODUCT_OWNER
+      type: ActionType.PRODUCT_OWNER,
     },
     {
       id: uuidv4(),
       name: "Em desenvolvimento",
       cards: generateCards(),
-      type: ActionType.DEVELOPER
+      type: ActionType.DEVELOPER,
     },
     {
       id: uuidv4(),
       name: "Em testes",
       cards: generateCards(),
-      type: ActionType.QUALITY_ASSURANCE
+      type: ActionType.QUALITY_ASSURANCE,
     },
     {
       id: uuidv4(),
       name: "Aguardando deploy",
       cards: generateCards(),
-      type: ActionType.DEPLOY
+      type: ActionType.DEPLOY,
     },
     {
       id: uuidv4(),
       name: "Em produção",
       cards: generateCards(),
-      type: ActionType.PRODUCTION
+      type: ActionType.PRODUCTION,
     },
   ];
 }
