@@ -1,34 +1,21 @@
-import { SettingsInputAntennaTwoTone, UsbOutlined } from "@material-ui/icons";
-import { useEffect, useState } from "react";
-import {
-  DragDropContext,
-  Draggable,
-  Droppable,
-  DropResult,
-} from "react-beautiful-dnd";
-import { CardTask } from "../../model/CardTask";
+import { useState } from "react";
+import { Droppable, DropResult } from "react-beautiful-dnd";
 import { base } from "../../styles/colors";
 import { CardTaskComponent } from "../cardTask";
 import { Container } from "./styles";
 import { Column } from "../cardBoard/CardBoard";
-import { height } from "@mui/system";
+import { CardTaskClass } from "../../model/CardTask";
 
 export interface Params {
-  id: string;
-  name: string;
-  cards: CardTask[];
+  column: Column;
 }
 
 export function ListTask(params: Params) {
-  const [cards, setCards] = useState<CardTask[]>();
+  const [cards, setCards] = useState<CardTaskClass[]>();
 
   if (cards == undefined) {
-    setCards(params.cards);
+    setCards(params.column.cards);
   }
-
-  useEffect(() => {
-    setCards(params.cards);
-  }, [cards]);
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -63,32 +50,27 @@ export function ListTask(params: Params) {
   return (
     <Container>
       <header>
-        <h2>{params.name}</h2>
+        <h2>{params.column.name}</h2>
       </header>
-      <Droppable droppableId={params.id}>
+      <Droppable droppableId={params.column.id}>
         {(provided, snapshot) => (
-          <div 
-          ref={provided.innerRef} 
-          {...provided.droppableProps}
-          style={
-            { backgroundColor: snapshot.isDraggingOver ? base.background_2 : base.background }
-          }
+          <div
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+            style={{
+              backgroundColor: snapshot.isDraggingOver
+                ? base.background_2
+                : base.background,
+            }}
           >
             {provided.placeholder}
-            <ul key={params.id}>
-              {/* {ignoreUndefined(cards).map((item, index) => (
-              <li key={item.id}>
-                <CardTaskComponent
-                  cardTask={item}
-                  index={index}
-                ></CardTaskComponent>
-              </li>
-            ))} */}
-              {params.cards?.map((item, index) => (
+            <ul key={params.column.id}>
+              {params.column.cards?.map((item, index) => (
                 <li key={item.id}>
                   <CardTaskComponent
                     cardTask={item}
                     index={index}
+                    actualColumnType={params.column.type}
                   ></CardTaskComponent>
                 </li>
               ))}
@@ -98,9 +80,4 @@ export function ListTask(params: Params) {
       </Droppable>
     </Container>
   );
-}
-
-function ignoreUndefined(cards: CardTask[] | undefined): CardTask[] {
-  if (cards === undefined) return [];
-  return cards.filter((x) => x != undefined);
 }

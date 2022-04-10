@@ -1,5 +1,9 @@
 export enum ActionType {
-    DEVELOPER,
+    BACKLOG,
     PRODUCT_OWNER,
+    DEVELOPER,
     QUALITY_ASSURANCE,
+    DEPLOY,
+    PRODUCTION,
+    ARCHIVED
 }

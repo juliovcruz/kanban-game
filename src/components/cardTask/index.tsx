@@ -1,72 +1,45 @@
 import { Container } from "./styles";
-import PersonIcon from "@mui/icons-material/Person";
-import { CardTask } from "../../model/CardTask";
-import Rating from "@mui/material/Rating";
+import { CardTaskClass } from "../../model/CardTask";
 import { PontuationComponent } from "./pontuation/pontuation";
-import { ActionTypes } from "@mui/base";
 import { ActionType } from "../../model/ActionType";
 import { useState } from "react";
-import {
-  DragDropContext,
-  Draggable,
-  DropReason,
-  DropResult,
-} from "react-beautiful-dnd";
-import { cardClasses } from "@mui/material";
+import {Draggable} from "react-beautiful-dnd";
 
 export interface Params {
-  cardTask: CardTask;
+  cardTask: CardTaskClass;
   index: number;
+  actualColumnType: ActionType;
 }
 
 export function CardTaskComponent(params: Params) {
-  const [card, setState] = useState<CardTask>(params.cardTask);
+  const [card, setState] = useState<CardTaskClass>(params.cardTask);
 
   function addAnalysis() {
     const novoCard = Object.assign({}, card);
-    if (
-      novoCard.pontuation.analysis.inserted ==
-      novoCard.pontuation.analysis.needed
-    ) {
-      console.log("chegou no limite");
-      return;
+
+    if (novoCard.addPointAnalysis(params.actualColumnType)) {
+      setState(novoCard);
+      console.log("adicionei em analysis");
     }
-
-    novoCard.pontuation.analysis.inserted++;
-
-    console.log("adicionei em analysis");
-    setState(novoCard);
   }
 
   function addDeveloper() {
     const novoCard = Object.assign({}, card);
-    if (
-      novoCard.pontuation.develop.inserted == novoCard.pontuation.develop.needed
-    ) {
-      console.log("chegou no limite");
-      return;
+
+    if (novoCard.addPointDevelop(params.actualColumnType)) {
+      setState(novoCard);
+      console.log("adicionei em develop");
     }
-    novoCard.pontuation.develop.inserted++;
-    console.log("adicionei em developer card:" + novoCard.name);
-    setState(novoCard);
   }
 
   function addTest() {
     const novoCard = Object.assign({}, card);
 
-    if (novoCard.pontuation.test.inserted == novoCard.pontuation.test.needed) {
-      console.log("chegou no limite");
-      return;
+    if (novoCard.addPointTest(params.actualColumnType)) {
+      setState(novoCard);
+      console.log("adicionei em test");
     }
-
-    novoCard.pontuation.test.inserted++;
-    console.log("adicionei em tester");
-    setState(novoCard);
   }
-
-  const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
-    ...draggableStyle,
-  });
 
   // TODO: usar header
   return (

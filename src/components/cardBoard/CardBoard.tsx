@@ -2,20 +2,19 @@ import { Container } from "./styles";
 import { ListTask } from "../listTask";
 import {
   DragDropContext,
-  Draggable,
-  Droppable,
   DropResult,
 } from "react-beautiful-dnd";
 import { v4 as uuidv4 } from "uuid";
-import { CardTask } from "../../model/CardTask";
-import { Component, useEffect, useState } from "react";
+import { CardTaskClass } from "../../model/CardTask";
+import { useEffect, useState } from "react";
 import React from "react";
-import { render } from "react-dom";
+import { ActionType } from "../../model/ActionType";
 
 export type Column = {
   id: string;
   name: string;
-  cards: CardTask[];
+  cards: CardTaskClass[];
+  type: ActionType
 };
 
 export type ColumnIndex = {
@@ -73,6 +72,8 @@ export const CardBoard: React.FC = () => {
 
     const card = start.column.cards[source.index];
 
+    if(!card.canBeMoveTo(finish.column.type, start.column.type, true)) return
+
     const newFinishColumnCards = finish.column.cards;
     newFinishColumnCards.splice(destination.index, 0, card);
 
@@ -103,7 +104,8 @@ export const CardBoard: React.FC = () => {
     <Container>
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
-          <ListTask cards={item.cards} id={item.id} name={item.name}></ListTask>
+          // <ListTask cards={item.cards} id={item.id} name={item.name}></ListTask>
+          <ListTask column={item}></ListTask>
         ))}
         {console.log(columns)}
       </DragDropContext>
@@ -117,38 +119,48 @@ function generateColumns(): Column[] {
       id: uuidv4(),
       name: "Backlog",
       cards: generateCards(),
+      type: ActionType.BACKLOG
     },
     {
       id: uuidv4(),
       name: "Em análise",
       cards: generateCards(),
+      type: ActionType.PRODUCT_OWNER
     },
     {
       id: uuidv4(),
       name: "Em desenvolvimento",
       cards: generateCards(),
+      type: ActionType.DEVELOPER
     },
     {
       id: uuidv4(),
       name: "Em testes",
       cards: generateCards(),
+      type: ActionType.QUALITY_ASSURANCE
     },
     {
       id: uuidv4(),
       name: "Aguardando deploy",
       cards: generateCards(),
+      type: ActionType.DEPLOY
     },
     {
       id: uuidv4(),
       name: "Em produção",
       cards: generateCards(),
+      type: ActionType.PRODUCTION
     },
   ];
 }
 
-function generateCards(): CardTask[] {
+function generateCards(): CardTaskClass[] {
   return [
     {
+      canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+      addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+      addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+      addPointTest: CardTaskClass.prototype.addPointTest,
       name: "UST01",
       index: 1,
       id: uuidv4(),
@@ -163,12 +175,16 @@ function generateCards(): CardTask[] {
           needed: 5,
         },
         test: {
-          inserted: 5,
+          inserted: 4,
           needed: 5,
         },
       },
     },
     {
+      canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+      addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+      addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+      addPointTest: CardTaskClass.prototype.addPointTest,
       name: "UST02",
       index: 2,
       id: uuidv4(),
@@ -183,12 +199,16 @@ function generateCards(): CardTask[] {
           needed: 5,
         },
         test: {
-          inserted: 5,
+          inserted: 4,
           needed: 5,
         },
       },
     },
     {
+      canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+      addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+      addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+      addPointTest: CardTaskClass.prototype.addPointTest,
       name: "UST03",
       index: 4,
       id: uuidv4(),
@@ -203,12 +223,16 @@ function generateCards(): CardTask[] {
           needed: 5,
         },
         test: {
-          inserted: 5,
+          inserted: 4,
           needed: 5,
         },
       },
     },
     {
+      canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+      addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+      addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+      addPointTest: CardTaskClass.prototype.addPointTest,
       name: "UST04",
       index: 5,
       id: uuidv4(),
@@ -223,7 +247,7 @@ function generateCards(): CardTask[] {
           needed: 5,
         },
         test: {
-          inserted: 5,
+          inserted: 4,
           needed: 5,
         },
       },
