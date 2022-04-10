@@ -70,45 +70,45 @@ export function CardTaskComponent(params: Params) {
 
   // TODO: usar header
   return (
-    <Draggable key={card.id} draggableId={card.name} index={params.index}>
+    <Draggable key={card.id} draggableId={card.id} index={params.index}>
       {(provided, snapshot) => (
-          <Container
+        <Container
           ref={provided.innerRef}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          >
-            <div className="card-content">
-              <div className="card-body">
-                <div className="title">{card.name}</div>
-                <div className="pontuations">
-                  <div className="analysis-points">
-                    <PontuationComponent
-                      actual={card.pontuation.analysis.inserted}
-                      needed={card.pontuation.analysis.needed}
-                      onChange={addAnalysis}
-                      actionType={ActionType.PRODUCT_OWNER}
-                    ></PontuationComponent>
-                  </div>
-                  <div className="dev-points">
-                    <PontuationComponent
-                      actual={card.pontuation.develop.inserted}
-                      needed={card.pontuation.develop.needed}
-                      onChange={addDeveloper}
-                      actionType={ActionType.DEVELOPER}
-                    ></PontuationComponent>
-                  </div>
-                  <div className="test-points">
-                    <PontuationComponent
-                      actual={card.pontuation.test.inserted}
-                      needed={card.pontuation.test.needed}
-                      onChange={addTest}
-                      actionType={ActionType.QUALITY_ASSURANCE}
-                    ></PontuationComponent>
-                  </div>
+        >
+          <div className="card-content">
+            <div className="card-body">
+              <div className="title">{card.name}</div>
+              <div className="pontuations">
+                <div className="analysis-points">
+                  <PontuationComponent
+                    actual={card.pontuation.analysis.inserted}
+                    needed={card.pontuation.analysis.needed}
+                    onChange={addAnalysis}
+                    actionType={ActionType.PRODUCT_OWNER}
+                  ></PontuationComponent>
+                </div>
+                <div className="dev-points">
+                  <PontuationComponent
+                    actual={card.pontuation.develop.inserted}
+                    needed={card.pontuation.develop.needed}
+                    onChange={addDeveloper}
+                    actionType={ActionType.DEVELOPER}
+                  ></PontuationComponent>
+                </div>
+                <div className="test-points">
+                  <PontuationComponent
+                    actual={card.pontuation.test.inserted}
+                    needed={card.pontuation.test.needed}
+                    onChange={addTest}
+                    actionType={ActionType.QUALITY_ASSURANCE}
+                  ></PontuationComponent>
                 </div>
               </div>
             </div>
-          </Container>
+          </div>
+        </Container>
       )}
     </Draggable>
   );

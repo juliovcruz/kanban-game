@@ -1,5 +1,5 @@
-import GlobalStyle from './styles/global';
-import { CardBoard } from './components/cardBoard/CardBoard';
+import GlobalStyle from "./styles/global";
+import { CardBoard } from "./components/cardBoard/CardBoard";
 
 function App() {
   return (
@@ -7,7 +7,7 @@ function App() {
       <CardBoard></CardBoard>
       <GlobalStyle />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

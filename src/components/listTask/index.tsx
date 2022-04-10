@@ -1,5 +1,5 @@
 import { SettingsInputAntennaTwoTone, UsbOutlined } from "@material-ui/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DragDropContext,
   Draggable,
@@ -10,151 +10,97 @@ import { CardTask } from "../../model/CardTask";
 import { base } from "../../styles/colors";
 import { CardTaskComponent } from "../cardTask";
 import { Container } from "./styles";
-import {v4 as uuidv4} from "uuid";
+import { Column } from "../cardBoard/CardBoard";
+import { height } from "@mui/system";
 
 export interface Params {
-  header: string;
+  id: string;
+  name: string;
+  cards: CardTask[];
 }
 
 export function ListTask(params: Params) {
-  const [cards, setCards] = useState<CardTask[]>()
+  const [cards, setCards] = useState<CardTask[]>();
 
-  if(cards == undefined) {
-    setCards(generateCards)
+  if (cards == undefined) {
+    setCards(params.cards);
   }
+
+  useEffect(() => {
+    setCards(params.cards);
+  }, [cards]);
 
   const onDragEnd = (result: DropResult) => {
-    const { source, destination } = result
-    if (!destination) return
-  
-    if(
+    const { source, destination } = result;
+    if (!destination) return;
+
+    if (
       destination.droppableId === source.droppableId &&
       destination.index === source.index
-    ) return
-  
-    if(cards == undefined) return
+    )
+      return;
 
-    const card = cards[source.index]
+    if (destination.droppableId === source.droppableId) {
+      if (cards == undefined) return;
 
-    const newCards = cards
+      const card = cards[source.index];
 
-    delete newCards[source.index]
-    newCards.splice(destination.index, 0, card)
+      const newCards = cards;
 
-    console.log("DESTINATION: " + destination.index)
-    console.log("SOURCE: " + source.index)
+      delete newCards[source.index];
+      newCards.splice(destination.index, 0, card);
 
-    console.log(newCards)
+      console.log("DESTINATION: " + destination.index);
+      console.log("SOURCE: " + source.index);
 
-    setCards(newCards)
-  }
+      console.log(newCards);
+
+      setCards(newCards);
+      return;
+    }
+  };
 
   return (
     <Container>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId={uuidv4()}>
-          {(provided, snapshot) => (
-            <div
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              {provided.placeholder}
-              <header>
-                <h2>{params.header}</h2>
-              </header>
-              <ul>
-                {cards?.map((item, index) => (
-                  <li key={item.id}>
-                  <CardTaskComponent cardTask={item} index={index}></CardTaskComponent>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+      <header>
+        <h2>{params.name}</h2>
+      </header>
+      <Droppable droppableId={params.id}>
+        {(provided, snapshot) => (
+          <div 
+          ref={provided.innerRef} 
+          {...provided.droppableProps}
+          style={
+            { backgroundColor: snapshot.isDraggingOver ? base.background_2 : base.background }
+          }
+          >
+            {provided.placeholder}
+            <ul key={params.id}>
+              {/* {ignoreUndefined(cards).map((item, index) => (
+              <li key={item.id}>
+                <CardTaskComponent
+                  cardTask={item}
+                  index={index}
+                ></CardTaskComponent>
+              </li>
+            ))} */}
+              {params.cards?.map((item, index) => (
+                <li key={item.id}>
+                  <CardTaskComponent
+                    cardTask={item}
+                    index={index}
+                  ></CardTaskComponent>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </Droppable>
     </Container>
   );
 }
 
-const generateCards = [
-  {
-    name: 'UST01', 
-    index: 1,
-    id: '' + 1,
-    number: 3,
-    pontuation: {
-      analysis: {
-        inserted: 1,
-        needed: 4,
-      },
-      develop: {
-        inserted: 3,
-        needed: 5,
-      },
-      test: {
-        inserted: 5,
-        needed: 5,
-      },
-    },
-  },
-  {
-    name: 'UST02', 
-    index: 2,
-    id: '' + 2,
-    number: 3,
-    pontuation: {
-      analysis: {
-        inserted: 1,
-        needed: 4,
-      },
-      develop: {
-        inserted: 3,
-        needed: 5,
-      },
-      test: {
-        inserted: 5,
-        needed: 5,
-      },
-    },
-  },
-  {
-    name: 'UST03', 
-    index: 4,
-    id: '' + 3,
-    number: 3,
-    pontuation: {
-      analysis: {
-        inserted: 1,
-        needed: 4,
-      },
-      develop: {
-        inserted: 3,
-        needed: 5,
-      },
-      test: {
-        inserted: 5,
-        needed: 5,
-      },
-    },
-  },
-  {
-    name: 'UST04', 
-    index: 5,
-    id: '' + 4,
-    number: 3,
-    pontuation: {
-      analysis: {
-        inserted: 1,
-        needed: 4,
-      },
-      develop: {
-        inserted: 3,
-        needed: 5,
-      },
-      test: {
-        inserted: 5,
-        needed: 5,
-      },
-    },
-  },]
+function ignoreUndefined(cards: CardTask[] | undefined): CardTask[] {
+  if (cards === undefined) return [];
+  return cards.filter((x) => x != undefined);
+}

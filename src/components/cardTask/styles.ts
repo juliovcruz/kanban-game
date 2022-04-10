@@ -9,14 +9,14 @@ export const Container = styled.div`
     align-content: center;
     justify-content: center;
 
-    margin: 5px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     min-width: 155px;
     width: 100%;
     min-height: 55px;
 
-    border: 1px solid #eeeeed;
+    border: 1px solid ${base.dark_purple};
     border-radius: 15px;
-    border-color: ${base.dark_purple};
 
     cursor: grab;
 

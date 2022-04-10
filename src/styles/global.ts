@@ -11,7 +11,6 @@ export default createGlobalStyle`
 body, html {
   background: ${base.background};
   height: 100%;
-  max-width: fit-content;
   body::-webkit-scrollbar {
     display: none;
   }

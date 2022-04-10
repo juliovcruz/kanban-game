@@ -8,7 +8,8 @@ export const base = {
     light_purple: '#E6A0FA',
     green: '#03D481',
     blue: '#B0DDE9',
-    red: '#EF7064'
+    red: '#EF7064',
+    grey: '#6A6577'
 }
 
 export function ColorByActionType(actionType: ActionType): string {
