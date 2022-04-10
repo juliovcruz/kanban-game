@@ -34,6 +34,10 @@ export class RoundInfo {
   }
 
   getDayName(): string {
+    if(this.number == 0) {
+      return ""
+    }
+
     switch (this.number % 10) {
       case 0:
         return "Sexta-Feira";
@@ -70,7 +74,7 @@ export class RoundInfo {
 
 function App() {
   const [round, setRound] = useState<RoundInfo>({
-    number: 1,
+    number: 0,
     nextRound: RoundInfo.prototype.nextRound,
     getDayName: RoundInfo.prototype.getDayName,
     todayCanBeDeploy: RoundInfo.prototype.todayCanBeDeploy,
