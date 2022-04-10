@@ -34,8 +34,8 @@ export class RoundInfo {
   }
 
   getDayName(): string {
-    if(this.number == 0) {
-      return ""
+    if (this.number == 0) {
+      return "";
     }
 
     switch (this.number % 10) {
@@ -72,6 +72,11 @@ export class RoundInfo {
   }
 }
 
+export type ErrorState = {
+  bool: Boolean;
+  message: string;
+};
+
 function App() {
   const [round, setRound] = useState<RoundInfo>({
     number: 0,
@@ -86,6 +91,8 @@ function App() {
       nextRound: PlayerRoundPoints.prototype.nextRound,
     },
   });
+
+  const [stateError, setError] = useState<ErrorState>();
 
   const nextRound = () => {
     const newRound = Object.assign({}, round);

@@ -1,5 +1,10 @@
 import { ActionType } from "./ActionType";
 
+export type BooleanResponse = {
+  bool: Boolean;
+  message?: string;
+};
+
 export class CardTaskClass {
   name!: string;
   index!: number;
@@ -38,64 +43,82 @@ export class CardTaskClass {
     }
   }
 
-  addPointAnalysis(actualColumnType: ActionType): Boolean {
+  addPointAnalysis(actualColumnType: ActionType): BooleanResponse {
     if (actualColumnType != ActionType.PRODUCT_OWNER) {
-      console.log("column errada" + actualColumnType);
-      return false;
+      return {
+        bool: false,
+        message: "Não é possível utilizar nesta coluna.",
+      };
     }
 
     if (this.pontuation.analysis.inserted == this.pontuation.analysis.needed) {
-      console.log("chegou no limite");
-      return false;
+      return {
+        bool: false,
+        message: "O máximo de pontuação já foi utilizado.",
+      };
     }
 
     this.pontuation.analysis.inserted++;
-    return true;
+    return { bool: true };
   }
 
-  addPointDevelop(actualColumnType: ActionType): Boolean {
+  addPointDevelop(actualColumnType: ActionType): BooleanResponse {
     if (actualColumnType != ActionType.DEVELOPER) {
-      console.log("column errada" + actualColumnType);
-      return false;
+      return {
+        bool: false,
+        message: "Não é possível utilizar nesta coluna.",
+      };
     }
 
     if (this.pontuation.develop.inserted == this.pontuation.develop.needed) {
-      console.log("chegou no limite");
-      return false;
+      return {
+        bool: false,
+        message: "O máximo de pontuação já foi utilizado.",
+      };
     }
 
     if (this.pontuation.analysis.inserted != this.pontuation.analysis.needed) {
-      console.log("necessário analisar primeiro");
-      return false;
+      return {
+        bool: false,
+        message: "Necessário realizar a análise.",
+      };
     }
 
     this.pontuation.develop.inserted++;
-    return true;
+    return { bool: true };
   }
 
-  addPointTest(actualColumnType: ActionType): Boolean {
+  addPointTest(actualColumnType: ActionType): BooleanResponse {
     if (actualColumnType != ActionType.QUALITY_ASSURANCE) {
-      console.log("column errada" + actualColumnType.toString);
-      return false;
+      return {
+        bool: false,
+        message: "Não é possível utilizar nesta coluna.",
+      };
     }
 
     if (this.pontuation.test.inserted == this.pontuation.test.needed) {
-      console.log("chegou no limite");
-      return false;
+      return {
+        bool: false,
+        message: "O máximo de pontuação já foi utilizado.",
+      };
     }
 
     if (this.pontuation.analysis.inserted != this.pontuation.analysis.needed) {
-      console.log("necessário analisar primeiro");
-      return false;
+      return {
+        bool: false,
+        message: "Necessário realizar a análise.",
+      };
     }
 
     if (this.pontuation.develop.inserted != this.pontuation.develop.needed) {
-      console.log("necessário desenvolver primeiro");
-      return false;
+      return {
+        bool: false,
+        message: "Necessário realizar o desenvolvimento.",
+      };
     }
 
     this.pontuation.test.inserted++;
-    return true;
+    return { bool: true };
   }
 }
 

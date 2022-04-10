@@ -21,11 +21,11 @@ export type ColumnIndex = {
 };
 
 export type Params = {
-  roundInfo: RoundInfo,
-  usePoint: (type: ActionType) => void
-}
+  roundInfo: RoundInfo;
+  usePoint: (type: ActionType) => Boolean;
+};
 
-export const CardBoard: React.FC<Params> = ({roundInfo, usePoint}) => {
+export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint }) => {
   const [columns, setColumns] = useState<Column[]>();
 
   if (columns === undefined) {
@@ -74,7 +74,14 @@ export const CardBoard: React.FC<Params> = ({roundInfo, usePoint}) => {
 
     const card = start.column.cards[source.index];
 
-    if (!card.canBeMoveTo(finish.column.type, start.column.type, roundInfo.todayCanBeDeploy())) return;
+    if (
+      !card.canBeMoveTo(
+        finish.column.type,
+        start.column.type,
+        roundInfo.todayCanBeDeploy()
+      )
+    )
+      return;
 
     const newFinishColumnCards = finish.column.cards;
     newFinishColumnCards.splice(destination.index, 0, card);
@@ -98,17 +105,16 @@ export const CardBoard: React.FC<Params> = ({roundInfo, usePoint}) => {
     };
   }
 
-  useEffect(() => {
-    console.log("Fruit", columns);
-  }, [columns]);
-
   return (
     <Container>
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
-          <ListTask column={item} usePoint={usePoint}></ListTask>
+          <ListTask
+            column={item}
+            usePoint={usePoint}
+            roundInfo={roundInfo}
+          ></ListTask>
         ))}
-        {console.log(columns)}
       </DragDropContext>
     </Container>
   );
