@@ -1,6 +1,6 @@
 import { Container } from "./styles";
 import { CardTaskClass } from "../../model/CardTask";
-import { PontuationComponent } from "./pontuation/pontuation";
+import { PontuationComponent } from "./pontuation";
 import { ActionType } from "../../model/ActionType";
 import { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";

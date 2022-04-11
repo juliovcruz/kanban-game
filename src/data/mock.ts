@@ -3,6 +3,8 @@ import { ActionType } from "../model/ActionType";
 import { CardTaskClass } from "../model/CardTask";
 import { v4 as uuidv4 } from "uuid";
 import { PlayerRoundPoints, RoundInfo } from "../App";
+import { EmployeeColumn } from "../components/employeeBoard";
+import { Employee } from "../model/Employee";
 
 export function startRound(): RoundInfo {
   return {
@@ -176,4 +178,46 @@ export function generateColumns(): CardColumn[] {
         },
       },
     ];
+  }
+
+  export function generateEmployeeColumns(): EmployeeColumn[] {
+    const result = [
+      {
+        employees: generateEmployeeCards(),
+        id: uuidv4(),
+        name: 'PO',
+        type: ActionType.PRODUCT_OWNER
+      },
+      {
+        employees: generateEmployeeCards(),
+        id: uuidv4(),
+        name: 'DEV',
+        type: ActionType.DEVELOPER
+      },
+      {
+        employees: generateEmployeeCards(),
+        id: uuidv4(),
+        name: 'QA',
+        type: ActionType.QUALITY_ASSURANCE
+      }
+    ]
+
+    result[0].employees.push(generateEmployeeCards()[0])
+
+    return result
+  }
+
+  function generateEmployeeCards(): Employee[] {
+    return [
+      {
+        action: [ActionType.PRODUCT_OWNER],
+        id: uuidv4(),
+        name: 'Joao'
+      },
+      {
+        action: [ActionType.PRODUCT_OWNER, ActionType.DEVELOPER],
+        id: uuidv4(),
+        name: 'Pedro'
+      }
+    ]
   }

@@ -7,18 +7,25 @@ import { ActionType } from "../../model/ActionType";
 import { RoundInfo } from "../../App";
 import { ErrorState } from "../cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
+import { Employee } from "../../model/Employee";
+import { EmployeeList } from "../employeeList";
 import { Database } from "../../data/database";
 
 export type Params = {
   roundInfo: RoundInfo,
+  paramsColumns: EmployeeColumn[],
+  database: Database,
 };
 
-export class ColumnEmployee {
-
+export type EmployeeColumn = {
+  id: string;
+  name: string;
+  employees: Employee[];
+  type: ActionType;
 }
 
-export const CardBoard: React.FC<Params> = ({ roundInfo}) => {
-  // const [columns, setColumns] = useState<Column[] | undefined>(paramsColumns);
+export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database}) => {
+  const [columns, setColumns] = useState<EmployeeColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
   const onDragEnd = (result: DropResult) => {};
@@ -26,13 +33,14 @@ export const CardBoard: React.FC<Params> = ({ roundInfo}) => {
   return (
     <Container>
       <DragDropContext onDragEnd={onDragEnd}>
-        {/* {columns?.map((item, index) => (
-          <ListTask
+        <div></div>
+        {columns?.map((item, index) => (
+          <EmployeeList
             column={item}
-            usePoint={usePoint}
             roundInfo={roundInfo}
-          ></ListTask>
-        ))} */}
+          ></EmployeeList>
+        ))}
+        <div></div>
       </DragDropContext>
       {stateError?.bool ? (
         <SnackBarAlert onClose={() => {

@@ -3,10 +3,11 @@ import { CardBoard, CardColumn } from "./components/cardBoard";
 import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
-import { generateColumns, startRound } from "./data/mock";
+import { generateColumns, generateEmployeeColumns, startRound } from "./data/mock";
 import { Database } from "./data/database";
 import { CardTaskClass } from "./model/CardTask";
 import { v4 as uuidv4 } from "uuid";
+import { EmployeeBoard } from "./components/employeeBoard";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -178,6 +179,11 @@ export const App: React.FC<Params> = ({database}) => {
   return (
     <>
       <HeaderBoard roundInfo={round!} nextRoundAction={nextRound}></HeaderBoard>
+      <EmployeeBoard
+        roundInfo={round!}
+        paramsColumns={generateEmployeeColumns()}
+        database={database}
+      ></EmployeeBoard>
       <CardBoard
         roundInfo={round!}
         usePoint={usePoint}
