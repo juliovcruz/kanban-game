@@ -22,30 +22,36 @@ export class CardTaskClass {
     destinationType: ActionType,
     actualColumnType: ActionType,
     deployDay: Boolean
-  ): Boolean {
+  ): BooleanResponse {
     switch (destinationType) {
       case ActionType.BACKLOG:
-        return true;
+        return { bool: true };
       case ActionType.PRODUCT_OWNER:
-        return true;
+        return { bool: true };
       case ActionType.DEVELOPER:
-        return (
-          this.pontuation.analysis.inserted == this.pontuation.analysis.needed
-        );
+        return { 
+            bool: this.pontuation.analysis.inserted == this.pontuation.analysis.needed,
+            message: 'Não é possível mover para desenvolvimento.'
+          };
       case ActionType.QUALITY_ASSURANCE:
-        return (
-          this.pontuation.develop.inserted == this.pontuation.develop.needed
-        );
+        return { 
+          bool: this.pontuation.develop.inserted == this.pontuation.develop.needed,
+          message: 'Não é possível mover para testes.'
+        };
       case ActionType.DEPLOY:
-        return this.pontuation.test.inserted == this.pontuation.test.needed;
+        return { 
+          bool: this.pontuation.test.inserted == this.pontuation.test.needed,
+          message: 'Não é possível mover para deploy.'
+        };
       case ActionType.PRODUCTION:
-        return (
-          actualColumnType == ActionType.DEPLOY &&
+        return { 
+          bool: actualColumnType == ActionType.DEPLOY &&
           deployDay &&
-          this.pontuation.test.inserted == this.pontuation.test.needed
-        );
+          this.pontuation.test.inserted == this.pontuation.test.needed,
+          message: 'Não é possível mover para produção hoje.'
+        };
       case ActionType.ARCHIVED:
-        return true;
+        return { bool: true };
     }
   }
 

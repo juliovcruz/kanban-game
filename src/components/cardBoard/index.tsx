@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
 import { RoundInfo } from "../../App";
+import { ErrorState } from "../cardTask";
+import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 
 export type Column = {
   id: string;
@@ -28,6 +30,7 @@ export type Params = {
 
 export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns }) => {
   const [columns, setColumns] = useState<Column[]>(paramsColumns);
+  const [stateError, setError] = useState<ErrorState>();
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -73,14 +76,16 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
     
     if(finish.index > start.index) card.setLastMove(roundInfo)
 
-    if (
-      !card.canBeMoveTo(
-        finish.column.type,
-        start.column.type,
-        roundInfo.todayCanBeDeploy()
-      )
+    const bool = card.canBeMoveTo(
+      finish.column.type,
+      start.column.type,
+      roundInfo.todayCanBeDeploy()
     )
+
+    if (!bool.bool) {
+      setError({bool: true, message: bool.message})
       return;
+    }
 
     const newFinishColumnCards = finish.column.cards;
     newFinishColumnCards.splice(destination.index, 0, card);
@@ -115,6 +120,13 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
           ></ListTask>
         ))}
       </DragDropContext>
+      {stateError?.bool ? (
+        <SnackBarAlert onClose={() => {
+          setError({ bool: false });
+        }} message={stateError.message} >
+        </SnackBarAlert>
+      ) : (
+        <></> )}
     </Container>
   );
 };
