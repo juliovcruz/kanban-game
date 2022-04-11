@@ -130,7 +130,12 @@ export const CardTaskComponent: React.FC<Params> = ({
           >
             <div className="card-content">
               <div className="card-body">
-                <div className="title">{card.name}</div>
+                <div className="info-content">
+                  <div className="title">{card.name}</div>
+                  <div className="info-round">
+                    <p>{card.roundStarted != null ? ("S:" + card.roundStarted) : '' } {card.roundEnded != null ? ("E:" + card.roundEnded) : '' }</p>
+                  </div>
+                </div>
                 <div className="pontuations">
                   <div className="analysis-points">
                     <PontuationComponent
@@ -163,10 +168,12 @@ export const CardTaskComponent: React.FC<Params> = ({
         )}
       </Draggable>
       {stateError?.bool ? (
-        <SnackBarAlert onClose={() => {
-          setError({ bool: false });
-        }} message={stateError.message} >
-        </SnackBarAlert>
+        <SnackBarAlert
+          onClose={() => {
+            setError({ bool: false });
+          }}
+          message={stateError.message}
+        ></SnackBarAlert>
       ) : (
         <></>
       )}

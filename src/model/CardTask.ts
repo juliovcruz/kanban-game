@@ -13,9 +13,21 @@ export class CardTaskClass {
   number!: number;
   pontuation!: CardTaskPontuation;
   lastMove: number = -1;
+  roundStarted?: number;
+  roundEnded?: number;
 
   setLastMove(roundInfo: RoundInfo) {
     this.lastMove = roundInfo.number
+  }
+
+  start(roundInfo: RoundInfo) {
+    this.roundStarted = roundInfo.number
+    console.log('started: ' + this.roundStarted)
+  }
+
+  end(roundInfo: RoundInfo) {
+    this.roundEnded = roundInfo.number
+    console.log('ended: ' + this.roundEnded)
   }
 
   canBeMoveTo(

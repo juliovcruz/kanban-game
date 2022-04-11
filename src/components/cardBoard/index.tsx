@@ -76,6 +76,11 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
     
     if(finish.index > start.index) card.setLastMove(roundInfo)
 
+    switch(finish.column.type) {
+      case ActionType.PRODUCT_OWNER: card.start(roundInfo); break;
+      case ActionType.PRODUCTION: card.end(roundInfo); break;
+    }
+
     const bool = card.canBeMoveTo(
       finish.column.type,
       start.column.type,

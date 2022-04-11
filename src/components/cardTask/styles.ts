@@ -33,13 +33,24 @@ export const Container = styled.div`
       }
     }
 
-    .title {
+    .info-content {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: center;
+      align-items: center;
+
+      .title {
       min-width: 90px;
       margin: 5px;
       color: ${base.light_purple};
-      text-align: center;
       font-weight: bold;
       letter-spacing: 1.5px;
+      }
+
+      p {
+        color: ${base.light_purple};
+      }
     }
   }
 `;
