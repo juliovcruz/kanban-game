@@ -1,8 +1,9 @@
 import GlobalStyle from "./styles/global";
-import { CardBoard, Column, generateColumns } from "./components/cardBoard";
+import { CardBoard, Column } from "./components/cardBoard";
 import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
+import { generateColumns } from "./data/mock";
 
 export class PlayerRoundPoints {
   analysis!: number;

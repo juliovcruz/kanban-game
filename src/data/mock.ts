@@ -1,6 +1,7 @@
 import { Column } from "../components/cardBoard";
 import { ActionType } from "../model/ActionType";
 import { CardTaskClass } from "../model/CardTask";
+import { v4 as uuidv4 } from "uuid";
 
 export function generateColumns(): Column[] {
     return [
@@ -151,8 +152,3 @@ export function generateColumns(): Column[] {
       },
     ];
   }
-
-function uuidv4(): string {
-    throw new Error("Function not implemented.");
-}
-  
