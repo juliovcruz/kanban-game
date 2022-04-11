@@ -1,3 +1,4 @@
+import { RoundInfo } from "../App";
 import { ActionType } from "./ActionType";
 
 export type BooleanResponse = {
@@ -11,6 +12,11 @@ export class CardTaskClass {
   id!: string;
   number!: number;
   pontuation!: CardTaskPontuation;
+  lastMove: number = -1;
+
+  setLastMove(roundInfo: RoundInfo) {
+    this.lastMove = roundInfo.number
+  }
 
   canBeMoveTo(
     destinationType: ActionType,
@@ -43,12 +49,19 @@ export class CardTaskClass {
     }
   }
 
-  addPointAnalysis(actualColumnType: ActionType): BooleanResponse {
+  addPointAnalysis(actualColumnType: ActionType, roundInfo: RoundInfo): BooleanResponse {
+    if(this.lastMove == roundInfo.number) {
+      return {
+        bool: false,
+        message: "Não é possível pontuar em uma tarefa que acabou de ser movida",
+      }
+    }
+
     if (actualColumnType != ActionType.PRODUCT_OWNER) {
       return {
         bool: false,
         message: "Não é possível utilizar nesta coluna.",
-      };
+      }
     }
 
     if (this.pontuation.analysis.inserted == this.pontuation.analysis.needed) {
@@ -62,7 +75,14 @@ export class CardTaskClass {
     return { bool: true };
   }
 
-  addPointDevelop(actualColumnType: ActionType): BooleanResponse {
+  addPointDevelop(actualColumnType: ActionType, roundInfo: RoundInfo): BooleanResponse {
+    if(this.lastMove == roundInfo.number) {
+      return {
+        bool: false,
+        message: "Não é possível pontuar em uma tarefa que acabou de ser movida",
+      }
+    }
+
     if (actualColumnType != ActionType.DEVELOPER) {
       return {
         bool: false,
@@ -88,7 +108,14 @@ export class CardTaskClass {
     return { bool: true };
   }
 
-  addPointTest(actualColumnType: ActionType): BooleanResponse {
+  addPointTest(actualColumnType: ActionType, roundInfo: RoundInfo): BooleanResponse {
+    if(this.lastMove == roundInfo.number) {
+      return {
+        bool: false,
+        message: "Não é possível pontuar em uma tarefa que acabou de ser movida",
+      }
+    }
+
     if (actualColumnType != ActionType.QUALITY_ASSURANCE) {
       return {
         bool: false,

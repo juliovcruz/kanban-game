@@ -49,7 +49,7 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint }) => {
     const finish = getColumnById(columns, destination.droppableId);
 
     if (source.droppableId == destination.droppableId) {
-      const card = start.column.cards[source.index];
+      const card = start.column.cards[source.index]
 
       const newCards = start.column.cards.filter(
         (_, index) => index != source.index
@@ -72,7 +72,9 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint }) => {
       cards: start.column.cards.filter((_, index) => index != source.index),
     };
 
-    const card = start.column.cards[source.index];
+    const card = start.column.cards[source.index]
+    
+    if(finish.index > start.index) card.setLastMove(roundInfo)
 
     if (
       !card.canBeMoveTo(
@@ -168,6 +170,8 @@ function generateCards(): CardTaskClass[] {
       addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
       addPointDevelop: CardTaskClass.prototype.addPointDevelop,
       addPointTest: CardTaskClass.prototype.addPointTest,
+      setLastMove: CardTaskClass.prototype.setLastMove,
+      lastMove: -1,
       name: "UST01",
       index: 1,
       id: uuidv4(),
@@ -192,6 +196,8 @@ function generateCards(): CardTaskClass[] {
       addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
       addPointDevelop: CardTaskClass.prototype.addPointDevelop,
       addPointTest: CardTaskClass.prototype.addPointTest,
+      setLastMove: CardTaskClass.prototype.setLastMove,
+      lastMove: -1,
       name: "UST02",
       index: 2,
       id: uuidv4(),
@@ -216,6 +222,8 @@ function generateCards(): CardTaskClass[] {
       addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
       addPointDevelop: CardTaskClass.prototype.addPointDevelop,
       addPointTest: CardTaskClass.prototype.addPointTest,
+      setLastMove: CardTaskClass.prototype.setLastMove,
+      lastMove: -1,
       name: "UST03",
       index: 4,
       id: uuidv4(),
@@ -240,6 +248,8 @@ function generateCards(): CardTaskClass[] {
       addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
       addPointDevelop: CardTaskClass.prototype.addPointDevelop,
       addPointTest: CardTaskClass.prototype.addPointTest,
+      setLastMove: CardTaskClass.prototype.setLastMove,
+      lastMove: -1,
       name: "UST04",
       index: 5,
       id: uuidv4(),

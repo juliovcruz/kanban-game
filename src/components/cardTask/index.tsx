@@ -50,7 +50,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       return;
     }
 
-    const response = novoCard.addPointAnalysis(actualColumnType);
+    const response = novoCard.addPointAnalysis(actualColumnType, roundInfo);
 
     if (response.bool) {
       if (!usePoint(actualColumnType)) {
@@ -79,7 +79,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       return;
     }
 
-    const response = novoCard.addPointDevelop(actualColumnType);
+    const response = novoCard.addPointDevelop(actualColumnType, roundInfo);
 
     if (response.bool) {
       if (!usePoint(actualColumnType)) {
@@ -108,7 +108,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       return;
     }
 
-    const response = novoCard.addPointTest(actualColumnType);
+    const response = novoCard.addPointTest(actualColumnType, roundInfo);
 
     if (response.bool) {
       if (!usePoint(actualColumnType)) {
