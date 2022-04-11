@@ -4,6 +4,7 @@ import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
 import { generateColumns } from "./data/mock";
+import { CardTaskClass } from "./model/CardTask";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -83,36 +84,119 @@ export type ErrorState = {
 };
 
 export default function App() {
-  const [round, setRound] = useState<RoundInfo>({
-    number: 0,
-    nextRound: RoundInfo.prototype.nextRound,
-    getDayName: RoundInfo.prototype.getDayName,
-    todayCanBeDeploy: RoundInfo.prototype.todayCanBeDeploy,
-    playerRoundPoints: {
-      analysis: 0,
-      develop: 0,
-      test: 0,
-      clear: PlayerRoundPoints.prototype.clear,
-      nextRound: PlayerRoundPoints.prototype.nextRound,
-    },
-  });
-  const [board, setBoard] = useState<BoardInfo>({
-    columns: generateColumns(),
-  });
+  const [round, setRound] = useState<RoundInfo>();
+  const [board, setBoard] = useState<BoardInfo>();
+
+  function getColumnsRight(columns: Column[]): Column[] {
+    let result: Column[] = []
+
+    columns.forEach( (val) => {
+      result.push({
+        ...val,
+        cards: getCardsRight(val.cards)
+      })
+    })
+
+    return result
+  }
+
+  function getCardsRight(cards: CardTaskClass[]): CardTaskClass[] {
+    let result: CardTaskClass[] = []
+
+    cards.forEach( (val) => {
+      result.push({
+        ...val,
+        canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+        addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+        addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+        addPointTest: CardTaskClass.prototype.addPointTest,
+        setLastMove: CardTaskClass.prototype.setLastMove,
+        start: CardTaskClass.prototype.start,
+        end: CardTaskClass.prototype.end,
+      })
+    })
+
+    return result
+  }
+
+  if ( round == undefined) {
+    const dataRound = localStorage.getItem('round')
+
+    if(dataRound != null) {
+      const parsed: RoundInfo = JSON.parse(dataRound)
+
+      const roundInfo: RoundInfo = {
+        ...parsed,
+        nextRound: RoundInfo.prototype.nextRound,
+        getDayName: RoundInfo.prototype.getDayName,
+        todayCanBeDeploy: RoundInfo.prototype.todayCanBeDeploy,
+        playerRoundPoints: {
+          ...parsed.playerRoundPoints,
+          clear: PlayerRoundPoints.prototype.clear,
+          nextRound: PlayerRoundPoints.prototype.nextRound,
+        }
+      }
+      setRound(roundInfo)
+
+      localStorage.setItem('round', JSON.stringify(roundInfo))
+    } else{
+      const roundInfo = {
+        number: 0,
+        nextRound: RoundInfo.prototype.nextRound,
+        getDayName: RoundInfo.prototype.getDayName,
+        todayCanBeDeploy: RoundInfo.prototype.todayCanBeDeploy,
+        playerRoundPoints: {
+          analysis: 0,
+          develop: 0,
+          test: 0,
+          clear: PlayerRoundPoints.prototype.clear,
+          nextRound: PlayerRoundPoints.prototype.nextRound,
+        },
+      }
+      setRound(roundInfo)
+
+    localStorage.setItem('round', JSON.stringify(roundInfo))
+    }
+  }
+
+  if(board == undefined) {
+    const dataColumns = localStorage.getItem('columns')
+
+    if(dataColumns != null) {
+      const boardInfo: BoardInfo = {
+        columns: JSON.parse(dataColumns)
+      }
+
+      boardInfo.columns = getColumnsRight(boardInfo.columns)
+
+      const boardRight: BoardInfo = {
+        columns: getColumnsRight(boardInfo.columns)
+      }
+
+      setBoard(boardRight)
+      return
+    } else{
+      const boardInfo = {columns: generateColumns()}
+      setBoard(boardInfo)
+
+    localStorage.setItem('columns', JSON.stringify(boardInfo.columns))
+    }
+  }
 
   const nextRound = () => {
     const newRound = Object.assign({}, round);
     newRound.playerRoundPoints.clear();
     newRound.nextRound();
 
+    if(board != undefined) localStorage.setItem('columns', JSON.stringify(board.columns))
+    localStorage.setItem('round', JSON.stringify(newRound))
+
     setRound(newRound);
   };
 
   const usePoint = (type: ActionType) => {
     const newRound = Object.assign({}, round);
-
-    let bool = false;
-
+    
     switch (type) {
       case ActionType.PRODUCT_OWNER:
         if (newRound.playerRoundPoints.analysis <= 0) {
@@ -134,17 +218,19 @@ export default function App() {
         break;
     }
 
+    if(board != undefined) localStorage.setItem('columns', JSON.stringify(board.columns))
+
     setRound(newRound);
     return true;
   };
 
   return (
     <>
-      <HeaderBoard roundInfo={round} nextRoundAction={nextRound}></HeaderBoard>
+      <HeaderBoard roundInfo={round!} nextRoundAction={nextRound}></HeaderBoard>
       <CardBoard
-        roundInfo={round}
+        roundInfo={round!}
         usePoint={usePoint}
-        paramsColumns={board.columns}
+        paramsColumns={board?.columns}
       ></CardBoard>
       <GlobalStyle />
     </>

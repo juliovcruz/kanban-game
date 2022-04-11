@@ -1,9 +1,8 @@
 import { Container } from "./styles";
 import { ListTask } from "../listTask";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
-import { v4 as uuidv4 } from "uuid";
 import { CardTaskClass } from "../../model/CardTask";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
 import { RoundInfo } from "../../App";
@@ -24,12 +23,12 @@ export type ColumnIndex = {
 
 export type Params = {
   roundInfo: RoundInfo,
-  paramsColumns: Column[],
+  paramsColumns: Column[] | undefined,
   usePoint: (type: ActionType) => Boolean,
 };
 
 export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns }) => {
-  const [columns, setColumns] = useState<Column[]>(paramsColumns);
+  const [columns, setColumns] = useState<Column[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
   const onDragEnd = (result: DropResult) => {
@@ -73,8 +72,6 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
     };
 
     const card = start.column.cards[source.index]
-    
-    if(finish.index > start.index) card.setLastMove(roundInfo)
 
     switch(finish.column.type) {
       case ActionType.PRODUCT_OWNER: card.start(roundInfo); break;
@@ -92,6 +89,8 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
       return;
     }
 
+    if(finish.index > start.index) card.setLastMove(roundInfo)
+
     const newFinishColumnCards = finish.column.cards;
     newFinishColumnCards.splice(destination.index, 0, card);
 
@@ -104,6 +103,7 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
     columns[finish.index] = newFinishColumn;
 
     setColumns([...columns]);
+    localStorage.setItem('columns', JSON.stringify(columns))
   };
 
   function getColumnById(columns: Column[], id: string): ColumnIndex {
