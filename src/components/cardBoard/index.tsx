@@ -21,16 +21,17 @@ export type ColumnIndex = {
 };
 
 export type Params = {
-  roundInfo: RoundInfo;
-  usePoint: (type: ActionType) => Boolean;
+  roundInfo: RoundInfo,
+  paramsColumns: Column[],
+  usePoint: (type: ActionType) => Boolean,
 };
 
-export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint }) => {
-  const [columns, setColumns] = useState<Column[]>();
+export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns }) => {
+  const [columns, setColumns] = useState<Column[]>(paramsColumns);
 
-  if (columns === undefined) {
-    setColumns(generateColumns());
-  }
+  // if (columns === undefined) {
+  //   setColumns(generateColumns());
+  // }
 
   const onDragEnd = (result: DropResult) => {
     const { source, destination } = result;
@@ -122,7 +123,7 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint }) => {
   );
 };
 
-function generateColumns(): Column[] {
+export function generateColumns(): Column[] {
   return [
     {
       id: uuidv4(),
@@ -163,7 +164,7 @@ function generateColumns(): Column[] {
   ];
 }
 
-function generateCards(): CardTaskClass[] {
+export function generateCards(): CardTaskClass[] {
   return [
     {
       canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,

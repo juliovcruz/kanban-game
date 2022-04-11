@@ -1,5 +1,5 @@
 import GlobalStyle from "./styles/global";
-import { CardBoard } from "./components/cardBoard";
+import { CardBoard, Column, generateColumns } from "./components/cardBoard";
 import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
@@ -22,6 +22,10 @@ export class PlayerRoundPoints {
     this.develop = Math.floor(Math.random() * (5 - 1 + 1) + 1);
     this.test = Math.floor(Math.random() * (5 - 1 + 1) + 1);
   }
+}
+
+export class BoardInfo {
+  columns!: Column[];
 }
 
 export class RoundInfo {
@@ -77,7 +81,7 @@ export type ErrorState = {
   message: string;
 };
 
-function App() {
+export default function App() {
   const [round, setRound] = useState<RoundInfo>({
     number: 0,
     nextRound: RoundInfo.prototype.nextRound,
@@ -91,8 +95,9 @@ function App() {
       nextRound: PlayerRoundPoints.prototype.nextRound,
     },
   });
-
-  const [stateError, setError] = useState<ErrorState>();
+  const [board, setBoard] = useState<BoardInfo>({
+    columns: generateColumns(),
+  });
 
   const nextRound = () => {
     const newRound = Object.assign({}, round);
@@ -135,10 +140,12 @@ function App() {
   return (
     <>
       <HeaderBoard roundInfo={round} nextRoundAction={nextRound}></HeaderBoard>
-      <CardBoard roundInfo={round} usePoint={usePoint}></CardBoard>
+      <CardBoard
+        roundInfo={round}
+        usePoint={usePoint}
+        paramsColumns={board.columns}
+      ></CardBoard>
       <GlobalStyle />
     </>
   );
 }
-
-export default App;

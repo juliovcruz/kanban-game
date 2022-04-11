@@ -2,19 +2,11 @@ import { Container } from "./styles";
 import { CardTaskClass } from "../../model/CardTask";
 import { PontuationComponent } from "./pontuation/pontuation";
 import { ActionType } from "../../model/ActionType";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { RoundInfo } from "../../App";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import React from "react";
-
-const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-  props,
-  ref
-) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 
 export interface Params {
   cardTask: CardTaskClass;
@@ -171,24 +163,10 @@ export const CardTaskComponent: React.FC<Params> = ({
         )}
       </Draggable>
       {stateError?.bool ? (
-        <Snackbar
-          open={true}
-          autoHideDuration={15000}
-          onClose={() => {
-            setError({ bool: false });
-          }}
-          message={stateError.message}
-        >
-          <Alert
-            onClose={() => {
-              setError({ bool: false });
-            }}
-            severity="error"
-            sx={{ width: "100%" }}
-          >
-            {stateError.message}
-          </Alert>
-        </Snackbar>
+        <SnackBarAlert onClose={() => {
+          setError({ bool: false });
+        }} message={stateError.message} >
+        </SnackBarAlert>
       ) : (
         <></>
       )}
