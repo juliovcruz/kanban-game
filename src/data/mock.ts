@@ -2,6 +2,23 @@ import { Column } from "../components/cardBoard";
 import { ActionType } from "../model/ActionType";
 import { CardTaskClass } from "../model/CardTask";
 import { v4 as uuidv4 } from "uuid";
+import { PlayerRoundPoints, RoundInfo } from "../App";
+
+export function startRound(): RoundInfo {
+  return {
+    number: 0,
+    nextRound: RoundInfo.prototype.nextRound,
+    getDayName: RoundInfo.prototype.getDayName,
+    todayCanBeDeploy: RoundInfo.prototype.todayCanBeDeploy,
+    playerRoundPoints: {
+      analysis: 0,
+      develop: 0,
+      test: 0,
+      clear: PlayerRoundPoints.prototype.clear,
+      nextRound: PlayerRoundPoints.prototype.nextRound,
+    },
+  }
+}
 
 export function generateColumns(): Column[] {
     return [

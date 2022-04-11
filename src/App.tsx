@@ -3,8 +3,8 @@ import { CardBoard, Column } from "./components/cardBoard";
 import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
-import { generateColumns } from "./data/mock";
-import { CardTaskClass } from "./model/CardTask";
+import { generateColumns, startRound } from "./data/mock";
+import { Database } from "./data/database";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -83,103 +83,43 @@ export type ErrorState = {
   message: string;
 };
 
-export default function App() {
+export type Params = {
+  database: Database
+}
+
+export const App: React.FC<Params> = ({database}) => {
   const [round, setRound] = useState<RoundInfo>();
   const [board, setBoard] = useState<BoardInfo>();
 
-  function getColumnsRight(columns: Column[]): Column[] {
-    let result: Column[] = []
-
-    columns.forEach( (val) => {
-      result.push({
-        ...val,
-        cards: getCardsRight(val.cards)
-      })
-    })
-
-    return result
-  }
-
-  function getCardsRight(cards: CardTaskClass[]): CardTaskClass[] {
-    let result: CardTaskClass[] = []
-
-    cards.forEach( (val) => {
-      result.push({
-        ...val,
-        canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
-        addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
-        addPointDevelop: CardTaskClass.prototype.addPointDevelop,
-        addPointTest: CardTaskClass.prototype.addPointTest,
-        setLastMove: CardTaskClass.prototype.setLastMove,
-        start: CardTaskClass.prototype.start,
-        end: CardTaskClass.prototype.end,
-      })
-    })
-
-    return result
-  }
-
   if ( round == undefined) {
-    const dataRound = localStorage.getItem('round')
+    const dataRound = database.getRound()
 
     if(dataRound != null) {
-      const parsed: RoundInfo = JSON.parse(dataRound)
+      setRound(dataRound)
+      return
+    } else {
+      const roundInfo = startRound()
 
-      const roundInfo: RoundInfo = {
-        ...parsed,
-        nextRound: RoundInfo.prototype.nextRound,
-        getDayName: RoundInfo.prototype.getDayName,
-        todayCanBeDeploy: RoundInfo.prototype.todayCanBeDeploy,
-        playerRoundPoints: {
-          ...parsed.playerRoundPoints,
-          clear: PlayerRoundPoints.prototype.clear,
-          nextRound: PlayerRoundPoints.prototype.nextRound,
-        }
-      }
       setRound(roundInfo)
-
-      localStorage.setItem('round', JSON.stringify(roundInfo))
-    } else{
-      const roundInfo = {
-        number: 0,
-        nextRound: RoundInfo.prototype.nextRound,
-        getDayName: RoundInfo.prototype.getDayName,
-        todayCanBeDeploy: RoundInfo.prototype.todayCanBeDeploy,
-        playerRoundPoints: {
-          analysis: 0,
-          develop: 0,
-          test: 0,
-          clear: PlayerRoundPoints.prototype.clear,
-          nextRound: PlayerRoundPoints.prototype.nextRound,
-        },
-      }
-      setRound(roundInfo)
-
-    localStorage.setItem('round', JSON.stringify(roundInfo))
+      database.setRound(roundInfo)
     }
   }
 
   if(board == undefined) {
-    const dataColumns = localStorage.getItem('columns')
+    const dataColumns = database.getColumns()
 
     if(dataColumns != null) {
       const boardInfo: BoardInfo = {
-        columns: JSON.parse(dataColumns)
+        columns: dataColumns
       }
 
-      boardInfo.columns = getColumnsRight(boardInfo.columns)
-
-      const boardRight: BoardInfo = {
-        columns: getColumnsRight(boardInfo.columns)
-      }
-
-      setBoard(boardRight)
+      setBoard(boardInfo)
       return
-    } else{
+    } else {
       const boardInfo = {columns: generateColumns()}
       setBoard(boardInfo)
 
-    localStorage.setItem('columns', JSON.stringify(boardInfo.columns))
+      database.setColumns(boardInfo.columns)
     }
   }
 
@@ -188,8 +128,8 @@ export default function App() {
     newRound.playerRoundPoints.clear();
     newRound.nextRound();
 
-    if(board != undefined) localStorage.setItem('columns', JSON.stringify(board.columns))
-    localStorage.setItem('round', JSON.stringify(newRound))
+    if(board != undefined) database.setColumns(board.columns)
+    database.setRound(newRound)
 
     setRound(newRound);
   };
@@ -218,7 +158,7 @@ export default function App() {
         break;
     }
 
-    if(board != undefined) localStorage.setItem('columns', JSON.stringify(board.columns))
+    if(board != undefined) database.setColumns(board.columns)
 
     setRound(newRound);
     return true;
