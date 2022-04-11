@@ -80,15 +80,15 @@ export function generateColumns(): CardColumn[] {
         number: 3,
         pontuation: {
           analysis: {
-            inserted: 1,
+            inserted: 0,
             needed: 4,
           },
           develop: {
-            inserted: 3,
+            inserted: 0,
             needed: 5,
           },
           test: {
-            inserted: 4,
+            inserted: 0,
             needed: 5,
           },
         },
@@ -108,15 +108,15 @@ export function generateColumns(): CardColumn[] {
         number: 3,
         pontuation: {
           analysis: {
-            inserted: 1,
+            inserted: 0,
             needed: 4,
           },
           develop: {
-            inserted: 3,
+            inserted: 0,
             needed: 5,
           },
           test: {
-            inserted: 4,
+            inserted: 0,
             needed: 5,
           },
         },
@@ -136,15 +136,15 @@ export function generateColumns(): CardColumn[] {
         number: 3,
         pontuation: {
           analysis: {
-            inserted: 1,
+            inserted: 0,
             needed: 4,
           },
           develop: {
-            inserted: 3,
+            inserted: 0,
             needed: 5,
           },
           test: {
-            inserted: 4,
+            inserted: 0,
             needed: 5,
           },
         },
@@ -164,15 +164,15 @@ export function generateColumns(): CardColumn[] {
         number: 3,
         pontuation: {
           analysis: {
-            inserted: 1,
+            inserted: 0,
             needed: 4,
           },
           develop: {
-            inserted: 3,
+            inserted: 0,
             needed: 5,
           },
           test: {
-            inserted: 4,
+            inserted: 0,
             needed: 5,
           },
         },
@@ -181,41 +181,72 @@ export function generateColumns(): CardColumn[] {
   }
 
   export function generateEmployeeColumns(): EmployeeColumn[] {
-    const result = [
+    return [
       {
-        employees: generateEmployeeCards(),
+        employees: [
+          {
+            canBeMoveTo: Employee.prototype.canBeMoveTo,
+            actions: [ActionType.PRODUCT_OWNER],
+            id: uuidv4(),
+            name: 'Tali'
+          }
+        ],
         id: uuidv4(),
         name: 'PO',
         type: ActionType.PRODUCT_OWNER
       },
       {
-        employees: generateEmployeeCards(),
+        employees: [
+          {
+            canBeMoveTo: Employee.prototype.canBeMoveTo,
+            actions: [ActionType.DEVELOPER, ActionType.DEPLOY],
+            id: uuidv4(),
+            name: 'Dani'
+          },
+          {
+            canBeMoveTo: Employee.prototype.canBeMoveTo,
+            actions: [ActionType.DEVELOPER, ActionType.DEPLOY, ActionType.QUALITY_ASSURANCE],
+            id: uuidv4(),
+            name: 'Esther'
+          },
+        ],
         id: uuidv4(),
         name: 'DEV',
         type: ActionType.DEVELOPER
       },
       {
-        employees: generateEmployeeCards(),
+        employees: [
+          {
+            canBeMoveTo: Employee.prototype.canBeMoveTo,
+            actions: [ActionType.QUALITY_ASSURANCE],
+            id: uuidv4(),
+            name: 'Gui'
+          }
+        ],
         id: uuidv4(),
         name: 'QA',
         type: ActionType.QUALITY_ASSURANCE
+      },
+      {
+        employees: [],
+        id: uuidv4(),
+        name: 'DEPLOY',
+        type: ActionType.DEPLOY
       }
     ]
-
-    result[0].employees.push(generateEmployeeCards()[0])
-
-    return result
   }
 
   function generateEmployeeCards(): Employee[] {
     return [
       {
-        action: [ActionType.PRODUCT_OWNER],
+        canBeMoveTo: Employee.prototype.canBeMoveTo,
+        actions: [ActionType.PRODUCT_OWNER],
         id: uuidv4(),
         name: 'Joao'
       },
       {
-        action: [ActionType.PRODUCT_OWNER, ActionType.DEVELOPER],
+        canBeMoveTo: Employee.prototype.canBeMoveTo,
+        actions: [ActionType.PRODUCT_OWNER, ActionType.DEVELOPER],
         id: uuidv4(),
         name: 'Pedro'
       }

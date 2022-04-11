@@ -26,19 +26,12 @@ export const Container = styled.div`
       align-content: center;
       justify-content: center;
 
-      .pontuations {
+      .actions {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: center;
+        align-items: center;
       }
-    }
-
-    .info-content {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      text-align: center;
-      align-items: center;
 
       .title {
       min-width: 90px;
@@ -47,10 +40,15 @@ export const Container = styled.div`
       font-weight: bold;
       letter-spacing: 1.5px;
       }
+    }
 
       p {
         color: ${base.light_purple};
       }
     }
-  }
+`;
+
+export const IconEmployee = styled.div<{ color: string; visible: boolean }>`
+  color: ${({ color }) => (color ? color : '#f2faeb')};
+  display: ${({ visible }) => (visible ? 'block' : 'none')};
 `;

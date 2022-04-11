@@ -1,4 +1,4 @@
-import { Container } from "./styles";
+import { Container, IconEmployee } from "./styles";
 import { ActionType } from "../../model/ActionType";
 import { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
@@ -6,6 +6,8 @@ import { RoundInfo } from "../../App";
 import React from "react";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Employee } from "../../model/Employee";
+import PersonIcon from "@mui/icons-material/Person";
+import { ColorByActionType } from "../../styles/colors";
 
 export interface Params {
   paramEmployee: Employee;
@@ -39,11 +41,19 @@ export const EmployeeComponent: React.FC<Params> = ({
           >
             <div className="card-content">
               <div className="card-body">
-                <div className="info-content">
-                  <div className="title">{employee.name}</div>
-                  <div className="info-round">
-                    {/* <p>{employee.roundStarted != null ? ("S:" + employee.roundStarted) : '' } {employee.roundEnded != null ? ("E:" + employee.roundEnded) : '' }</p> */}
-                  </div>
+                <div className="title">{employee.name}</div>
+                <div className="actions">
+                  {employee.actions?.sort().map((item, index) => (
+                    <IconEmployee
+                      color={ColorByActionType(item)}
+                      visible={true}
+                    >
+                      <PersonIcon fontSize="small"></PersonIcon>
+                    </IconEmployee>
+                  ))}
+                </div>
+                <div className="info-round">
+                  {/* <p>{employee.roundStarted != null ? ("S:" + employee.roundStarted) : '' } {employee.roundEnded != null ? ("E:" + employee.roundEnded) : '' }</p> */}
                 </div>
               </div>
             </div>

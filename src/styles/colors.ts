@@ -14,11 +14,16 @@ export const base = {
     red: '#EF7064',
     grey: '#6A6577',
     white: '#FFFFFF',
-    orange: '#FA3C16'
+    orange: '#FA3C16',
+    yellow: '#F9D368'
 }
 
 export function ColorByActionType(actionType: ActionType): string {
-    if(actionType == ActionType.PRODUCT_OWNER) return base.green
-    if(actionType == ActionType.DEVELOPER) return base.blue
-    return base.red
+    switch(actionType) {
+        case ActionType.PRODUCT_OWNER: return base.green
+        case ActionType.DEVELOPER: return base.blue
+        case ActionType.QUALITY_ASSURANCE: return base.red
+        case ActionType.DEPLOY: return base.yellow
+    }
+    return base.blue
 }

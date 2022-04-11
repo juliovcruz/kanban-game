@@ -17,7 +17,7 @@ export type CardColumn = {
   type: ActionType;
 };
 
-export type ColumnIndex = {
+type ColumnIndex = {
   column: CardColumn;
   index: number;
 };
@@ -105,7 +105,7 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
     columns[finish.index] = newFinishColumn;
 
     setColumns([...columns]);
-    database.setColumns(columns)
+    database.setCardColumns(columns)
   };
 
   function getColumnById(columns: CardColumn[], id: string): ColumnIndex {

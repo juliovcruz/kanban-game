@@ -1,8 +1,37 @@
 import { PlayerRoundPoints, RoundInfo } from "../App";
 import { CardColumn } from "../components/cardBoard";
-import { Database, getColumnsRight } from "./database";
+import { EmployeeColumn } from "../components/employeeBoard";
+import { Database, getCardColumnsAfterParse, getEmployeeColumnsAfterParse } from "./database";
 
 export class LocalStorage implements Database {
+  getCardColumns(): CardColumn[] | null {
+    const dataColumns = localStorage.getItem("columns");
+
+    if (dataColumns != null) {
+      return getCardColumnsAfterParse(JSON.parse(dataColumns));
+    }
+
+    return null;
+  }
+  
+  setCardColumns(columns: CardColumn[]): void {
+    localStorage.setItem("columns", JSON.stringify(columns));
+  }
+
+  getEmployeeColumns(): EmployeeColumn[] | null {
+    const dataColumns = localStorage.getItem("employees");
+
+    if (dataColumns != null) {
+      return getEmployeeColumnsAfterParse(JSON.parse(dataColumns))
+    }
+
+    return null;
+  }
+
+  setEmployeeColumns(columns: EmployeeColumn[]): void {
+    localStorage.setItem("employees", JSON.stringify(columns));
+  }
+
   getRound(): RoundInfo | null {
     const dataRound = localStorage.getItem("round");
 
@@ -26,19 +55,5 @@ export class LocalStorage implements Database {
 
   setRound(roundInfo: RoundInfo): void {
     localStorage.setItem("round", JSON.stringify(roundInfo));
-  }
-
-  getColumns(): CardColumn[] | null {
-    const dataColumns = localStorage.getItem("columns");
-
-    if (dataColumns != null) {
-      return getColumnsRight(JSON.parse(dataColumns));
-    }
-
-    return null;
-  }
-
-  setColumns(columns: CardColumn[]): void {
-    localStorage.setItem("columns", JSON.stringify(columns));
   }
 }

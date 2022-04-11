@@ -7,7 +7,7 @@ import { generateColumns, generateEmployeeColumns, startRound } from "./data/moc
 import { Database } from "./data/database";
 import { CardTaskClass } from "./model/CardTask";
 import { v4 as uuidv4 } from "uuid";
-import { EmployeeBoard } from "./components/employeeBoard";
+import { EmployeeBoard, EmployeeColumn } from "./components/employeeBoard";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -21,20 +21,25 @@ export class PlayerRoundPoints {
   }
 
   // TODO: receive player info
-  nextRound() {
+  nextRound(employeeColumns: EmployeeColumn[]) {
+    const analysis = employeeColumns.filter((x) => x.type == ActionType.PRODUCT_OWNER)[0].employees.length;
+    const develop = employeeColumns.filter((x) => x.type == ActionType.DEVELOPER)[0].employees.length;
+    const test = employeeColumns.filter((x) => x.type == ActionType.QUALITY_ASSURANCE)[0].employees.length;
+
     // Math.floor(Math.random() * (max - min + 1) + min)
-    this.analysis = Math.floor(Math.random() * (5 - 1 + 1) + 1);
-    this.develop = Math.floor(Math.random() * (5 - 1 + 1) + 1);
-    this.test = Math.floor(Math.random() * (5 - 1 + 1) + 1);
+    this.analysis = Math.floor(Math.random() * ( (4 * analysis) - analysis + 1) + analysis);
+    this.develop = Math.floor(Math.random() * ( (4*develop) - develop + 1) + develop);
+    this.test = Math.floor(Math.random() * ( (4*test) - test + 1) + test);
   }
 }
 
 export class BoardInfo {
-  columns!: CardColumn[];
+  cardColumns!: CardColumn[];
+  employeeColumns!: EmployeeColumn[];
 
   newCards(cards: CardTaskClass[]) {
     cards.forEach( (card) => {
-      this.columns[0].cards.push(card)
+      this.cardColumns[0].cards.push(card)
     })
   }
 }
@@ -43,9 +48,9 @@ export class RoundInfo {
   number!: number;
   playerRoundPoints!: PlayerRoundPoints;
 
-  nextRound() {
+  nextRound(employeeColumns: EmployeeColumn[]) {
     this.number++;
-    this.playerRoundPoints.nextRound();
+    this.playerRoundPoints.nextRound(employeeColumns);
   }
 
   getDayName(): string {
@@ -115,30 +120,37 @@ export const App: React.FC<Params> = ({database}) => {
   }
 
   if(board == undefined) {
-    const dataColumns = database.getColumns()
+    const cardColumns = database.getCardColumns()
+    const employeeColumns = database.getEmployeeColumns()
 
-    if(dataColumns != null) {
+    if(cardColumns != null && employeeColumns != null) {
       const boardInfo: BoardInfo = {
-        columns: dataColumns,
+        cardColumns: cardColumns,
+        employeeColumns: employeeColumns,
         newCards: BoardInfo.prototype.newCards,
       }
 
       setBoard(boardInfo)
       return
     } else {
-      const boardInfo = {columns: generateColumns(), newCards: BoardInfo.prototype.newCards,}
+      const boardInfo = {
+        cardColumns: generateColumns(), 
+        employeeColumns: generateEmployeeColumns(),
+        newCards: BoardInfo.prototype.newCards
+      }
       setBoard(boardInfo)
 
-      database.setColumns(boardInfo.columns)
+      database.setCardColumns(boardInfo.cardColumns)
+      database.setEmployeeColumns(boardInfo.employeeColumns)
     }
   }
 
   const nextRound = () => {
     const newRound = Object.assign({}, round);
     newRound.playerRoundPoints.clear();
-    newRound.nextRound();
+    newRound.nextRound(board!.employeeColumns);
 
-    if(board != undefined) database.setColumns(board.columns)
+    if(board != undefined) database.setCardColumns(board.cardColumns)
     database.setRound(newRound)
 
     
@@ -170,7 +182,7 @@ export const App: React.FC<Params> = ({database}) => {
         break;
     }
 
-    if(board != undefined) database.setColumns(board.columns)
+    if(board != undefined) database.setCardColumns(board.cardColumns)
 
     setRound(newRound);
     return true;
@@ -181,13 +193,13 @@ export const App: React.FC<Params> = ({database}) => {
       <HeaderBoard roundInfo={round!} nextRoundAction={nextRound}></HeaderBoard>
       <EmployeeBoard
         roundInfo={round!}
-        paramsColumns={generateEmployeeColumns()}
+        paramsColumns={board?.employeeColumns}
         database={database}
       ></EmployeeBoard>
       <CardBoard
         roundInfo={round!}
         usePoint={usePoint}
-        paramsColumns={board?.columns}
+        paramsColumns={board?.cardColumns}
         database={database}
       ></CardBoard>
       <GlobalStyle />
