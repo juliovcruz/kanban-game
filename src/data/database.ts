@@ -1,18 +1,18 @@
 import { RoundInfo } from "../App";
-import { Column } from "../components/cardBoard";
+import { CardColumn } from "../components/cardBoard";
 import { CardTaskClass } from "../model/CardTask";
 
 export interface Database {
-    getColumns(): Column[] | null
-    setColumns(columns: Column[]): void
+    getColumns(): CardColumn[] | null
+    setColumns(columns: CardColumn[]): void
 
     getRound(): RoundInfo | null
     setRound(roundInfo: RoundInfo): void
 }
 
 
-export function getColumnsRight(columns: Column[]): Column[] {
-    let result: Column[] = [];
+export function getColumnsRight(columns: CardColumn[]): CardColumn[] {
+    let result: CardColumn[] = [];
   
     columns.forEach((val) => {
       result.push({

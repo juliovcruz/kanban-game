@@ -3,18 +3,18 @@ import { Droppable, DropResult } from "react-beautiful-dnd";
 import { base } from "../../styles/colors";
 import { CardTaskComponent } from "../cardTask";
 import { Container } from "./styles";
-import { Column } from "../cardBoard";
+import { CardColumn } from "../cardBoard";
 import { CardTaskClass } from "../../model/CardTask";
 import { ActionType } from "../../model/ActionType";
 import { RoundInfo } from "../../App";
 
 export interface Params {
-  column: Column;
+  column: CardColumn;
   roundInfo: RoundInfo;
   usePoint: (type: ActionType) => Boolean;
 }
 
-export const ListTask: React.FC<Params> = ({ column, usePoint, roundInfo }) => {
+export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo }) => {
   const [cards, setCards] = useState<CardTaskClass[]>();
 
   if (cards == undefined) {

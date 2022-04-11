@@ -1,4 +1,4 @@
-import { Column } from "../components/cardBoard";
+import { CardColumn } from "../components/cardBoard";
 import { ActionType } from "../model/ActionType";
 import { CardTaskClass } from "../model/CardTask";
 import { v4 as uuidv4 } from "uuid";
@@ -20,7 +20,7 @@ export function startRound(): RoundInfo {
   }
 }
 
-export function generateColumns(): Column[] {
+export function generateColumns(): CardColumn[] {
     return [
       {
         id: uuidv4(),

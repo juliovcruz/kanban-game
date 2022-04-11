@@ -1,5 +1,5 @@
 import { Container } from "./styles";
-import { ListTask } from "../listTask";
+import { CardList } from "../cardList";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { CardTaskClass } from "../../model/CardTask";
 import { useState } from "react";
@@ -8,8 +8,9 @@ import { ActionType } from "../../model/ActionType";
 import { RoundInfo } from "../../App";
 import { ErrorState } from "../cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
+import { Database } from "../../data/database";
 
-export type Column = {
+export type CardColumn = {
   id: string;
   name: string;
   cards: CardTaskClass[];
@@ -17,18 +18,19 @@ export type Column = {
 };
 
 export type ColumnIndex = {
-  column: Column;
+  column: CardColumn;
   index: number;
 };
 
 export type Params = {
   roundInfo: RoundInfo,
-  paramsColumns: Column[] | undefined,
+  paramsColumns: CardColumn[] | undefined,
+  database: Database,
   usePoint: (type: ActionType) => Boolean,
 };
 
-export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns }) => {
-  const [columns, setColumns] = useState<Column[] | undefined>(paramsColumns);
+export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns, database }) => {
+  const [columns, setColumns] = useState<CardColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
   const onDragEnd = (result: DropResult) => {
@@ -91,22 +93,22 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
 
     if(finish.index > start.index) card.setLastMove(roundInfo)
 
-    const newFinishColumnCards = finish.column.cards;
-    newFinishColumnCards.splice(destination.index, 0, card);
+    const newFinishCardColumns = finish.column.cards;
+    newFinishCardColumns.splice(destination.index, 0, card);
 
     const newFinishColumn = {
       ...finish.column,
-      cards: newFinishColumnCards,
+      cards: newFinishCardColumns,
     };
 
     columns[start.index] = newStartColumn;
     columns[finish.index] = newFinishColumn;
 
     setColumns([...columns]);
-    localStorage.setItem('columns', JSON.stringify(columns))
+    database.setColumns(columns)
   };
 
-  function getColumnById(columns: Column[], id: string): ColumnIndex {
+  function getColumnById(columns: CardColumn[], id: string): ColumnIndex {
     const column = columns.filter((x) => x.id == id)[0];
     return {
       column: column,
@@ -118,11 +120,11 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
     <Container>
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
-          <ListTask
+          <CardList
             column={item}
             usePoint={usePoint}
             roundInfo={roundInfo}
-          ></ListTask>
+          ></CardList>
         ))}
       </DragDropContext>
       {stateError?.bool ? (

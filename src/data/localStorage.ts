@@ -1,5 +1,5 @@
 import { PlayerRoundPoints, RoundInfo } from "../App";
-import { Column } from "../components/cardBoard";
+import { CardColumn } from "../components/cardBoard";
 import { Database, getColumnsRight } from "./database";
 
 export class LocalStorage implements Database {
@@ -28,7 +28,7 @@ export class LocalStorage implements Database {
     localStorage.setItem("round", JSON.stringify(roundInfo));
   }
 
-  getColumns(): Column[] | null {
+  getColumns(): CardColumn[] | null {
     const dataColumns = localStorage.getItem("columns");
 
     if (dataColumns != null) {
@@ -38,7 +38,7 @@ export class LocalStorage implements Database {
     return null;
   }
 
-  setColumns(columns: Column[]): void {
+  setColumns(columns: CardColumn[]): void {
     localStorage.setItem("columns", JSON.stringify(columns));
   }
 }

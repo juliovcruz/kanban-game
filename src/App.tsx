@@ -1,10 +1,12 @@
 import GlobalStyle from "./styles/global";
-import { CardBoard, Column } from "./components/cardBoard";
+import { CardBoard, CardColumn } from "./components/cardBoard";
 import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
 import { generateColumns, startRound } from "./data/mock";
 import { Database } from "./data/database";
+import { CardTaskClass } from "./model/CardTask";
+import { v4 as uuidv4 } from "uuid";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -27,7 +29,13 @@ export class PlayerRoundPoints {
 }
 
 export class BoardInfo {
-  columns!: Column[];
+  columns!: CardColumn[];
+
+  newCards(cards: CardTaskClass[]) {
+    cards.forEach( (card) => {
+      this.columns[0].cards.push(card)
+    })
+  }
 }
 
 export class RoundInfo {
@@ -110,13 +118,14 @@ export const App: React.FC<Params> = ({database}) => {
 
     if(dataColumns != null) {
       const boardInfo: BoardInfo = {
-        columns: dataColumns
+        columns: dataColumns,
+        newCards: BoardInfo.prototype.newCards,
       }
 
       setBoard(boardInfo)
       return
     } else {
-      const boardInfo = {columns: generateColumns()}
+      const boardInfo = {columns: generateColumns(), newCards: BoardInfo.prototype.newCards,}
       setBoard(boardInfo)
 
       database.setColumns(boardInfo.columns)
@@ -130,6 +139,8 @@ export const App: React.FC<Params> = ({database}) => {
 
     if(board != undefined) database.setColumns(board.columns)
     database.setRound(newRound)
+
+    
 
     setRound(newRound);
   };
@@ -171,6 +182,7 @@ export const App: React.FC<Params> = ({database}) => {
         roundInfo={round!}
         usePoint={usePoint}
         paramsColumns={board?.columns}
+        database={database}
       ></CardBoard>
       <GlobalStyle />
     </>
