@@ -9,6 +9,7 @@ import { RoundInfo } from "../../App";
 import { ErrorState } from "../cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
+import { Employee } from "../../model/Employee";
 
 export type CardColumn = {
   id: string;
@@ -26,10 +27,11 @@ export type Params = {
   roundInfo: RoundInfo,
   paramsColumns: CardColumn[] | undefined,
   database: Database,
+  employeesDeploy: Employee[] | undefined
   usePoint: (type: ActionType) => Boolean,
 };
 
-export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns, database }) => {
+export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns, database, employeesDeploy }) => {
   const [columns, setColumns] = useState<CardColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
@@ -80,10 +82,17 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
       case ActionType.PRODUCTION: card.end(roundInfo); break;
     }
 
+    if(card.roundEnded != null) {
+      setError({bool: true, message: 'Não pode voltar de produção'})
+      return
+    }
+
     const bool = card.canBeMoveTo(
       finish.column.type,
       start.column.type,
-      roundInfo.todayCanBeDeploy()
+      roundInfo.todayCanBeDeploy(),
+      employeesDeploy,
+      roundInfo
     )
 
     if (!bool.bool) {

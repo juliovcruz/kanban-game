@@ -77,7 +77,8 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
 
     const bool = card.canBeMoveTo(
       finish.column.type,
-      start.column.type
+      start.column.type,
+      roundInfo
     )
 
     if (!bool.bool) {

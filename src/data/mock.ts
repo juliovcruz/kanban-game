@@ -51,7 +51,36 @@ export function generateColumns(): CardColumn[] {
       {
         id: uuidv4(),
         name: "Aguardando deploy",
-        cards: [],
+        cards: [
+          {
+            canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+            addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+            addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+            addPointTest: CardTaskClass.prototype.addPointTest,
+            setLastMove: CardTaskClass.prototype.setLastMove,
+            start: CardTaskClass.prototype.start,
+            end: CardTaskClass.prototype.end,
+            lastMove: -1,
+            name: "UST03",
+            index: 4,
+            id: uuidv4(),
+            number: 3,
+            pontuation: {
+              analysis: {
+                inserted: 1,
+                needed: 1,
+              },
+              develop: {
+                inserted: 1,
+                needed: 1,
+              },
+              test: {
+                inserted: 1,
+                needed: 1,
+              },
+            },
+          },
+        ],
         type: ActionType.DEPLOY,
       },
       {
@@ -137,15 +166,15 @@ export function generateColumns(): CardColumn[] {
         pontuation: {
           analysis: {
             inserted: 0,
-            needed: 4,
+            needed: 1,
           },
           develop: {
             inserted: 0,
-            needed: 5,
+            needed: 1,
           },
           test: {
             inserted: 0,
-            needed: 5,
+            needed: 1,
           },
         },
       },
@@ -188,7 +217,8 @@ export function generateColumns(): CardColumn[] {
             canBeMoveTo: Employee.prototype.canBeMoveTo,
             actions: [ActionType.PRODUCT_OWNER],
             id: uuidv4(),
-            name: 'Tali'
+            name: 'Tali',
+            roundMovedToDeploy: 0,
           }
         ],
         id: uuidv4(),
@@ -201,13 +231,15 @@ export function generateColumns(): CardColumn[] {
             canBeMoveTo: Employee.prototype.canBeMoveTo,
             actions: [ActionType.DEVELOPER, ActionType.DEPLOY],
             id: uuidv4(),
-            name: 'Dani'
+            name: 'Dani',
+            roundMovedToDeploy: 0,
           },
           {
             canBeMoveTo: Employee.prototype.canBeMoveTo,
             actions: [ActionType.DEVELOPER, ActionType.DEPLOY, ActionType.QUALITY_ASSURANCE],
             id: uuidv4(),
-            name: 'Esther'
+            name: 'Esther',
+            roundMovedToDeploy: 0,
           },
         ],
         id: uuidv4(),
@@ -220,7 +252,8 @@ export function generateColumns(): CardColumn[] {
             canBeMoveTo: Employee.prototype.canBeMoveTo,
             actions: [ActionType.QUALITY_ASSURANCE],
             id: uuidv4(),
-            name: 'Gui'
+            name: 'Gui',
+            roundMovedToDeploy: 0,
           }
         ],
         id: uuidv4(),
@@ -242,13 +275,15 @@ export function generateColumns(): CardColumn[] {
         canBeMoveTo: Employee.prototype.canBeMoveTo,
         actions: [ActionType.PRODUCT_OWNER],
         id: uuidv4(),
-        name: 'Joao'
+        name: 'Joao',
+        roundMovedToDeploy: 0,
       },
       {
         canBeMoveTo: Employee.prototype.canBeMoveTo,
         actions: [ActionType.PRODUCT_OWNER, ActionType.DEVELOPER],
         id: uuidv4(),
-        name: 'Pedro'
+        name: 'Pedro',
+        roundMovedToDeploy: 0,
       }
     ]
   }

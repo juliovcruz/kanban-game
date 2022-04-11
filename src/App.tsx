@@ -197,6 +197,7 @@ export const App: React.FC<Params> = ({database}) => {
         database={database}
       ></EmployeeBoard>
       <CardBoard
+        employeesDeploy={board?.employeeColumns[3].employees}
         roundInfo={round!}
         usePoint={usePoint}
         paramsColumns={board?.cardColumns}

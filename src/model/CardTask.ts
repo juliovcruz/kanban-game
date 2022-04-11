@@ -1,5 +1,6 @@
 import { RoundInfo } from "../App";
 import { ActionType } from "./ActionType";
+import { Employee } from "./Employee";
 
 export type BooleanResponse = {
   bool: Boolean;
@@ -33,7 +34,9 @@ export class CardTaskClass {
   canBeMoveTo(
     destinationType: ActionType,
     actualColumnType: ActionType,
-    deployDay: Boolean
+    deployDay: Boolean,
+    employeesDeploy: Employee[] | undefined,
+    roundInfo: RoundInfo
   ): BooleanResponse {
     switch (destinationType) {
       case ActionType.BACKLOG:
@@ -56,6 +59,13 @@ export class CardTaskClass {
           message: 'Não é possível mover para deploy.'
         };
       case ActionType.PRODUCTION:
+        if(employeesDeploy == undefined || !ifCanBeDeploy(employeesDeploy, roundInfo.number)) {
+          console.log('here')
+          return { 
+            bool: false,
+            message: 'Não é possível realizar o deploy, por que não foi alocado um funcionário para essa função.'
+          };
+        }
         return { 
           bool: actualColumnType == ActionType.DEPLOY &&
           deployDay &&
@@ -177,3 +187,11 @@ export type Pontuation = {
   needed: number;
   inserted: number;
 };
+
+
+function ifCanBeDeploy(employee: Employee[], roundNumber: number): Boolean {
+  for(let i =0;i<employee.length ;i++) {
+    if (employee[i].roundMovedToDeploy < roundNumber) return true
+  }
+  return false
+}
