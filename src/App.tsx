@@ -34,6 +34,7 @@ export class PlayerRoundPoints {
 }
 
 export class PlayerInfo {
+  lastPrice!: number;
   actualPrice!: number;
 }
 
@@ -144,6 +145,7 @@ export const App: React.FC<Params> = ({database}) => {
         cardColumns: generateColumns(), 
         employeeColumns: generateEmployeeColumns(),
         playerInfo: {
+          lastPrice: 0,
           actualPrice: 0
         },
         newCards: BoardInfo.prototype.newCards
@@ -162,6 +164,7 @@ export const App: React.FC<Params> = ({database}) => {
     newRound.nextRound(board!.employeeColumns);
 
     if(board != undefined) {
+      board.playerInfo.lastPrice = board.playerInfo.actualPrice
       board.playerInfo.actualPrice += getEmployeePrice(board.employeeColumns)
       setBoard(board)
       database.setCardColumns(board.cardColumns)

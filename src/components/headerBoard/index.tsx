@@ -7,6 +7,7 @@ import { styled } from '@mui/material/styles';
 import { purple } from '@mui/material/colors';
 import WarningIcon from '@mui/icons-material/Warning';
 import { PlayerInfo, RoundInfo } from "../../App";
+import CountUp from 'react-countup';
 
 export type Params = {
     roundInfo: RoundInfo,
@@ -44,7 +45,8 @@ export const HeaderBoard: React.FC<Params> = ({roundInfo, nextRoundAction, playe
         }
       </div>
       <div className="price">
-          <p>Custo atual: ${playerInfo?.actualPrice}</p>
+        <CountUp start={playerInfo?.lastPrice} end={playerInfo!.actualPrice} prefix="Custo atual do projeto: $"/>
+          {/* <p>Custo atual: ${playerInfo?.actualPrice}</p> */}
       </div>
       <ColorButton variant="contained" endIcon={<SendIcon />} onClick={nextRoundAction}>
         PRÓXIMA RODADA
