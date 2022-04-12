@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { PlayerRoundPoints, RoundInfo } from "../App";
 import { EmployeeColumn } from "../components/employeeBoard";
 import { Employee } from "../model/Employee";
+import { Project, ProjectDifficulty, ProjectStatus } from "../model/Project";
 
 export function startRound(): RoundInfo {
   return {
@@ -60,6 +61,9 @@ export function generateColumns(): CardColumn[] {
             setLastMove: CardTaskClass.prototype.setLastMove,
             start: CardTaskClass.prototype.start,
             end: CardTaskClass.prototype.end,
+            projectId: 'A',
+            price: 0,
+            cardBug: false,
             lastMove: -1,
             name: "UST03",
             index: 4,
@@ -102,6 +106,9 @@ export function generateColumns(): CardColumn[] {
         setLastMove: CardTaskClass.prototype.setLastMove,
         start: CardTaskClass.prototype.start,
         end: CardTaskClass.prototype.end,
+        projectId: 'A',
+        price: 0,
+        cardBug: false,
         lastMove: -1,
         name: "UST01",
         index: 1,
@@ -130,7 +137,9 @@ export function generateColumns(): CardColumn[] {
         setLastMove: CardTaskClass.prototype.setLastMove,
         start: CardTaskClass.prototype.start,
         end: CardTaskClass.prototype.end,
-        lastMove: -1,
+        lastMove: -1,projectId: 'A',
+        price: 0,
+        cardBug: false,
         name: "UST02",
         index: 2,
         id: uuidv4(),
@@ -160,6 +169,9 @@ export function generateColumns(): CardColumn[] {
         end: CardTaskClass.prototype.end,
         lastMove: -1,
         name: "UST03",
+        projectId: 'A',
+        price: 1000,
+        cardBug: true,
         index: 4,
         id: uuidv4(),
         number: 3,
@@ -187,6 +199,9 @@ export function generateColumns(): CardColumn[] {
         start: CardTaskClass.prototype.start,
         end: CardTaskClass.prototype.end,
         lastMove: -1,
+        projectId: 'A',
+        price: 1000,
+        cardBug: true,
         name: "UST04",
         index: 5,
         id: uuidv4(),
@@ -272,3 +287,15 @@ export function generateColumns(): CardColumn[] {
       }
     ]
   }
+
+function generateProjects(): Project[] {
+  return [
+    {
+      id: 'A',
+      name: 'A',
+      status: ProjectStatus.TO_DO,
+      difficulty: ProjectDifficulty.EASY,
+      price: 250
+    }
+  ]
+}

@@ -8,9 +8,12 @@ export type BooleanResponse = {
 };
 
 export class CardTaskClass {
+  id!: string;
+  price: number = 0;
+  cardBug: boolean = false
+  projectId!: string;
   name!: string;
   index!: number;
-  id!: string;
   number!: number;
   pontuation!: CardTaskPontuation;
   lastMove: number = -1;
