@@ -21,4 +21,8 @@ export const Container = styled.div`
             color: ${base.orange};
         }
     }
+
+    .price {
+        color: ${base.green}
+    }
 `;

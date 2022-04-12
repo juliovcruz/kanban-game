@@ -77,11 +77,6 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
 
     const card = start.column.cards[source.index]
 
-    switch(finish.column.type) {
-      case ActionType.PRODUCT_OWNER: card.start(roundInfo); break;
-      case ActionType.PRODUCTION: card.end(roundInfo); break;
-    }
-
     if(card.roundEnded != null) {
       setError({bool: true, message: 'Não pode voltar de produção'})
       return
@@ -98,6 +93,11 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
     if (!bool.bool) {
       setError({bool: true, message: bool.message})
       return;
+    }
+
+    switch(finish.column.type) {
+      case ActionType.PRODUCT_OWNER: card.start(roundInfo); break;
+      case ActionType.PRODUCTION: card.end(roundInfo); break;
     }
 
     if(finish.index > start.index) card.setLastMove(roundInfo)

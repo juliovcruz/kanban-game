@@ -33,9 +33,14 @@ export class PlayerRoundPoints {
   }
 }
 
+export class PlayerInfo {
+  actualPrice!: number;
+}
+
 export class BoardInfo {
   cardColumns!: CardColumn[];
   employeeColumns!: EmployeeColumn[];
+  playerInfo!: PlayerInfo
 
   newCards(cards: CardTaskClass[]) {
     cards.forEach( (card) => {
@@ -122,11 +127,13 @@ export const App: React.FC<Params> = ({database}) => {
   if(board == undefined) {
     const cardColumns = database.getCardColumns()
     const employeeColumns = database.getEmployeeColumns()
+    const playerInfo = database.getPlayerInfo()
 
-    if(cardColumns != null && employeeColumns != null) {
+    if(cardColumns != null && employeeColumns != null && playerInfo != null) {
       const boardInfo: BoardInfo = {
         cardColumns: cardColumns,
         employeeColumns: employeeColumns,
+        playerInfo: playerInfo,
         newCards: BoardInfo.prototype.newCards,
       }
 
@@ -136,12 +143,16 @@ export const App: React.FC<Params> = ({database}) => {
       const boardInfo = {
         cardColumns: generateColumns(), 
         employeeColumns: generateEmployeeColumns(),
+        playerInfo: {
+          actualPrice: 0
+        },
         newCards: BoardInfo.prototype.newCards
       }
       setBoard(boardInfo)
 
       database.setCardColumns(boardInfo.cardColumns)
       database.setEmployeeColumns(boardInfo.employeeColumns)
+      database.setPlayerInfo(boardInfo.playerInfo)
     }
   }
 
@@ -150,10 +161,13 @@ export const App: React.FC<Params> = ({database}) => {
     newRound.playerRoundPoints.clear();
     newRound.nextRound(board!.employeeColumns);
 
-    if(board != undefined) database.setCardColumns(board.cardColumns)
+    if(board != undefined) {
+      board.playerInfo.actualPrice += getEmployeePrice(board.employeeColumns)
+      setBoard(board)
+      database.setCardColumns(board.cardColumns)
+      database.setPlayerInfo(board.playerInfo)
+    }
     database.setRound(newRound)
-
-    
 
     setRound(newRound);
   };
@@ -190,7 +204,7 @@ export const App: React.FC<Params> = ({database}) => {
 
   return (
     <>
-      <HeaderBoard roundInfo={round!} nextRoundAction={nextRound}></HeaderBoard>
+      <HeaderBoard roundInfo={round!} nextRoundAction={nextRound} playerInfo={board?.playerInfo}></HeaderBoard>
       <EmployeeBoard
         roundInfo={round!}
         paramsColumns={board?.employeeColumns}
@@ -206,4 +220,16 @@ export const App: React.FC<Params> = ({database}) => {
       <GlobalStyle />
     </>
   );
+}
+
+function getEmployeePrice(columns: EmployeeColumn[]) {
+  let price: number = 0
+
+  columns.forEach((column) => {
+    column.employees.forEach((employee) => {
+      price+= employee.price
+    })
+  })
+
+  return price
 }

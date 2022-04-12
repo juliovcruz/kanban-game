@@ -1,4 +1,4 @@
-import { RoundInfo } from "../App";
+import { PlayerInfo, RoundInfo } from "../App";
 import { CardColumn } from "../components/cardBoard";
 import { EmployeeColumn } from "../components/employeeBoard";
 import { CardTaskClass } from "../model/CardTask";
@@ -13,6 +13,9 @@ export interface Database {
 
     getEmployeeColumns(): EmployeeColumn[] | null
     setEmployeeColumns(columns: EmployeeColumn[]): void
+
+    setPlayerInfo(playerInfo: PlayerInfo): void
+    getPlayerInfo(): PlayerInfo | null
 }
 
 

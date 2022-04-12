@@ -52,9 +52,7 @@ export const EmployeeComponent: React.FC<Params> = ({
                     </IconEmployee>
                   ))}
                 </div>
-                <div className="info-round">
-                  {/* <p>{employee.roundStarted != null ? ("S:" + employee.roundStarted) : '' } {employee.roundEnded != null ? ("E:" + employee.roundEnded) : '' }</p> */}
-                </div>
+                <div className="price">${employee.price}</div>
               </div>
             </div>
           </Container>

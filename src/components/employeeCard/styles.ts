@@ -40,6 +40,10 @@ export const Container = styled.div`
       font-weight: bold;
       letter-spacing: 1.5px;
       }
+
+      .price {
+        color: ${base.green}
+      }
     }
 
       p {

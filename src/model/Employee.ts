@@ -7,6 +7,7 @@ export class Employee {
     name!: string
     actions!: ActionType[]
     roundMovedToDeploy: number = 0
+    price!: number
 
     canBeMoveTo(
         destinationType: ActionType,
