@@ -319,7 +319,8 @@ function generateProjects(): Project[] {
       name: 'A',
       status: ProjectStatus.TO_DO,
       difficulty: ProjectDifficulty.EASY,
-      price: 250
+      price: 250,
+      deadLine: 10
     }
   ]
 }

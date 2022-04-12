@@ -4,6 +4,9 @@ export class Project {
     status!: ProjectStatus
     difficulty!: ProjectDifficulty
     price!: number
+    roundStarted?: number
+    roundEnded?: number
+    deadLine!: number
 }
 
 export enum ProjectStatus {

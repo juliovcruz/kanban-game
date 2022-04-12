@@ -26,13 +26,6 @@ export const Container = styled.div<{ color: string }>`
       align-content: center;
       justify-content: center;
 
-      .actions {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-      }
-
       .title {
       min-width: 90px;
       margin: 5px;
@@ -41,8 +34,36 @@ export const Container = styled.div<{ color: string }>`
       letter-spacing: 1.5px;
       }
 
-      .price {
-        color: ${base.green}
+      .info-content {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: center;
+      align-items: center;
+
+        .title {
+        min-width: 90px;
+        margin: 5px;
+        color: ${base.light_purple};
+        font-weight: bold;
+        letter-spacing: 1.5px;
+        }
+      }
+
+      .second-info {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        text-align: center;
+        align-items: center;
+
+        .price {
+          color: ${base.green}
+        }
+
+        .dead-line {
+          color: ${base.red}
+        }
       }
     }
 

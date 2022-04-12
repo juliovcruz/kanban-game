@@ -39,8 +39,16 @@ export const ProjectComponent: React.FC<Params> = ({
           >
             <div className="card-content">
               <div className="card-body">
+                <div className="info-content">
                 <div className="title">{project.name}</div>
-                <div className="price">${project.price}</div>
+                <div className="info-round">
+                    <p>{project.roundStarted != null ? ("S:" + project.roundStarted) : '' } {project.roundEnded != null ? ("E:" + project.roundEnded) : '' }</p>
+                </div>
+                </div>
+                <div className="second-info">
+                  <div className="price">${project.price}</div>
+                  <div className="dead-line">D: {project.deadLine}</div>
+                </div>
               </div>
             </div>
           </Container>

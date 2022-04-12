@@ -177,6 +177,7 @@ export const App: React.FC<Params> = ({database}) => {
       board.playerInfo.lastPrice = board.playerInfo.actualPrice
       board.playerInfo.actualPrice += getEmployeePrice(board.employeeColumns)
       board.playerInfo.actualPrice += getCardPrice(board.cardColumns)
+      board.playerInfo.actualPrice += getProjectPrice(board.projectColumns)
 
       setBoard(board)
       database.setCardColumns(board.cardColumns)
@@ -303,6 +304,18 @@ function getCardPrice(columns: CardColumn[]) {
   columns.forEach((column) => {
     column.cards.forEach((card) => {
       if(card.roundEnded == null) price+= card.price
+    })
+  })
+
+  return price
+}
+
+function getProjectPrice(columns: ProjectColumn[]) {
+  let price: number = 0
+
+  columns.forEach((column) => {
+    column.projects.forEach((card) => {
+      if(card.roundStarted != null && card.roundEnded == null) price+= card.price
     })
   })
 
