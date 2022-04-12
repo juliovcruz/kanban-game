@@ -24,6 +24,7 @@ export class PlayerRoundPoints {
   nextRound(employeeColumns: EmployeeColumn[]) {
     const analysis = employeeColumns.filter((x) => x.type == ActionType.PRODUCT_OWNER)[0].employees.length;
     const develop = employeeColumns.filter((x) => x.type == ActionType.DEVELOPER)[0].employees.length;
+    console.log(develop)
     const test = employeeColumns.filter((x) => x.type == ActionType.QUALITY_ASSURANCE)[0].employees.length;
 
     // Math.floor(Math.random() * (max - min + 1) + min)
@@ -161,11 +162,14 @@ export const App: React.FC<Params> = ({database}) => {
   const nextRound = () => {
     const newRound = Object.assign({}, round);
     newRound.playerRoundPoints.clear();
-    newRound.nextRound(board!.employeeColumns);
+    // TODO: melhorar esse lógica e não consultar do database
+    const employeeColumns = database.getEmployeeColumns()!;
+    newRound.nextRound(employeeColumns != null? employeeColumns: board!.employeeColumns);
 
     if(board != undefined) {
       board.playerInfo.lastPrice = board.playerInfo.actualPrice
-      board.playerInfo.actualPrice += getEmployeePrice(board.employeeColumns)
+      board.playerInfo.actualPrice += getEmployeePrice(employeeColumns)
+
       setBoard(board)
       database.setCardColumns(board.cardColumns)
       database.setPlayerInfo(board.playerInfo)

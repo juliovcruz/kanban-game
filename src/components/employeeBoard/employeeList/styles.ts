@@ -5,12 +5,12 @@ export const Container = styled.div`
     text-align: center;
     display: flex;
     flex-direction: column;
+    align-items: center;
     
-    //background-color: ${props => (props.onDragEnd ? base.purple : base.background_2)};
-
-    justify-content: center;
+    justify-content: flex-start;
 
     padding: 0 10px;
+    min-height: 180px;
     height: 100%;
     min-width: 200px;
 

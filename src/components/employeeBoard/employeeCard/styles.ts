@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { base } from '../../../styles/colors';
 
-export const Container = styled.div`
+export const Container = styled.div<{ color: string }>`
     .card-content {
     background-color: ${base.background_2};
     display: flex;
@@ -15,7 +15,7 @@ export const Container = styled.div`
     width: 100%;
     min-height: 55px;
 
-    border: 1px solid ${base.dark_purple};
+    border: 1px solid  ${({ color }) => (color ? color : base.dark_purple)};
     border-radius: 15px;
 
     cursor: grab;
