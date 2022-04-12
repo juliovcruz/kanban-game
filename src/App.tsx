@@ -3,11 +3,12 @@ import { CardBoard, CardColumn } from "./components/cardBoard";
 import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
-import { generateColumns, generateEmployeeColumns, startRound } from "./data/mock";
+import { generateColumns, generateEmployeeColumns, generateProjectColumns, startRound } from "./data/mock";
 import { Database } from "./data/database";
 import { CardTaskClass } from "./model/CardTask";
 import { v4 as uuidv4 } from "uuid";
 import { EmployeeBoard, EmployeeColumn } from "./components/employeeBoard";
+import { ProjectBoard, ProjectColumn } from "./components/projectBoard";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -42,6 +43,7 @@ export class PlayerInfo {
 export class BoardInfo {
   cardColumns!: CardColumn[];
   employeeColumns!: EmployeeColumn[];
+  projectColumns!: ProjectColumn[];
   playerInfo!: PlayerInfo;
 
   newCards(cards: CardTaskClass[]) {
@@ -129,13 +131,15 @@ export const App: React.FC<Params> = ({database}) => {
   if(board == undefined) {
     const cardColumns = database.getCardColumns()
     const employeeColumns = database.getEmployeeColumns()
+    const projectColumns = database.getProjectColumns()
     const playerInfo = database.getPlayerInfo()
 
-    if(cardColumns != null && employeeColumns != null && playerInfo != null) {
+    if(cardColumns != null && employeeColumns != null && playerInfo != null && projectColumns != null) {
       const boardInfo: BoardInfo = {
         cardColumns: cardColumns,
         employeeColumns: employeeColumns,
         playerInfo: playerInfo,
+        projectColumns: projectColumns,
         newCards: BoardInfo.prototype.newCards,
       }
 
@@ -145,6 +149,7 @@ export const App: React.FC<Params> = ({database}) => {
       const boardInfo = {
         cardColumns: generateColumns(), 
         employeeColumns: generateEmployeeColumns(),
+        projectColumns: generateProjectColumns(),
         playerInfo: {
           lastPrice: 0,
           actualPrice: 0
@@ -156,6 +161,7 @@ export const App: React.FC<Params> = ({database}) => {
       database.setCardColumns(boardInfo.cardColumns)
       database.setEmployeeColumns(boardInfo.employeeColumns)
       database.setPlayerInfo(boardInfo.playerInfo)
+      database.setProjectColumns(boardInfo.projectColumns)
     }
   }
 
@@ -188,6 +194,20 @@ export const App: React.FC<Params> = ({database}) => {
       cardColumns: cardColumns,
       playerInfo: board!.playerInfo,
       employeeColumns: board!.employeeColumns,
+      projectColumns: board!.projectColumns,
+      newCards: BoardInfo.prototype.newCards,
+      }
+    )
+  }
+
+  const updateProjectColumns = (projectColumns: ProjectColumn[]) => {
+    setBoard(
+      {
+      ...board,
+      projectColumns: projectColumns,
+      playerInfo: board!.playerInfo,
+      employeeColumns: board!.employeeColumns,
+      cardColumns: board!.cardColumns,
       newCards: BoardInfo.prototype.newCards,
       }
     )
@@ -200,6 +220,7 @@ export const App: React.FC<Params> = ({database}) => {
       employeeColumns: employeeColumns,
       cardColumns: board!.cardColumns,
       playerInfo: board!.playerInfo,
+      projectColumns: board!.projectColumns,
       newCards: BoardInfo.prototype.newCards,
       }
     )
@@ -238,6 +259,12 @@ export const App: React.FC<Params> = ({database}) => {
   return (
     <>
       <HeaderBoard roundInfo={round!} nextRoundAction={nextRound} playerInfo={board?.playerInfo}></HeaderBoard>
+      <ProjectBoard
+      roundInfo={round!}
+      paramsColumns={board?.projectColumns}
+      updateProjectColumns={updateProjectColumns}
+      database={database}
+      ></ProjectBoard>
       <EmployeeBoard
         roundInfo={round!}
         paramsColumns={board?.employeeColumns}

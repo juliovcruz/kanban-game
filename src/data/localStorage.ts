@@ -1,6 +1,7 @@
 import { PlayerInfo, PlayerRoundPoints, RoundInfo } from "../App";
 import { CardColumn } from "../components/cardBoard";
 import { EmployeeColumn } from "../components/employeeBoard";
+import { ProjectColumn } from "../components/projectBoard";
 import { Database, getCardColumnsAfterParse, getEmployeeColumnsAfterParse } from "./database";
 
 export class LocalStorage implements Database {
@@ -30,6 +31,20 @@ export class LocalStorage implements Database {
   
   setCardColumns(columns: CardColumn[]): void {
     localStorage.setItem("columns", JSON.stringify(columns));
+  }
+
+  getProjectColumns(): ProjectColumn[] | null {
+    const dataColumns = localStorage.getItem("projects");
+
+    if (dataColumns != null) {
+      return JSON.parse(dataColumns)
+    }
+
+    return null;
+  }
+
+  setProjectColumns(columns: ProjectColumn[]): void {
+    localStorage.setItem("projects", JSON.stringify(columns));
   }
 
   getEmployeeColumns(): EmployeeColumn[] | null {

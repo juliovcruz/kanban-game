@@ -6,6 +6,7 @@ import { PlayerRoundPoints, RoundInfo } from "../App";
 import { EmployeeColumn } from "../components/employeeBoard";
 import { Employee } from "../model/Employee";
 import { Project, ProjectDifficulty, ProjectStatus } from "../model/Project";
+import { ProjectColumn } from "../components/projectBoard";
 
 export function startRound(): RoundInfo {
   return {
@@ -287,6 +288,29 @@ export function generateColumns(): CardColumn[] {
       }
     ]
   }
+
+export function generateProjectColumns(): ProjectColumn[] {
+  return [
+    {
+      id: uuidv4(),
+      name: 'Backlog',
+      status: ProjectStatus.TO_DO,
+      projects: generateProjects()
+    },
+    {
+      id: uuidv4(),
+      name: 'Doing',
+      status: ProjectStatus.TO_DO,
+      projects: []
+    },
+    {
+      id: uuidv4(),
+      name: 'Done',
+      status: ProjectStatus.TO_DO,
+      projects: []
+    }
+  ]
+}
 
 function generateProjects(): Project[] {
   return [

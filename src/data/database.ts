@@ -1,6 +1,7 @@
 import { PlayerInfo, RoundInfo } from "../App";
 import { CardColumn } from "../components/cardBoard";
 import { EmployeeColumn } from "../components/employeeBoard";
+import { ProjectColumn } from "../components/projectBoard";
 import { CardTaskClass } from "../model/CardTask";
 import { Employee } from "../model/Employee";
 
@@ -16,6 +17,9 @@ export interface Database {
 
     setPlayerInfo(playerInfo: PlayerInfo): void
     getPlayerInfo(): PlayerInfo | null
+
+    getProjectColumns(): ProjectColumn[] | null
+    setProjectColumns(columns: ProjectColumn[]): void
 }
 
 
