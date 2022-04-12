@@ -20,6 +20,7 @@ export type Params = {
   roundInfo: RoundInfo,
   paramsColumns: EmployeeColumn[] | undefined,
   database: Database,
+  updateEmployeeColumns: (employeeColumns: EmployeeColumn[]) => void
 };
 
 export type EmployeeColumn = {
@@ -29,7 +30,7 @@ export type EmployeeColumn = {
   type: ActionType;
 }
 
-export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database}) => {
+export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateEmployeeColumns}) => {
   const [columns, setColumns] = useState<EmployeeColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
@@ -98,6 +99,7 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
     columns[finish.index] = newFinishColumn;
 
     setColumns([...columns]);
+    updateEmployeeColumns(columns)
     database.setEmployeeColumns(columns)
   };
 

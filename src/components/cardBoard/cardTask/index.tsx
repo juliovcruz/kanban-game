@@ -7,6 +7,7 @@ import { Draggable } from "react-beautiful-dnd";
 import { RoundInfo } from "../../../App";
 import React from "react";
 import { SnackBarAlert } from "../../snackBarAlert/snackBarAlert";
+import { base } from "../../../styles/colors";
 
 export interface Params {
   cardTask: CardTaskClass;
@@ -123,7 +124,7 @@ export const CardTaskComponent: React.FC<Params> = ({
     <>
       <Draggable key={card.id} draggableId={card.id} index={index}>
         {(provided, snapshot) => (
-          <Container
+          <Container color={card.cardBug ? base.red : base.dark_purple}
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -131,6 +132,7 @@ export const CardTaskComponent: React.FC<Params> = ({
             <div className="card-content">
               <div className="card-body">
                 <div className="info-content">
+                  {card.price > 0 ? <div className="price">${card.price}</div> : ''}
                   <div className="title">{card.name}</div>
                   <div className="info-round">
                     <p>{card.roundStarted != null ? ("S:" + card.roundStarted) : '' } {card.roundEnded != null ? ("E:" + card.roundEnded) : '' }</p>

@@ -29,9 +29,10 @@ export type Params = {
   database: Database,
   employeesDeploy: Employee[] | undefined
   usePoint: (type: ActionType) => Boolean,
+  updateCardColumns: (cardColumns: CardColumn[]) => void
 };
 
-export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns, database, employeesDeploy }) => {
+export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns, database, employeesDeploy, updateCardColumns }) => {
   const [columns, setColumns] = useState<CardColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
@@ -114,6 +115,7 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
     columns[finish.index] = newFinishColumn;
 
     setColumns([...columns]);
+    updateCardColumns(columns)
     database.setCardColumns(columns)
   };
 

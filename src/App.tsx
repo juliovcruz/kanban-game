@@ -42,7 +42,7 @@ export class PlayerInfo {
 export class BoardInfo {
   cardColumns!: CardColumn[];
   employeeColumns!: EmployeeColumn[];
-  playerInfo!: PlayerInfo
+  playerInfo!: PlayerInfo;
 
   newCards(cards: CardTaskClass[]) {
     cards.forEach( (card) => {
@@ -163,12 +163,14 @@ export const App: React.FC<Params> = ({database}) => {
     const newRound = Object.assign({}, round);
     newRound.playerRoundPoints.clear();
     // TODO: melhorar esse lógica e não consultar do database
-    const employeeColumns = database.getEmployeeColumns()!;
-    newRound.nextRound(employeeColumns != null? employeeColumns: board!.employeeColumns);
+    // const employeeColumns = database.getEmployeeColumns()!;
+    //const cardColumns = database.getCardColumns()!;
+    newRound.nextRound(board!.employeeColumns);
 
     if(board != undefined) {
       board.playerInfo.lastPrice = board.playerInfo.actualPrice
-      board.playerInfo.actualPrice += getEmployeePrice(employeeColumns)
+      board.playerInfo.actualPrice += getEmployeePrice(board.employeeColumns)
+      board.playerInfo.actualPrice += getCardPrice(board.cardColumns)
 
       setBoard(board)
       database.setCardColumns(board.cardColumns)
@@ -178,6 +180,30 @@ export const App: React.FC<Params> = ({database}) => {
 
     setRound(newRound);
   };
+
+  const updateCardColumns = (cardColumns: CardColumn[]) => {
+    setBoard(
+      {
+      ...board,
+      cardColumns: cardColumns,
+      playerInfo: board!.playerInfo,
+      employeeColumns: board!.employeeColumns,
+      newCards: BoardInfo.prototype.newCards,
+      }
+    )
+  }
+
+  const updateEmployeeColumns = (employeeColumns: EmployeeColumn[]) => {
+    setBoard(
+      {
+      ...board,
+      employeeColumns: employeeColumns,
+      cardColumns: board!.cardColumns,
+      playerInfo: board!.playerInfo,
+      newCards: BoardInfo.prototype.newCards,
+      }
+    )
+  }
 
   const usePoint = (type: ActionType) => {
     const newRound = Object.assign({}, round);
@@ -215,6 +241,7 @@ export const App: React.FC<Params> = ({database}) => {
       <EmployeeBoard
         roundInfo={round!}
         paramsColumns={board?.employeeColumns}
+        updateEmployeeColumns={updateEmployeeColumns}
         database={database}
       ></EmployeeBoard>
       <CardBoard
@@ -222,6 +249,7 @@ export const App: React.FC<Params> = ({database}) => {
         roundInfo={round!}
         usePoint={usePoint}
         paramsColumns={board?.cardColumns}
+        updateCardColumns={updateCardColumns}
         database={database}
       ></CardBoard>
       <GlobalStyle />
@@ -235,6 +263,19 @@ function getEmployeePrice(columns: EmployeeColumn[]) {
   columns.forEach((column) => {
     column.employees.forEach((employee) => {
       price+= employee.price
+    })
+  })
+
+  return price
+}
+
+
+function getCardPrice(columns: CardColumn[]) {
+  let price: number = 0
+
+  columns.forEach((column) => {
+    column.cards.forEach((card) => {
+      if(card.roundEnded == null) price+= card.price
     })
   })
 
