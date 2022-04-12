@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Droppable, DropResult } from "react-beautiful-dnd";
-import { base } from "../../styles/colors";
-import { CardTaskComponent } from "../cardTask";
+import { base } from "../../../styles/colors";
+import { CardTaskComponent } from "../../cardBoard/cardTask";
 import { Container } from "./styles";
-import { CardColumn } from "../cardBoard";
-import { CardTaskClass } from "../../model/CardTask";
-import { ActionType } from "../../model/ActionType";
-import { RoundInfo } from "../../App";
-import { EmployeeColumn } from "../employeeBoard";
-import { Employee } from "../../model/Employee";
+import { CardColumn } from "../../cardBoard";
+import { CardTaskClass } from "../../../model/CardTask";
+import { ActionType } from "../../../model/ActionType";
+import { RoundInfo } from "../../../App";
+import { EmployeeColumn } from "..";
+import { Employee } from "../../../model/Employee";
 import { EmployeeComponent } from "../employeeCard";
 
 export interface Params {

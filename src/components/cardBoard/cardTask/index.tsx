@@ -1,12 +1,12 @@
 import { Container } from "./styles";
-import { CardTaskClass } from "../../model/CardTask";
+import { CardTaskClass } from "../../../model/CardTask";
 import { PontuationComponent } from "./pontuation";
-import { ActionType } from "../../model/ActionType";
+import { ActionType } from "../../../model/ActionType";
 import { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { RoundInfo } from "../../App";
+import { RoundInfo } from "../../../App";
 import React from "react";
-import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
+import { SnackBarAlert } from "../../snackBarAlert/snackBarAlert";
 
 export interface Params {
   cardTask: CardTaskClass;

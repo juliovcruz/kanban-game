@@ -4,8 +4,8 @@ import Rating from '@mui/material/Rating';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { styled } from '@mui/material/styles';
-import { ActionType } from '../../../model/ActionType';
-import { ColorByActionType } from '../../../styles/colors';
+import { ActionType } from '../../../../model/ActionType';
+import { ColorByActionType } from '../../../../styles/colors';
 import { IconPontuation, Container } from './styles';
 
 export interface Params {

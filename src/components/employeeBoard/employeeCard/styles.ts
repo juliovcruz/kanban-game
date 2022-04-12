@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { base } from '../../styles/colors';
+import { base } from '../../../styles/colors';
 
 export const Container = styled.div`
     .card-content {

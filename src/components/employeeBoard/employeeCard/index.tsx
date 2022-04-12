@@ -1,13 +1,13 @@
 import { Container, IconEmployee } from "./styles";
-import { ActionType } from "../../model/ActionType";
+import { ActionType } from "../../../model/ActionType";
 import { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { RoundInfo } from "../../App";
+import { RoundInfo } from "../../../App";
 import React from "react";
-import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
-import { Employee } from "../../model/Employee";
+import { SnackBarAlert } from "../../snackBarAlert/snackBarAlert";
+import { Employee } from "../../../model/Employee";
 import PersonIcon from "@mui/icons-material/Person";
-import { ColorByActionType } from "../../styles/colors";
+import { ColorByActionType } from "../../../styles/colors";
 
 export interface Params {
   paramEmployee: Employee;

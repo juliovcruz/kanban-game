@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Droppable, DropResult } from "react-beautiful-dnd";
-import { base } from "../../styles/colors";
+import { base } from "../../../styles/colors";
 import { CardTaskComponent } from "../cardTask";
 import { Container } from "./styles";
-import { CardColumn } from "../cardBoard";
-import { CardTaskClass } from "../../model/CardTask";
-import { ActionType } from "../../model/ActionType";
-import { RoundInfo } from "../../App";
+import { CardColumn } from "..";
+import { CardTaskClass } from "../../../model/CardTask";
+import { ActionType } from "../../../model/ActionType";
+import { RoundInfo } from "../../../App";
 
 export interface Params {
   column: CardColumn;

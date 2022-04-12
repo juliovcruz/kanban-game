@@ -5,10 +5,10 @@ import { useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
 import { RoundInfo } from "../../App";
-import { ErrorState } from "../cardTask";
+import { ErrorState } from "../cardBoard/cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Employee } from "../../model/Employee";
-import { EmployeeList } from "../employeeList";
+import { EmployeeList } from "./employeeList";
 import { Database } from "../../data/database";
 
 type ColumnIndex = {

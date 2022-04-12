@@ -1,12 +1,12 @@
 import { Container } from "./styles";
-import { CardList } from "../cardList";
+import { CardList } from "./cardList";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { CardTaskClass } from "../../model/CardTask";
 import { useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
 import { RoundInfo } from "../../App";
-import { ErrorState } from "../cardTask";
+import { ErrorState } from "./cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
 import { Employee } from "../../model/Employee";
