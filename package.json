@@ -18,6 +18,7 @@
     "@mui/icons-material": "^5.6.0",
     "@mui/material": "^5.6.0",
     "@types/react-beautiful-dnd": "^13.1.2",
+    "esbuild-linux-32": "^0.14.36",
     "fsevents": "^2.3.2",
     "material-ui-flags": "^1.2.4",
     "module-name": "^0.0.1-security",
@@ -44,6 +45,7 @@
     "vite": "^2.9.0"
   },
   "optionalDependencies": {
+    "esbuild-darwin-64": "^0.14.36",
     "esbuild-linux-32": "^0.14.36",
     "fsevents": "^2.3.2"
   }

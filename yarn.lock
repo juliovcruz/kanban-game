@@ -1161,6 +1161,11 @@
     "is-date-object" "^1.0.1"
     "is-symbol" "^1.0.2"
 
+"esbuild-darwin-64@^0.14.36", "esbuild-darwin-64@0.14.34":
+  "integrity" "sha512-kkl6qmV0dTpyIMKagluzYqlc1vO0ecgpviK/7jwPbRDEv5fejRTaBBEE2KxEQbTHcLhiiDbhG7d5UybZWo/1zQ=="
+  "resolved" "https://registry.npmjs.org/esbuild-darwin-64/-/esbuild-darwin-64-0.14.36.tgz"
+  "version" "0.14.36"
+
 "esbuild-linux-32@^0.14.36", "esbuild-linux-32@0.14.34":
   "integrity" "sha512-Eh9OkyTrEZn9WGO4xkI3OPPpUX7p/3QYvdG0lL4rfr73Ap2HAr6D9lP59VMF64Ex01LhHSXwIsFG/8AQjh6eNw=="
   "resolved" "https://registry.npmjs.org/esbuild-linux-32/-/esbuild-linux-32-0.14.36.tgz"
