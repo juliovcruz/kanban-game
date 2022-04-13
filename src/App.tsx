@@ -130,7 +130,6 @@ export const App: React.FC<Params> = ({database}) => {
 
     if(dataRound != null) {
       setRound(dataRound)
-      return
     } else {
       const roundInfo = startRound()
 
@@ -155,7 +154,6 @@ export const App: React.FC<Params> = ({database}) => {
       }
 
       setBoard(boardInfo)
-      return
     } else {
       const boardInfo = {
         cardColumns: generateColumns(), 
