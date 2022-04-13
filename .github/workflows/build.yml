@@ -15,6 +15,7 @@ jobs:
           node-version: '14.x'
       - name: Build web-app
         run: |
+          npm install
           npm ci
           npm run build
       - name: Deploy to gh-pages
