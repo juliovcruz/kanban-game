@@ -9,6 +9,10 @@ import { CardTaskClass } from "./model/CardTask";
 import { v4 as uuidv4 } from "uuid";
 import { EmployeeBoard, EmployeeColumn } from "./components/employeeBoard";
 import { ProjectBoard, ProjectColumn } from "./components/projectBoard";
+import IconButton from '@material-ui/core/IconButton';
+import FlagBR from './assets/flags/br.svg'
+import FlagUS from './assets/flags/us.svg'
+import { Language } from "./model/Language";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -35,9 +39,16 @@ export class PlayerRoundPoints {
   }
 }
 
+enum PlayerPowerUps {
+  AUTOMATION, // não precisa ninguem no deploy
+  CI_CD, // pode realizar deploy todo dia
+}
+
 export class PlayerInfo {
   lastPrice!: number;
   actualPrice!: number;
+  powerUps: PlayerPowerUps[] = []
+  language: Language = Language.BR
 }
 
 export class BoardInfo {
@@ -152,7 +163,9 @@ export const App: React.FC<Params> = ({database}) => {
         projectColumns: generateProjectColumns(),
         playerInfo: {
           lastPrice: 0,
-          actualPrice: 0
+          actualPrice: 0,
+          powerUps: [],
+          language: Language.BR
         },
         newCards: BoardInfo.prototype.newCards
       }
@@ -177,7 +190,7 @@ export const App: React.FC<Params> = ({database}) => {
       board.playerInfo.lastPrice = board.playerInfo.actualPrice
       board.playerInfo.actualPrice += getEmployeePrice(board.employeeColumns)
       board.playerInfo.actualPrice += getCardPrice(board.cardColumns)
-      board.playerInfo.actualPrice += getProjectPrice(board.projectColumns)
+      board.playerInfo.actualPrice += getProjectPrice(board.projectColumns, newRound)
 
       setBoard(board)
       database.setCardColumns(board.cardColumns)
@@ -221,6 +234,22 @@ export const App: React.FC<Params> = ({database}) => {
       employeeColumns: employeeColumns,
       cardColumns: board!.cardColumns,
       playerInfo: board!.playerInfo,
+      projectColumns: board!.projectColumns,
+      newCards: BoardInfo.prototype.newCards,
+      }
+    )
+  }
+
+  const updateLanguage = (language: Language) => {
+    setBoard(
+      {
+      ...board,
+      employeeColumns: board!.employeeColumns,
+      cardColumns: board!.cardColumns,
+      playerInfo: {
+        ...board!.playerInfo,
+        language: language
+      },
       projectColumns: board!.projectColumns,
       newCards: BoardInfo.prototype.newCards,
       }
@@ -288,6 +317,7 @@ export const App: React.FC<Params> = ({database}) => {
         updateCardColumns={updateCardColumns}
         database={database}
       ></CardBoard>
+      {board!.playerInfo.language == Language.BR? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
       <GlobalStyle />
     </>
   );

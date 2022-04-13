@@ -17,6 +17,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
+import { getText, LanguageText } from "../../model/Language";
 
 export type Params = {
   roundInfo: RoundInfo;
@@ -67,7 +68,7 @@ export const HeaderBoard: React.FC<Params> = ({
         <CountUp
           start={playerInfo?.lastPrice}
           end={playerInfo!.actualPrice}
-          prefix="Custo atual do projeto: $"
+          prefix={getText(LanguageText.COST_TOTAL, playerInfo!.language)}
         />
         {/* <p>Custo atual: ${playerInfo?.actualPrice}</p> */}
       </div>
