@@ -1176,6 +1176,11 @@
   "resolved" "https://registry.yarnpkg.com/esbuild-linux-64/-/esbuild-linux-64-0.14.34.tgz"
   "version" "0.14.34"
 
+"esbuild-linux-arm64@^0.14.36", "esbuild-linux-arm64@0.14.34":
+  "integrity" "sha512-24Vq1M7FdpSmaTYuu1w0Hdhiqkbto1I5Pjyi+4Cdw5fJKGlwQuw+hWynTcRI/cOZxBcBpP21gND7W27gHAiftw=="
+  "resolved" "https://registry.npmjs.org/esbuild-linux-arm64/-/esbuild-linux-arm64-0.14.36.tgz"
+  "version" "0.14.36"
+
 "esbuild@^0.14.27":
   "integrity" "sha512-QIWdPT/gFF6hCaf4m7kP0cJ+JIuFkdHibI7vVFvu3eJS1HpVmYHWDulyN5WXwbRA0SX/7ZDaJ/1DH8SdY9xOJg=="
   "resolved" "https://registry.yarnpkg.com/esbuild/-/esbuild-0.14.34.tgz"
