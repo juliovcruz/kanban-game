@@ -75,7 +75,7 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
       projects: start.column.projects.filter((_, index) => index != source.index),
     };
 
-    const card = start.column.projects[source.index]
+    const project = start.column.projects[source.index]
 
     if(start.index > finish.index) {
       setError({bool: true, message: 'Projeto não pode ser movido para trás'})
@@ -84,24 +84,24 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
 
     switch (finish.column.status) {
       case ProjectStatus.IN_PROGRESS: {
-        card.start(roundInfo, addNewCards)
+        project.start(roundInfo, addNewCards)
         break;
       }
       case ProjectStatus.DONE: {
         const cards = database.getCardColumns()!
 
-        if(!card.canBeDone(cards)) {
+        if(!project.canBeDone(cards)) {
           setError({bool: true, message: 'Projeto não está pronto'})
           return
         }
 
-        card.end(roundInfo, () => console.log('test') )
+        project.end(roundInfo, () => console.log('test') )
         break;
       }
     }
 
     const newFinishCardColumns = finish.column.projects;
-    newFinishCardColumns.splice(destination.index, 0, card);
+    newFinishCardColumns.splice(destination.index, 0, project);
 
     const newFinishColumn = {
       ...finish.column,

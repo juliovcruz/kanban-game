@@ -298,6 +298,18 @@ function generateProjects(): Project[] {
       end: Project.prototype.end,
       generateCards: Project.prototype.generateCards,
       canBeDone: Project.prototype.canBeDone
-    }
+    },
+    {
+      id: uuidv4(),
+      name: 'B',
+      status: ProjectStatus.TO_DO,
+      difficulty: ProjectDifficulty.MEDIUM,
+      price: 250,
+      deadLine: 10,
+      start: Project.prototype.start,
+      end: Project.prototype.end,
+      generateCards: Project.prototype.generateCards,
+      canBeDone: Project.prototype.canBeDone
+    },
   ]
 }
