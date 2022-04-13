@@ -33,6 +33,10 @@ export const Container = styled.div<{ color: string }>`
       }
     }
 
+    p {
+        color: ${base.light_purple};
+      }
+
     .info-content {
       display: flex;
       flex-direction: row;
@@ -47,14 +51,10 @@ export const Container = styled.div<{ color: string }>`
       font-weight: bold;
       letter-spacing: 1.5px;
       }
-
-      p {
-        color: ${base.light_purple};
-      }
-
-      .price {
+    }
+    
+    .price {
         color: ${base.green}
       }
-    }
   }
 `;

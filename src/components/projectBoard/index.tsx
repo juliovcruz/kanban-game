@@ -8,6 +8,8 @@ import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
 import { Project, ProjectStatus } from "../../model/Project";
 import { ProjectList } from "./projectList";
+import { CardTaskClass } from "../../model/CardTask";
+import { CardColumn } from "../cardBoard";
 
 type ColumnIndex = {
   column: ProjectColumn;
@@ -19,6 +21,7 @@ export type Params = {
   paramsColumns: ProjectColumn[] | undefined,
   database: Database,
   updateProjectColumns: (projectColumns: ProjectColumn[]) => void
+  addNewCards: (cards: CardTaskClass[]) => void
 };
 
 export type ProjectColumn = {
@@ -28,7 +31,7 @@ export type ProjectColumn = {
   status: ProjectStatus
 }
 
-export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateProjectColumns}) => {
+export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateProjectColumns, addNewCards}) => {
   const [columns, setColumns] = useState<ProjectColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
@@ -74,7 +77,28 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
 
     const card = start.column.projects[source.index]
 
-    // TODO: VALIDATES
+    if(start.index > finish.index) {
+      setError({bool: true, message: 'Projeto não pode ser movido para trás'})
+      return
+    }
+
+    switch (finish.column.status) {
+      case ProjectStatus.IN_PROGRESS: {
+        card.start(roundInfo, addNewCards)
+        break;
+      }
+      case ProjectStatus.DONE: {
+        const cards = database.getCardColumns()!
+
+        if(!card.canBeDone(cards)) {
+          setError({bool: true, message: 'Projeto não está pronto'})
+          return
+        }
+
+        card.end(roundInfo, () => console.log('test') )
+        break;
+      }
+    }
 
     const newFinishCardColumns = finish.column.projects;
     newFinishCardColumns.splice(destination.index, 0, card);
@@ -121,3 +145,4 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
     </Container>
   );
 };
+ 

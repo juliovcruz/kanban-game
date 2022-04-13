@@ -227,6 +227,13 @@ export const App: React.FC<Params> = ({database}) => {
     )
   }
 
+  const addNewCards = (cards: CardTaskClass[]) => {
+    board?.newCards(cards)
+
+    setBoard(board)
+    database.setCardColumns(board?.cardColumns)
+  }
+
   const usePoint = (type: ActionType) => {
     const newRound = Object.assign({}, round);
     
@@ -264,6 +271,7 @@ export const App: React.FC<Params> = ({database}) => {
       roundInfo={round!}
       paramsColumns={board?.projectColumns}
       updateProjectColumns={updateProjectColumns}
+      addNewCards={addNewCards}
       database={database}
       ></ProjectBoard>
       <EmployeeBoard

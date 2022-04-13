@@ -132,7 +132,7 @@ export const CardTaskComponent: React.FC<Params> = ({
             <div className="card-content">
               <div className="card-body">
                 <div className="info-content">
-                  {card.price > 0 ? <div className="price">${card.price}</div> : ''}
+                  <p>[{card.projectName}]</p>
                   <div className="title">{card.name}</div>
                   <div className="info-round">
                     <p>{card.roundStarted != null ? ("S:" + card.roundStarted) : '' } {card.roundEnded != null ? ("E:" + card.roundEnded) : '' }</p>
@@ -164,6 +164,7 @@ export const CardTaskComponent: React.FC<Params> = ({
                     ></PontuationComponent>
                   </div>
                 </div>
+                {card.price > 0 ? <div className="price">${card.price}</div> : ''}
               </div>
             </div>
           </Container>

@@ -12,6 +12,7 @@ export class CardTaskClass {
   price: number = 0;
   cardBug: boolean = false
   projectId!: string;
+  projectName!: string;
   name!: string;
   index!: number;
   number!: number;

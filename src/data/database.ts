@@ -4,6 +4,7 @@ import { EmployeeColumn } from "../components/employeeBoard";
 import { ProjectColumn } from "../components/projectBoard";
 import { CardTaskClass } from "../model/CardTask";
 import { Employee } from "../model/Employee";
+import { Project } from "../model/Project";
 
 export interface Database {
     getCardColumns(): CardColumn[] | null
@@ -49,7 +50,6 @@ function getEmployeeAfterParse(cards: Employee[]): Employee[] {
   return result;
 }
 
-
 export function getCardColumnsAfterParse(columns: CardColumn[]): CardColumn[] {
     let result: CardColumn[] = [];
   
@@ -82,3 +82,31 @@ export function getCardColumnsAfterParse(columns: CardColumn[]): CardColumn[] {
     return result;
   }
   
+  export function getProjectColumnsAfterParse(columns: ProjectColumn[]): ProjectColumn[] {
+    let result: ProjectColumn[] = [];
+  
+    columns.forEach((val) => {
+      result.push({
+        ...val,
+        projects: getProjectAfterParse(val.projects),
+      });
+    });
+  
+    return result;
+  }
+  
+  function getProjectAfterParse(cards: Project[]): Project[] {
+    let result: Project[] = [];
+  
+    cards.forEach((val) => {
+      result.push({
+        ...val,
+        start: Project.prototype.start,
+        end: Project.prototype.end,
+        generateCards: Project.prototype.generateCards,
+        canBeDone: Project.prototype.canBeDone
+      });
+    });
+  
+    return result;
+  }

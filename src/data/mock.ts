@@ -29,7 +29,7 @@ export function generateColumns(): CardColumn[] {
       {
         id: uuidv4(),
         name: "Backlog",
-        cards: generateCards(),
+        cards: [],
         type: ActionType.BACKLOG,
       },
       {
@@ -53,39 +53,7 @@ export function generateColumns(): CardColumn[] {
       {
         id: uuidv4(),
         name: "Aguardando deploy",
-        cards: [
-          {
-            canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
-            addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
-            addPointDevelop: CardTaskClass.prototype.addPointDevelop,
-            addPointTest: CardTaskClass.prototype.addPointTest,
-            setLastMove: CardTaskClass.prototype.setLastMove,
-            start: CardTaskClass.prototype.start,
-            end: CardTaskClass.prototype.end,
-            projectId: 'A',
-            price: 0,
-            cardBug: false,
-            lastMove: -1,
-            name: "UST03",
-            index: 4,
-            id: uuidv4(),
-            number: 3,
-            pontuation: {
-              analysis: {
-                inserted: 1,
-                needed: 1,
-              },
-              develop: {
-                inserted: 1,
-                needed: 1,
-              },
-              test: {
-                inserted: 1,
-                needed: 1,
-              },
-            },
-          },
-        ],
+        cards: [],
         type: ActionType.DEPLOY,
       },
       {
@@ -97,7 +65,7 @@ export function generateColumns(): CardColumn[] {
     ];
   }
   
-  export function generateCards(): CardTaskClass[] {
+  export function generateCards(project: Project): CardTaskClass[] {
     return [
       {
         canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
@@ -107,7 +75,8 @@ export function generateColumns(): CardColumn[] {
         setLastMove: CardTaskClass.prototype.setLastMove,
         start: CardTaskClass.prototype.start,
         end: CardTaskClass.prototype.end,
-        projectId: 'A',
+        projectId: project.id,
+        projectName: project.name,
         price: 0,
         cardBug: false,
         lastMove: -1,
@@ -138,7 +107,9 @@ export function generateColumns(): CardColumn[] {
         setLastMove: CardTaskClass.prototype.setLastMove,
         start: CardTaskClass.prototype.start,
         end: CardTaskClass.prototype.end,
-        lastMove: -1,projectId: 'A',
+        lastMove: -1,
+        projectId: project.id,
+        projectName: project.name,
         price: 0,
         cardBug: false,
         name: "UST02",
@@ -170,7 +141,8 @@ export function generateColumns(): CardColumn[] {
         end: CardTaskClass.prototype.end,
         lastMove: -1,
         name: "UST03",
-        projectId: 'A',
+        projectId: project.id,
+        projectName: project.name,
         price: 1000,
         cardBug: true,
         index: 4,
@@ -200,7 +172,8 @@ export function generateColumns(): CardColumn[] {
         start: CardTaskClass.prototype.start,
         end: CardTaskClass.prototype.end,
         lastMove: -1,
-        projectId: 'A',
+        projectId: project.id,
+        projectName: project.name,
         price: 1000,
         cardBug: true,
         name: "UST04",
@@ -300,13 +273,13 @@ export function generateProjectColumns(): ProjectColumn[] {
     {
       id: uuidv4(),
       name: 'Doing',
-      status: ProjectStatus.TO_DO,
+      status: ProjectStatus.IN_PROGRESS,
       projects: []
     },
     {
       id: uuidv4(),
       name: 'Done',
-      status: ProjectStatus.TO_DO,
+      status: ProjectStatus.DONE,
       projects: []
     }
   ]
@@ -315,12 +288,16 @@ export function generateProjectColumns(): ProjectColumn[] {
 function generateProjects(): Project[] {
   return [
     {
-      id: 'A',
+      id: uuidv4(),
       name: 'A',
       status: ProjectStatus.TO_DO,
       difficulty: ProjectDifficulty.EASY,
       price: 250,
-      deadLine: 10
+      deadLine: 10,
+      start: Project.prototype.start,
+      end: Project.prototype.end,
+      generateCards: Project.prototype.generateCards,
+      canBeDone: Project.prototype.canBeDone
     }
   ]
 }
