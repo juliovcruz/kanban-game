@@ -154,7 +154,6 @@ export const App: React.FC<Params> = ({database}) => {
       }
 
       setBoard(boardInfo)
-      return
     } else {
       const boardInfo = {
         cardColumns: generateColumns(), 
@@ -316,7 +315,7 @@ export const App: React.FC<Params> = ({database}) => {
         updateCardColumns={updateCardColumns}
         database={database}
       ></CardBoard>
-      {board!.playerInfo.language == Language.BR? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
+      {board?.playerInfo.language == Language.BR? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
       <GlobalStyle />
     </>
   );
