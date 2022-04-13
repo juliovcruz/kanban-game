@@ -231,7 +231,7 @@ export const App: React.FC<Params> = ({database}) => {
     board?.newCards(cards)
 
     setBoard(board)
-    database.setCardColumns(board?.cardColumns)
+    database.setCardColumns(board!.cardColumns)
   }
 
   const usePoint = (type: ActionType) => {
@@ -305,7 +305,6 @@ function getEmployeePrice(columns: EmployeeColumn[]) {
   return price
 }
 
-
 function getCardPrice(columns: CardColumn[]) {
   let price: number = 0
 
@@ -318,12 +317,13 @@ function getCardPrice(columns: CardColumn[]) {
   return price
 }
 
-function getProjectPrice(columns: ProjectColumn[]) {
+function getProjectPrice(columns: ProjectColumn[], roundInfo: RoundInfo) {
   let price: number = 0
 
   columns.forEach((column) => {
-    column.projects.forEach((card) => {
-      if(card.roundStarted != null && card.roundEnded == null) price+= card.price
+    column.projects.forEach((project) => {
+      if(project.roundStarted != null && project.roundEnded == null) price+= project.price
+      if(project.deadLine > roundInfo.number) price+= project.price
     })
   })
 
