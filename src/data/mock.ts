@@ -2,7 +2,7 @@ import { CardColumn } from "../components/cardBoard";
 import { ActionType } from "../model/ActionType";
 import { CardTaskClass } from "../model/CardTask";
 import { v4 as uuidv4 } from "uuid";
-import { PlayerRoundPoints, RoundInfo } from "../App";
+import { PlayerPowerUps, PlayerRoundPoints, RoundInfo } from "../App";
 import { EmployeeColumn } from "../components/employeeBoard";
 import { Employee } from "../model/Employee";
 import { Project, ProjectDifficulty, ProjectStatus } from "../model/Project";
@@ -206,6 +206,7 @@ export function generateColumns(): CardColumn[] {
             canBeMoveTo: Employee.prototype.canBeMoveTo,
             actions: [ActionType.PRODUCT_OWNER],
             id: uuidv4(),
+            mainAction: ActionType.PRODUCT_OWNER,
             name: 'Tali',
             roundMovedToDeploy: 0,
             price: 100
@@ -221,6 +222,7 @@ export function generateColumns(): CardColumn[] {
             canBeMoveTo: Employee.prototype.canBeMoveTo,
             actions: [ActionType.DEVELOPER, ActionType.DEPLOY],
             id: uuidv4(),
+            mainAction: ActionType.DEVELOPER,
             name: 'Dani',
             roundMovedToDeploy: 0,
             price: 100
@@ -230,6 +232,7 @@ export function generateColumns(): CardColumn[] {
             actions: [ActionType.DEVELOPER, ActionType.DEPLOY, ActionType.QUALITY_ASSURANCE],
             id: uuidv4(),
             name: 'Esther',
+            mainAction: ActionType.DEVELOPER,
             roundMovedToDeploy: 0,
             price: 100
           },
@@ -245,6 +248,7 @@ export function generateColumns(): CardColumn[] {
             actions: [ActionType.QUALITY_ASSURANCE],
             id: uuidv4(),
             name: 'Gui',
+            mainAction: ActionType.QUALITY_ASSURANCE,
             roundMovedToDeploy: 0,
             price: 100
           }
@@ -312,4 +316,54 @@ function generateProjects(): Project[] {
       canBeDone: Project.prototype.canBeDone
     },
   ]
+}
+
+export function generateCardPowerUp(powerUp: PlayerPowerUps): CardTaskClass {
+  return {
+    canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+    addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+    addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+    addPointTest: CardTaskClass.prototype.addPointTest,
+    setLastMove: CardTaskClass.prototype.setLastMove,
+    start: CardTaskClass.prototype.start,
+    end: CardTaskClass.prototype.end,
+    lastMove: -1,
+    name: "UST03",
+    projectId: 'P',
+    projectName: 'P',
+    price: 0,
+    cardBug: false,
+    powerUp: powerUp,
+    index: 4,
+    id: uuidv4(),
+    number: 3,
+    pontuation: {
+      analysis: {
+        inserted: 0,
+        needed: 1,
+      },
+      develop: {
+        inserted: 0,
+        needed: 1,
+      },
+      test: {
+        inserted: 0,
+        needed: 1,
+      },
+    },
+  }
+}
+
+export function generateEmployeeByMainAction(action: ActionType): Employee {
+  let name = 'Julin'
+
+  return {
+    canBeMoveTo: Employee.prototype.canBeMoveTo,
+    actions: [action],
+    id: uuidv4(),
+    mainAction: action,
+    name: name,
+    roundMovedToDeploy: 0,
+    price: 100
+  }
 }

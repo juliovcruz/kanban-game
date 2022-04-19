@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { base } from '../../../styles/colors';
 
-export const Container = styled.div<{ color: string }>`
+export const Container = styled.div<{ color: string, titleColor: string }>`
     .card-content {
     background-color: ${base.background_2};
     display: flex;
@@ -36,7 +36,7 @@ export const Container = styled.div<{ color: string }>`
       .title {
       min-width: 90px;
       margin: 5px;
-      color: ${base.light_purple};
+      color: ${({ titleColor }) => (titleColor ? titleColor : base.dark_purple)};
       font-weight: bold;
       letter-spacing: 1.5px;
       }

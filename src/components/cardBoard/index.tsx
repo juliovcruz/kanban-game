@@ -5,7 +5,7 @@ import { CardTaskClass } from "../../model/CardTask";
 import { useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
-import { RoundInfo } from "../../App";
+import { PlayerPowerUps, RoundInfo } from "../../App";
 import { ErrorState } from "./cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
@@ -30,9 +30,12 @@ export type Params = {
   employeesDeploy: Employee[] | undefined
   usePoint: (type: ActionType) => Boolean,
   updateCardColumns: (cardColumns: CardColumn[]) => void
+  finishPowerUp: (powerUp: PlayerPowerUps) => void
 };
 
-export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns, database, employeesDeploy, updateCardColumns }) => {
+export const CardBoard: React.FC<Params> = ({ 
+  roundInfo, usePoint, paramsColumns, database, employeesDeploy, updateCardColumns, finishPowerUp
+}) => {
   const [columns, setColumns] = useState<CardColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
@@ -98,7 +101,11 @@ export const CardBoard: React.FC<Params> = ({ roundInfo, usePoint, paramsColumns
 
     switch(finish.column.type) {
       case ActionType.PRODUCT_OWNER: card.start(roundInfo); break;
-      case ActionType.PRODUCTION: card.end(roundInfo); break;
+      case ActionType.PRODUCTION: {
+        if(card.powerUp != null) finishPowerUp(card.powerUp)
+        card.end(roundInfo)
+        break
+      }
     }
 
     if(finish.index > start.index) card.setLastMove(roundInfo)
