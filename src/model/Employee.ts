@@ -5,6 +5,7 @@ import { BooleanResponse } from "./CardTask";
 export class Employee {
     id!: string
     name!: string
+    mainAction!: ActionType
     actions!: ActionType[]
     roundMovedToDeploy: number = 0
     price!: number

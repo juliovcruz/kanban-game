@@ -1,4 +1,4 @@
-import { RoundInfo } from "../App";
+import { PlayerPowerUps, RoundInfo } from "../App";
 import { ActionType } from "./ActionType";
 import { Employee } from "./Employee";
 
@@ -20,6 +20,7 @@ export class CardTaskClass {
   lastMove: number = -1;
   roundStarted?: number;
   roundEnded?: number;
+  powerUp?: PlayerPowerUps
 
   setLastMove(roundInfo: RoundInfo) {
     this.lastMove = roundInfo.number

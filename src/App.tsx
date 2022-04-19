@@ -3,7 +3,7 @@ import { CardBoard, CardColumn } from "./components/cardBoard";
 import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
-import { generateColumns, generateEmployeeColumns, generateProjectColumns, startRound } from "./data/mock";
+import { generateCardPowerUp, generateColumns, generateEmployeeByMainAction, generateEmployeeColumns, generateProjectColumns, startRound } from "./data/mock";
 import { Database } from "./data/database";
 import { CardTaskClass } from "./model/CardTask";
 import { v4 as uuidv4 } from "uuid";
@@ -13,6 +13,7 @@ import IconButton from '@material-ui/core/IconButton';
 import FlagBR from './assets/flags/br.svg'
 import FlagUS from './assets/flags/us.svg'
 import { Language } from "./model/Language";
+import { getPriceByPowerUp } from "./components/shopDrawer";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -39,16 +40,25 @@ export class PlayerRoundPoints {
   }
 }
 
-enum PlayerPowerUps {
+export enum PlayerPowerUps {
   AUTOMATION, // não precisa ninguem no deploy
   CI_CD, // pode realizar deploy todo dia
+  NEW_DEV,
+  NEW_PO,
+  NEW_QA,
+  TRAIN_DEV_TO_ACTION_PO,
+  TRAIN_DEV_TO_ACTION_QA,
+  TRAIN_PO_TO_ACTION_QA,
+  TRAIN_QA_TO_ACTION_PO,
+  TRAIN_QA_TO_ACTION_DEV
 }
 
-export class PlayerInfo {
-  lastPrice!: number;
-  actualPrice!: number;
-  powerUps: PlayerPowerUps[] = []
-  language: Language = Language.BR
+export type PlayerInfo = {
+  lastPrice: number;
+  actualPrice: number;
+  powerUps: PlayerPowerUps[]
+  language: Language
+  lastBuy: number
 }
 
 export class BoardInfo {
@@ -61,6 +71,13 @@ export class BoardInfo {
     cards.forEach( (card) => {
       this.cardColumns[0].cards.push(card)
     })
+  }
+
+  buyPowerUp(roundInfo: RoundInfo) {
+    this.playerInfo =  {
+      ...this.playerInfo,
+      lastBuy: roundInfo.number
+    }
   }
 }
 
@@ -122,39 +139,38 @@ export type Params = {
 }
 
 export const App: React.FC<Params> = ({database}) => {
-  const [round, setRound] = useState<RoundInfo>();
-  const [board, setBoard] = useState<BoardInfo>();
+  const [round, setRound] = useState<RoundInfo>(startStateRound());
+  const [board, setBoard] = useState<BoardInfo>(startBoard());
 
-  if ( round == undefined) {
+  function startStateRound(): RoundInfo {
     const dataRound = database.getRound()
 
     if(dataRound != null) {
-      setRound(dataRound)
+      return dataRound
     } else {
       const roundInfo = startRound()
 
-      setRound(roundInfo)
       database.setRound(roundInfo)
+
+      return roundInfo
     }
   }
 
-  if(board == undefined) {
+  function startBoard(): BoardInfo {
     const cardColumns = database.getCardColumns()
     const employeeColumns = database.getEmployeeColumns()
     const projectColumns = database.getProjectColumns()
     const playerInfo = database.getPlayerInfo()
 
     if(cardColumns != null && employeeColumns != null && playerInfo != null && projectColumns != null) {
-      const boardInfo: BoardInfo = {
+      return {
         cardColumns: cardColumns,
         employeeColumns: employeeColumns,
         playerInfo: playerInfo,
         projectColumns: projectColumns,
         newCards: BoardInfo.prototype.newCards,
+        buyPowerUp: BoardInfo.prototype.buyPowerUp
       }
-
-      setBoard(boardInfo)
-      return
     } else {
       const boardInfo = {
         cardColumns: generateColumns(), 
@@ -164,16 +180,19 @@ export const App: React.FC<Params> = ({database}) => {
           lastPrice: 0,
           actualPrice: 0,
           powerUps: [],
-          language: Language.BR
+          language: Language.BR,
+          lastBuy: 0
         },
-        newCards: BoardInfo.prototype.newCards
+        newCards: BoardInfo.prototype.newCards,
+        buyPowerUp: BoardInfo.prototype.buyPowerUp,
       }
-      setBoard(boardInfo)
 
       database.setCardColumns(boardInfo.cardColumns)
       database.setEmployeeColumns(boardInfo.employeeColumns)
       database.setPlayerInfo(boardInfo.playerInfo)
       database.setProjectColumns(boardInfo.projectColumns)
+
+      return boardInfo
     }
   }
 
@@ -209,6 +228,7 @@ export const App: React.FC<Params> = ({database}) => {
       employeeColumns: board!.employeeColumns,
       projectColumns: board!.projectColumns,
       newCards: BoardInfo.prototype.newCards,
+      buyPowerUp: BoardInfo.prototype.buyPowerUp,
       }
     )
   }
@@ -222,6 +242,7 @@ export const App: React.FC<Params> = ({database}) => {
       employeeColumns: board!.employeeColumns,
       cardColumns: board!.cardColumns,
       newCards: BoardInfo.prototype.newCards,
+      buyPowerUp: BoardInfo.prototype.buyPowerUp,
       }
     )
   }
@@ -235,6 +256,7 @@ export const App: React.FC<Params> = ({database}) => {
       playerInfo: board!.playerInfo,
       projectColumns: board!.projectColumns,
       newCards: BoardInfo.prototype.newCards,
+      buyPowerUp: BoardInfo.prototype.buyPowerUp,
       }
     )
   }
@@ -251,12 +273,13 @@ export const App: React.FC<Params> = ({database}) => {
       },
       projectColumns: board!.projectColumns,
       newCards: BoardInfo.prototype.newCards,
+      buyPowerUp: BoardInfo.prototype.buyPowerUp,
       }
     )
   }
 
   const addNewCards = (cards: CardTaskClass[]) => {
-    board?.newCards(cards)
+    board!.newCards(cards)
 
     setBoard(board)
     database.setCardColumns(board!.cardColumns)
@@ -292,9 +315,70 @@ export const App: React.FC<Params> = ({database}) => {
     return true;
   };
 
+  const finishPowerUp = (powerUp: PlayerPowerUps) => {
+    switch (powerUp) {
+      case PlayerPowerUps.NEW_DEV: {
+        const columns = board!.employeeColumns
+        const newDevColumn = board!.employeeColumns[1].employees
+        newDevColumn.push(generateEmployeeByMainAction(ActionType.DEVELOPER))
+        columns[1].employees = newDevColumn
+  
+        board!.buyPowerUp(round!)
+
+        setBoard(
+          {
+            ...board,
+            employeeColumns: columns,
+            cardColumns: board!.cardColumns,
+            playerInfo: board!.playerInfo,
+            projectColumns: board!.projectColumns,
+            newCards: BoardInfo.prototype.newCards,
+            buyPowerUp: BoardInfo.prototype.buyPowerUp,
+            }
+        )
+      }
+    }
+  }
+
+  const newPowerUp = (powerUp: PlayerPowerUps) => {
+    if(board!.playerInfo.lastBuy == round!.number) {
+      return
+    }
+
+    board!.playerInfo.lastPrice = board!.playerInfo.actualPrice
+    board!.playerInfo.actualPrice += getPriceByPowerUp(powerUp)
+
+    if(powerUp == PlayerPowerUps.NEW_DEV) {
+      const columns = board!.cardColumns
+      const newBacklogColumn = board!.cardColumns[0].cards
+      newBacklogColumn.push(generateCardPowerUp(powerUp))
+      columns[0].cards = newBacklogColumn
+
+      board?.buyPowerUp(round!)
+      
+      setBoard(
+        {
+          ...board,
+          cardColumns: columns,
+          playerInfo: board!.playerInfo,
+          employeeColumns: board!.employeeColumns,
+          projectColumns: board!.projectColumns,
+          newCards: BoardInfo.prototype.newCards,
+          buyPowerUp: BoardInfo.prototype.buyPowerUp,
+          }
+      )
+
+      database.setCardColumns(board!.cardColumns)
+    }
+  }
+
   return (
     <>
-      <HeaderBoard roundInfo={round!} nextRoundAction={nextRound} playerInfo={board?.playerInfo}></HeaderBoard>
+      <HeaderBoard 
+      roundInfo={round!} 
+      nextRoundAction={nextRound} 
+      playerInfo={board!.playerInfo}
+      newPowerUp={newPowerUp}></HeaderBoard>
       <ProjectBoard
       roundInfo={round!}
       paramsColumns={board?.projectColumns}
@@ -315,8 +399,9 @@ export const App: React.FC<Params> = ({database}) => {
         paramsColumns={board?.cardColumns}
         updateCardColumns={updateCardColumns}
         database={database}
+        finishPowerUp={finishPowerUp}
       ></CardBoard>
-      {board!.playerInfo.language == Language.BR? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
+      {board!.playerInfo.language == Language.BR ? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
       <GlobalStyle />
     </>
   );

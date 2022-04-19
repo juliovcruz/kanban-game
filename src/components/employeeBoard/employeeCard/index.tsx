@@ -34,7 +34,7 @@ export const EmployeeComponent: React.FC<Params> = ({
     <>
       <Draggable key={employee.id} draggableId={employee.id} index={index}>
         {(provided, snapshot) => (
-          <Container color={ColorByActionType(actualColumnType)}
+          <Container color={ColorByActionType(actualColumnType)} titleColor={ColorByActionType(employee.mainAction)}
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}

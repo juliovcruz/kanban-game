@@ -5,9 +5,9 @@
   "homepage": "https://juliovcruz.github.io/kanban-game",
   "scripts": {
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
+    "deploy": "gh-pages -b main -d build",
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "@material-ui/icons": "^4.11.3",
     "@mui/icons-material": "^5.6.0",
     "@mui/material": "^5.6.0",
+    "@mui/styles": "^5.6.1",
     "@types/react-beautiful-dnd": "^13.1.2",
     "esbuild-android-arm64": "^0.14.36",
     "esbuild-darwin-64": "^0.14.36",

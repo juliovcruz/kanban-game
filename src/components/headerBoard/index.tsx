@@ -7,7 +7,7 @@ import { styled } from "@mui/material/styles";
 import { purple } from "@mui/material/colors";
 import WarningIcon from "@mui/icons-material/Warning";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import { PlayerInfo, RoundInfo } from "../../App";
+import { PlayerInfo, PlayerPowerUps, RoundInfo } from "../../App";
 import CountUp from "react-countup";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -18,17 +18,20 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { getText, LanguageText } from "../../model/Language";
+import { ShopDrawer } from "../shopDrawer";
 
 export type Params = {
   roundInfo: RoundInfo;
   playerInfo: PlayerInfo | undefined;
   nextRoundAction: () => void;
+  newPowerUp: (powerUp: PlayerPowerUps) => void;
 };
 
 export const HeaderBoard: React.FC<Params> = ({
   roundInfo,
   nextRoundAction,
   playerInfo,
+  newPowerUp
 }) => {
   const [drawer, setDrawer] = useState<boolean>();
 
@@ -86,23 +89,15 @@ export const HeaderBoard: React.FC<Params> = ({
       >
         PRÓXIMA RODADA
       </ColorButton>
-      <SwipeableDrawer
-        anchor={"right"}
-        open={drawer!}
-        onClose={() => setDrawer(false)}
-        onOpen={() => setDrawer(true)}
+      <ShopDrawer 
+            open={drawer!}
+            onClose={() => setDrawer(false)}
+            onOpen={() => setDrawer(true)}
+            roundInfo={roundInfo}
+            playerInfo={playerInfo}
+            newPowerUp={newPowerUp}
       >
-        <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List>
-      </SwipeableDrawer>
+      </ShopDrawer>
     </Container>
   );
 };
