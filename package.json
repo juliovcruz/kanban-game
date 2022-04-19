@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "homepage": "https://juliovcruz.github.io/kanban-game",
   "scripts": {
-    "predeploy": "npm run build",
+    "predeploy": "vite build",
     "deploy": "gh-pages -b main -d dist",
     "dev": "vite",
     "build": "vite build",
