@@ -2,23 +2,20 @@ import { Container } from "./styles";
 import { useState } from "react";
 import Button, { ButtonProps } from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
-import { base } from "../../styles/colors";
+import { base, ColorByActionType } from "../../styles/colors";
 import { styled } from "@mui/material/styles";
 import { purple } from "@mui/material/colors";
 import WarningIcon from "@mui/icons-material/Warning";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import { PlayerInfo, PlayerPowerUps, RoundInfo } from "../../App";
+import { Day, PlayerInfo, PlayerPowerUps, RoundInfo } from "../../App";
 import CountUp from "react-countup";
-import Box from "@mui/material/Box";
-import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import { getText, LanguageText } from "../../model/Language";
+import { getText, Language, LanguageText } from "../../model/Language";
 import { ShopDrawer } from "../shopDrawer";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { IconPontuation } from "../cardBoard/cardTask/pontuation/styles";
+import { PontuationComponent } from "../cardBoard/cardTask/pontuation";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import { ActionType } from "../../model/ActionType";
 
 export type Params = {
   roundInfo: RoundInfo;
@@ -46,17 +43,43 @@ export const HeaderBoard: React.FC<Params> = ({
   return (
     <Container>
       <h1>Kanban Game</h1>
-      <div>
-        <p>Analise: {roundInfo.playerRoundPoints.analysis}</p>
-        <p>Develop: {roundInfo.playerRoundPoints.develop}</p>
-        <p>Test: {roundInfo.playerRoundPoints.test}</p>
-      </div>
+      <div className="pontuations">
+                  <div className="analysis-points">
+                    <PontuationComponent
+                      onlyActual={true}
+                      actual={roundInfo.playerRoundPoints.analysis}
+                      needed={roundInfo.playerRoundPoints.analysis}
+                      onChange={() => {}}
+                      actionType={ActionType.PRODUCT_OWNER}
+                    ></PontuationComponent>
+                  </div>
+                  <div className="dev-points">
+                    <PontuationComponent
+                      onlyActual={true}
+                      actual={roundInfo.playerRoundPoints.develop}
+                      needed={roundInfo.playerRoundPoints.develop}
+                      onChange={() => {}}
+                      actionType={ActionType.DEVELOPER}
+                    ></PontuationComponent>
+                  </div>
+                  <div className="test-points">
+                    <PontuationComponent
+                      onlyActual={true}
+                      actual={roundInfo.playerRoundPoints.test}
+                      needed={roundInfo.playerRoundPoints.test}
+                      onChange={() => {}}
+                      actionType={ActionType.QUALITY_ASSURANCE}
+                    ></PontuationComponent>
+                  </div>
+                </div>
+        {/* <p>Develop: {roundInfo.playerRoundPoints.develop}</p>
+        <p>Test: {roundInfo.playerRoundPoints.test}</p> */}
       <div className="info-round">
         <h1>RODADA {roundInfo.number}</h1>
       </div>
       <div className="info-content">
-        <h2>{roundInfo.getDayName()}</h2>
-        {roundInfo.todayCanBeDeploy() ? (
+        <h2>{roundInfo.number > 0 ? getTextByDay(roundInfo.day, playerInfo!.language): ""}</h2>
+        {roundInfo.todayCanBeDeploy() && !playerInfo!.powerUps.some(e => e === PlayerPowerUps.CI_CD) ? (
           <div className="info-content-warning">
             <h3>
               <WarningIcon fontSize={"small"}></WarningIcon> Dia de deploy{" "}
@@ -75,13 +98,13 @@ export const HeaderBoard: React.FC<Params> = ({
         />
         {/* <p>Custo atual: ${playerInfo?.actualPrice}</p> */}
       </div>
-      <ColorButton
+      {roundInfo.day == Day.FRIDAY? <ColorButton
         variant="contained"
-        endIcon={<SendIcon />}
+        endIcon={<ShoppingCartIcon />}
         onClick={() => setDrawer(true)}
       >
         LOJA
-      </ColorButton>
+      </ColorButton> : ""}
       <ColorButton
         variant="contained"
         endIcon={<SendIcon />}
@@ -101,3 +124,15 @@ export const HeaderBoard: React.FC<Params> = ({
     </Container>
   );
 };
+
+function getTextByDay(day: Day, language: Language): string {
+  const map = new Map<Day, LanguageText>([
+    [Day.MONDAY,   LanguageText.MONDAY],
+    [Day.TUESDAY,    LanguageText.TUESDAY],
+    [Day.WEDNESDAY,   LanguageText.WEDNESDAY],
+    [Day.THURSDAY,   LanguageText.THURSDAY],
+    [Day.FRIDAY,   LanguageText.FRIDAY],
+]);
+
+  return getText(map.get(day)!, language)
+}

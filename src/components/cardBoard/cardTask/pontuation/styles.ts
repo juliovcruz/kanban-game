@@ -1,11 +1,14 @@
 import styled from "styled-components";
 import { base } from "../../../../styles/colors";
 
-export const Container = styled.div`
+export const Container = styled.div<{ color: string}>`
     cursor: pointer;
 
-    p {
-      color: ${base.white}
+    .pontuation {
+      p {
+        color: ${({ color }) => (color ? color : base.white)};
+        text-align: center;
+      }
     }
 `;
 

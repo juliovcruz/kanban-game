@@ -4,7 +4,7 @@ import { CardTaskClass } from "../../model/CardTask";
 import { useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
-import { RoundInfo } from "../../App";
+import { PlayerInfo, RoundInfo } from "../../App";
 import { ErrorState } from "../cardBoard/cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Employee } from "../../model/Employee";
@@ -20,6 +20,7 @@ export type Params = {
   roundInfo: RoundInfo,
   paramsColumns: EmployeeColumn[] | undefined,
   database: Database,
+  playerInfo: PlayerInfo,
   updateEmployeeColumns: (employeeColumns: EmployeeColumn[]) => void
 };
 
@@ -30,7 +31,7 @@ export type EmployeeColumn = {
   type: ActionType;
 }
 
-export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateEmployeeColumns}) => {
+export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateEmployeeColumns, playerInfo}) => {
   const [columns, setColumns] = useState<EmployeeColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
@@ -111,12 +112,12 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
     };
   }
 
-
   return (
     <Container>
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
           <EmployeeList
+            playerInfo={playerInfo}
             column={item}
             roundInfo={roundInfo}
           ></EmployeeList>

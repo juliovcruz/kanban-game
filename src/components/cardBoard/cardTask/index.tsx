@@ -141,6 +141,7 @@ export const CardTaskComponent: React.FC<Params> = ({
                 <div className="pontuations">
                   <div className="analysis-points">
                     <PontuationComponent
+                      onlyActual={false}
                       actual={card.pontuation.analysis.inserted}
                       needed={card.pontuation.analysis.needed}
                       onChange={addAnalysis}
@@ -149,6 +150,7 @@ export const CardTaskComponent: React.FC<Params> = ({
                   </div>
                   <div className="dev-points">
                     <PontuationComponent
+                      onlyActual={false}
                       actual={card.pontuation.develop.inserted}
                       needed={card.pontuation.develop.needed}
                       onChange={addDeveloper}
@@ -157,6 +159,7 @@ export const CardTaskComponent: React.FC<Params> = ({
                   </div>
                   <div className="test-points">
                     <PontuationComponent
+                      onlyActual={false}
                       actual={card.pontuation.test.inserted}
                       needed={card.pontuation.test.needed}
                       onChange={addTest}

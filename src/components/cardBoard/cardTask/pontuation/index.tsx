@@ -11,6 +11,7 @@ import { IconPontuation, Container } from './styles';
 export interface Params {
     needed: number,
     actual: number,
+    onlyActual: boolean,
     actionType: ActionType,
     onChange: () => void
 }
@@ -19,12 +20,13 @@ export const PontuationComponent: React.FC<Params> = ({
   needed,
   actual,
   onChange,
-  actionType
+  actionType,
+  onlyActual
 }) => {
     return (
-      <Container onClick={onChange}>
+      <Container onClick={onChange} color={ColorByActionType(actionType)}>
       <div className='pontuation'>
-        <p>{actual}/{needed}</p>
+        {onlyActual? <p>{actual}</p>: <p>{actual}/{needed}</p>}
         <div className='icon'>
         <IconPontuation color={ColorByActionType(actionType)} visible={actual==needed}>
           <FavoriteIcon></FavoriteIcon>

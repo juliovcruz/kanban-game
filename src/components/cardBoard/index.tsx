@@ -5,7 +5,7 @@ import { CardTaskClass } from "../../model/CardTask";
 import { useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
-import { PlayerPowerUps, RoundInfo } from "../../App";
+import { PlayerInfo, PlayerPowerUps, RoundInfo } from "../../App";
 import { ErrorState } from "./cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
@@ -27,14 +27,15 @@ export type Params = {
   roundInfo: RoundInfo,
   paramsColumns: CardColumn[] | undefined,
   database: Database,
-  employeesDeploy: Employee[] | undefined
+  employeesDeploy: Employee[] | undefined,
+  playerInfo: PlayerInfo,
   usePoint: (type: ActionType) => Boolean,
   updateCardColumns: (cardColumns: CardColumn[]) => void
   finishPowerUp: (powerUp: PlayerPowerUps) => void
 };
 
 export const CardBoard: React.FC<Params> = ({ 
-  roundInfo, usePoint, paramsColumns, database, employeesDeploy, updateCardColumns, finishPowerUp
+  roundInfo, usePoint, paramsColumns, database, employeesDeploy, updateCardColumns, finishPowerUp, playerInfo
 }) => {
   const [columns, setColumns] = useState<CardColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
@@ -91,7 +92,8 @@ export const CardBoard: React.FC<Params> = ({
       start.column.type,
       roundInfo.todayCanBeDeploy(),
       employeesDeploy,
-      roundInfo
+      roundInfo,
+      playerInfo
     )
 
     if (!bool.bool) {

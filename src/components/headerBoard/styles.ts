@@ -25,4 +25,9 @@ export const Container = styled.div`
     .price {
         color: ${base.green}
     }
+
+    .pontuations {
+        display: flex;
+        flex-direction: row;
+    }
 `;

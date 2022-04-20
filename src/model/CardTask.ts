@@ -1,4 +1,4 @@
-import { PlayerPowerUps, RoundInfo } from "../App";
+import { PlayerInfo, PlayerPowerUps, RoundInfo } from "../App";
 import { ActionType } from "./ActionType";
 import { Employee } from "./Employee";
 
@@ -41,7 +41,8 @@ export class CardTaskClass {
     actualColumnType: ActionType,
     deployDay: Boolean,
     employeesDeploy: Employee[] | undefined,
-    roundInfo: RoundInfo
+    roundInfo: RoundInfo,
+    playerInfo: PlayerInfo
   ): BooleanResponse {
     switch (destinationType) {
       case ActionType.BACKLOG:
@@ -64,6 +65,14 @@ export class CardTaskClass {
           message: 'Não é possível mover para deploy.'
         };
       case ActionType.PRODUCTION:
+        if(playerInfo.powerUps.some(e => e === PlayerPowerUps.AUTOMATION) && deployDay) {
+          return { bool: true }
+        }
+
+        if(playerInfo.powerUps.some(e => e === PlayerPowerUps.CI_CD)) {
+          return { bool: true }
+        }
+
         if(employeesDeploy == undefined || !ifCanBeDeploy(employeesDeploy, roundInfo.number)) {
           console.log('here')
           return { 

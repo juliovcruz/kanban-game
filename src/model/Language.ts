@@ -15,7 +15,12 @@ export enum LanguageText {
     POWER_UP_TRAIN_PO_TO_ACTION_QA,
     POWER_UP_TRAIN_PO_TO_ACTION_DEV,
     POWER_UP_TRAIN_QA_TO_ACTION_PO,
-    POWER_UP_TRAIN_QA_TO_ACTION_DEV
+    POWER_UP_TRAIN_QA_TO_ACTION_DEV,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY
 }
 
 export type LanguageResult = {
@@ -36,6 +41,11 @@ const textMap = new Map<LanguageText, LanguageResult>([
     [LanguageText.POWER_UP_TRAIN_PO_TO_ACTION_DEV, {br: 'Treinar PO como DEV', en: 'Train PO like DEV'}],
     [LanguageText.POWER_UP_TRAIN_QA_TO_ACTION_PO, {br: 'Treinar QA como PO', en: 'Train QA like PO'}],
     [LanguageText.POWER_UP_TRAIN_QA_TO_ACTION_DEV, {br: 'Treinar QA como DEV', en: 'Train QA like DEV'}],
+    [LanguageText.MONDAY, {br: 'Segunda-feira', en: 'Monday'}],
+    [LanguageText.TUESDAY, {br: 'Terça-feira', en: 'Tuesday'}],
+    [LanguageText.WEDNESDAY, {br: 'Quarta-feira', en: 'Wednesday'}],
+    [LanguageText.THURSDAY, {br: 'Quinta-feira', en: 'Thursday'}],
+    [LanguageText.FRIDAY, {br: 'Sexta-feira', en: 'Friday'}],
 ]);
 
 export function getText(text: LanguageText, language: Language): string {

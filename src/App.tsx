@@ -82,51 +82,32 @@ export class BoardInfo {
   }
 }
 
+export enum Day {
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY
+}
+
 export class RoundInfo {
   number!: number;
   playerRoundPoints!: PlayerRoundPoints;
+  day!: Day;
 
   nextRound(employeeColumns: EmployeeColumn[]) {
+    
+    if(this.day == Day.FRIDAY || this.number == 0) this.day = Day.MONDAY
+    else this.day++;
+
+    console.log(Day[this.day])
+
     this.number++;
     this.playerRoundPoints.nextRound(employeeColumns);
   }
 
-  getDayName(): string {
-    if (this.number == 0) {
-      return "";
-    }
-
-    switch (this.number % 10) {
-      case 0:
-        return "Sexta-Feira";
-      case 1:
-        return "Segunda-Feira";
-      case 2:
-        return "Terça-Feira";
-      case 3:
-        return "Quarta-Feira";
-      case 4:
-        return "Quinta-Feira";
-      case 5:
-        return "Sexta-Feira";
-      case 6:
-        return "Segunda-Feira";
-      case 7:
-        return "Terça-Feira";
-      case 8:
-        return "Quarta-Feira";
-      case 9:
-        return "Quinta-Feira";
-      case 10:
-        return "Sexta-Feira";
-    }
-    return "";
-  }
-
   todayCanBeDeploy(): Boolean {
-    const day = this.number % 10;
-    if (day == 2 || day == 4 || day == 7 || day == 10) return true;
-    return false;
+    return this.day == Day.TUESDAY || this.day == Day.THURSDAY
   }
 }
 
@@ -318,6 +299,27 @@ export const App: React.FC<Params> = ({database}) => {
 
   const finishPowerUp = (powerUp: PlayerPowerUps) => {
     switch (powerUp) {
+      case PlayerPowerUps.AUTOMATION: 
+      case PlayerPowerUps.CI_CD: {
+        const playerInfo = board!.playerInfo
+
+        playerInfo.powerUps.push(powerUp)
+
+        setBoard(
+          {
+            ...board,
+            playerInfo: playerInfo,
+            employeeColumns: board!.employeeColumns,
+            cardColumns: board!.cardColumns,
+            projectColumns: board!.projectColumns,
+            newCards: BoardInfo.prototype.newCards,
+            buyPowerUp: BoardInfo.prototype.buyPowerUp,
+            }
+        )
+
+        database.setPlayerInfo(playerInfo)
+        break;
+      }
       case PlayerPowerUps.NEW_DEV: 
       case PlayerPowerUps.NEW_PO: 
       case PlayerPowerUps.NEW_QA: {
@@ -395,7 +397,7 @@ export const App: React.FC<Params> = ({database}) => {
             buyPowerUp: BoardInfo.prototype.buyPowerUp,
             }
         )
-        
+
         database.setEmployeeColumns(columns)
         break;
       }
@@ -451,6 +453,7 @@ export const App: React.FC<Params> = ({database}) => {
         paramsColumns={board?.employeeColumns}
         updateEmployeeColumns={updateEmployeeColumns}
         database={database}
+        playerInfo={board!.playerInfo}
       ></EmployeeBoard>
       <CardBoard
         employeesDeploy={board?.employeeColumns[3].employees}
@@ -460,6 +463,7 @@ export const App: React.FC<Params> = ({database}) => {
         updateCardColumns={updateCardColumns}
         database={database}
         finishPowerUp={finishPowerUp}
+        playerInfo={board!.playerInfo}
       ></CardBoard>
       {board!.playerInfo.language == Language.BR ? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
       <GlobalStyle />

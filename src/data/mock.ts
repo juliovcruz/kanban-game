@@ -2,7 +2,7 @@ import { CardColumn } from "../components/cardBoard";
 import { ActionType } from "../model/ActionType";
 import { CardTaskClass } from "../model/CardTask";
 import { v4 as uuidv4 } from "uuid";
-import { PlayerPowerUps, PlayerRoundPoints, RoundInfo } from "../App";
+import { Day, PlayerPowerUps, PlayerRoundPoints, RoundInfo } from "../App";
 import { EmployeeColumn } from "../components/employeeBoard";
 import { Employee } from "../model/Employee";
 import { Project, ProjectDifficulty, ProjectStatus } from "../model/Project";
@@ -11,8 +11,8 @@ import { ProjectColumn } from "../components/projectBoard";
 export function startRound(): RoundInfo {
   return {
     number: 0,
+    day: Day.MONDAY,
     nextRound: RoundInfo.prototype.nextRound,
-    getDayName: RoundInfo.prototype.getDayName,
     todayCanBeDeploy: RoundInfo.prototype.todayCanBeDeploy,
     playerRoundPoints: {
       analysis: 0,
