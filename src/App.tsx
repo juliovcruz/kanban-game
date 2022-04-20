@@ -14,6 +14,7 @@ import FlagBR from './assets/flags/br.svg'
 import FlagUS from './assets/flags/us.svg'
 import { Language } from "./model/Language";
 import { getPriceByPowerUp } from "./components/shopDrawer";
+import { FooterBoard } from "./components/footerBoard";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -138,6 +139,38 @@ export const App: React.FC<Params> = ({database}) => {
     }
   }
 
+  const resetBoard = () => {
+    const boardInfo = {
+      cardColumns: generateColumns(), 
+      employeeColumns: generateEmployeeColumns(),
+      projectColumns: generateProjectColumns(),
+      playerInfo: {
+        lastPrice: 0,
+        actualPrice: 0,
+        powerUps: [],
+        language: Language.EN,
+        lastBuy: 0
+      },
+      newCards: BoardInfo.prototype.newCards,
+      buyPowerUp: BoardInfo.prototype.buyPowerUp,
+    }
+
+    database.setCardColumns(boardInfo.cardColumns)
+    database.setEmployeeColumns(boardInfo.employeeColumns)
+    database.setPlayerInfo(boardInfo.playerInfo)
+    database.setProjectColumns(boardInfo.projectColumns)
+
+    setBoard(boardInfo)
+
+    const roundInfo = startRound()
+
+    database.setRound(roundInfo)
+
+    setRound(roundInfo)
+
+    window.location.reload();
+  }
+
   function startBoard(): BoardInfo {
     const cardColumns = database.getCardColumns()
     const employeeColumns = database.getEmployeeColumns()
@@ -162,7 +195,7 @@ export const App: React.FC<Params> = ({database}) => {
           lastPrice: 0,
           actualPrice: 0,
           powerUps: [],
-          language: Language.BR,
+          language: Language.EN,
           lastBuy: 0
         },
         newCards: BoardInfo.prototype.newCards,
@@ -465,7 +498,7 @@ export const App: React.FC<Params> = ({database}) => {
         finishPowerUp={finishPowerUp}
         playerInfo={board!.playerInfo}
       ></CardBoard>
-      {board!.playerInfo.language == Language.BR ? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
+      <FooterBoard playerInfo={board!.playerInfo} updateLanguage={updateLanguage} resetBoard={resetBoard}></FooterBoard>
       <GlobalStyle />
     </>
   );

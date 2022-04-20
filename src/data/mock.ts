@@ -7,6 +7,7 @@ import { EmployeeColumn } from "../components/employeeBoard";
 import { Employee } from "../model/Employee";
 import { Project, ProjectDifficulty, ProjectStatus } from "../model/Project";
 import { ProjectColumn } from "../components/projectBoard";
+import { getText, Language, LanguageText } from "../model/Language";
 
 export function startRound(): RoundInfo {
   return {
@@ -28,37 +29,37 @@ export function generateColumns(): CardColumn[] {
     return [
       {
         id: uuidv4(),
-        name: "Backlog",
+        name: getText(LanguageText.BACKLOG, Language.EN),
         cards: [],
         type: ActionType.BACKLOG,
       },
       {
         id: uuidv4(),
-        name: "Em análise",
+        name: getText(LanguageText.IN_ANALYSIS, Language.EN),
         cards: [],
         type: ActionType.PRODUCT_OWNER,
       },
       {
         id: uuidv4(),
-        name: "Em desenvolvimento",
+        name: getText(LanguageText.IN_DEVELOPMENT, Language.EN),
         cards: [],
         type: ActionType.DEVELOPER,
       },
       {
         id: uuidv4(),
-        name: "Em testes",
+        name: getText(LanguageText.IN_TESTS, Language.EN),
         cards: [],
         type: ActionType.QUALITY_ASSURANCE,
       },
       {
         id: uuidv4(),
-        name: "Aguardando deploy",
+        name: getText(LanguageText.WAITING_DEPLOY, Language.EN),
         cards: [],
         type: ActionType.DEPLOY,
       },
       {
         id: uuidv4(),
-        name: "Em produção",
+        name: getText(LanguageText.IN_PRODUCTION, Language.EN),
         cards: [],
         type: ActionType.PRODUCTION,
       },
@@ -195,6 +196,70 @@ export function generateColumns(): CardColumn[] {
           },
         },
       },
+      {
+        canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+        addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+        addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+        addPointTest: CardTaskClass.prototype.addPointTest,
+        setLastMove: CardTaskClass.prototype.setLastMove,
+        start: CardTaskClass.prototype.start,
+        end: CardTaskClass.prototype.end,
+        lastMove: -1,
+        projectId: project.id,
+        projectName: project.name,
+        price: 1000,
+        cardBug: true,
+        name: "UST04",
+        index: 5,
+        id: uuidv4(),
+        number: 3,
+        pontuation: {
+          analysis: {
+            inserted: 0,
+            needed: 4,
+          },
+          develop: {
+            inserted: 0,
+            needed: 5,
+          },
+          test: {
+            inserted: 0,
+            needed: 5,
+          },
+        },
+      },
+      {
+        canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+        addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+        addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+        addPointTest: CardTaskClass.prototype.addPointTest,
+        setLastMove: CardTaskClass.prototype.setLastMove,
+        start: CardTaskClass.prototype.start,
+        end: CardTaskClass.prototype.end,
+        lastMove: -1,
+        projectId: project.id,
+        projectName: project.name,
+        price: 1000,
+        cardBug: true,
+        name: "UST04",
+        index: 5,
+        id: uuidv4(),
+        number: 3,
+        pontuation: {
+          analysis: {
+            inserted: 0,
+            needed: 4,
+          },
+          develop: {
+            inserted: 0,
+            needed: 5,
+          },
+          test: {
+            inserted: 0,
+            needed: 5,
+          },
+        },
+      },
     ];
   }
 
@@ -270,19 +335,19 @@ export function generateProjectColumns(): ProjectColumn[] {
   return [
     {
       id: uuidv4(),
-      name: 'Backlog',
+      name: getText(LanguageText.BACKLOG, Language.EN),
       status: ProjectStatus.TO_DO,
       projects: generateProjects()
     },
     {
       id: uuidv4(),
-      name: 'Doing',
+      name: getText(LanguageText.IN_DEVELOPMENT, Language.EN),
       status: ProjectStatus.IN_PROGRESS,
       projects: []
     },
     {
       id: uuidv4(),
-      name: 'Done',
+      name: getText(LanguageText.DONE, Language.EN),
       status: ProjectStatus.DONE,
       projects: []
     }

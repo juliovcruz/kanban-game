@@ -72,17 +72,15 @@ export const HeaderBoard: React.FC<Params> = ({
                     ></PontuationComponent>
                   </div>
                 </div>
-        {/* <p>Develop: {roundInfo.playerRoundPoints.develop}</p>
-        <p>Test: {roundInfo.playerRoundPoints.test}</p> */}
       <div className="info-round">
-        <h1>RODADA {roundInfo.number}</h1>
+        <h1>{getText(LanguageText.ROUND, playerInfo!.language)} {roundInfo.number}</h1>
       </div>
       <div className="info-content">
         <h2>{roundInfo.number > 0 ? getTextByDay(roundInfo.day, playerInfo!.language): ""}</h2>
         {roundInfo.todayCanBeDeploy() && !playerInfo!.powerUps.some(e => e === PlayerPowerUps.CI_CD) ? (
           <div className="info-content-warning">
             <h3>
-              <WarningIcon fontSize={"small"}></WarningIcon> Dia de deploy{" "}
+              <WarningIcon fontSize={"small"}></WarningIcon> {getText(LanguageText.DEPLOY_DAY, playerInfo!.language)}{" "}
               <WarningIcon fontSize={"small"}></WarningIcon>
             </h3>
           </div>
@@ -96,21 +94,20 @@ export const HeaderBoard: React.FC<Params> = ({
           end={playerInfo!.actualPrice}
           prefix={getText(LanguageText.COST_TOTAL, playerInfo!.language)}
         />
-        {/* <p>Custo atual: ${playerInfo?.actualPrice}</p> */}
       </div>
       {roundInfo.day == Day.FRIDAY? <ColorButton
         variant="contained"
         endIcon={<ShoppingCartIcon />}
         onClick={() => setDrawer(true)}
       >
-        LOJA
+        {getText(LanguageText.SHOP, playerInfo!.language)}
       </ColorButton> : ""}
       <ColorButton
         variant="contained"
         endIcon={<SendIcon />}
         onClick={nextRoundAction}
       >
-        PRÓXIMA RODADA
+        {getText(LanguageText.NEXT_ROUND, playerInfo!.language)}
       </ColorButton>
       <ShopDrawer 
             open={drawer!}
