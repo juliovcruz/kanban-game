@@ -124,7 +124,7 @@ export const CardTaskComponent: React.FC<Params> = ({
     <>
       <Draggable key={card.id} draggableId={card.id} index={index}>
         {(provided, snapshot) => (
-          <Container color={card.cardBug ? base.red : base.dark_purple}
+          <Container color={colorCard(card)}
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -183,3 +183,9 @@ export const CardTaskComponent: React.FC<Params> = ({
     </>
   );
 };
+
+function colorCard(card: CardTaskClass): string {
+  if (card.cardBug) return base.red
+  if (card.powerUp != null ) return base.yellow
+  return base.dark_purple
+}
