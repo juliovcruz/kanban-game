@@ -13,6 +13,7 @@ export enum LanguageText {
     POWER_UP_TRAIN_DEV_TO_ACTION_PO,
     POWER_UP_TRAIN_DEV_TO_ACTION_QA,
     POWER_UP_TRAIN_PO_TO_ACTION_QA,
+    POWER_UP_TRAIN_PO_TO_ACTION_DEV,
     POWER_UP_TRAIN_QA_TO_ACTION_PO,
     POWER_UP_TRAIN_QA_TO_ACTION_DEV
 }
@@ -32,6 +33,7 @@ const textMap = new Map<LanguageText, LanguageResult>([
     [LanguageText.POWER_UP_TRAIN_DEV_TO_ACTION_PO, {br: 'Treinar DEV como PO', en: 'Train DEV like PO'}],
     [LanguageText.POWER_UP_TRAIN_DEV_TO_ACTION_QA, {br: 'Treinar DEV como QA', en: 'Train DEV like QA'}],
     [LanguageText.POWER_UP_TRAIN_PO_TO_ACTION_QA, {br: 'Treinar PO como QA', en: 'Train PO like QA'}],
+    [LanguageText.POWER_UP_TRAIN_PO_TO_ACTION_DEV, {br: 'Treinar PO como DEV', en: 'Train PO like DEV'}],
     [LanguageText.POWER_UP_TRAIN_QA_TO_ACTION_PO, {br: 'Treinar QA como PO', en: 'Train QA like PO'}],
     [LanguageText.POWER_UP_TRAIN_QA_TO_ACTION_DEV, {br: 'Treinar QA como DEV', en: 'Train QA like DEV'}],
 ]);

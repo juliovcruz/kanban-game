@@ -328,7 +328,7 @@ export function generateCardPowerUp(powerUp: PlayerPowerUps): CardTaskClass {
     start: CardTaskClass.prototype.start,
     end: CardTaskClass.prototype.end,
     lastMove: -1,
-    name: "UST03",
+    name: PlayerPowerUps[powerUp],
     projectId: 'P',
     projectName: 'P',
     price: 0,

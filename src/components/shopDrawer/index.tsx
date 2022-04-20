@@ -70,6 +70,7 @@ function getTextByPowerUp(powerUp: PlayerPowerUps, language: Language): string {
     [PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO,   LanguageText.POWER_UP_TRAIN_DEV_TO_ACTION_PO],
     [PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA,   LanguageText.POWER_UP_TRAIN_DEV_TO_ACTION_QA],
     [PlayerPowerUps.TRAIN_PO_TO_ACTION_QA,   LanguageText.POWER_UP_TRAIN_PO_TO_ACTION_QA],
+    [PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV, LanguageText.POWER_UP_TRAIN_PO_TO_ACTION_DEV],
     [PlayerPowerUps.TRAIN_QA_TO_ACTION_PO,   LanguageText.POWER_UP_TRAIN_QA_TO_ACTION_PO],
     [PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV,   LanguageText.POWER_UP_TRAIN_QA_TO_ACTION_DEV]
 ]);
@@ -88,6 +89,7 @@ export function getPriceByPowerUp(powerUp: PlayerPowerUps): number {
     [PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO,   300],
     [PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA,   300],
     [PlayerPowerUps.TRAIN_PO_TO_ACTION_QA,   300],
+    [PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV,   300],
     [PlayerPowerUps.TRAIN_QA_TO_ACTION_PO,   300],
     [PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV,   300]
 ]);
@@ -107,6 +109,7 @@ function getAllAvailablePowerUps(): PlayerPowerUps[] {
     PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO,
     PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA,
     PlayerPowerUps.TRAIN_PO_TO_ACTION_QA,
+    PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV,
     PlayerPowerUps.TRAIN_QA_TO_ACTION_PO,
     PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV
   ]

@@ -49,6 +49,7 @@ export enum PlayerPowerUps {
   TRAIN_DEV_TO_ACTION_PO,
   TRAIN_DEV_TO_ACTION_QA,
   TRAIN_PO_TO_ACTION_QA,
+  TRAIN_PO_TO_ACTION_DEV,
   TRAIN_QA_TO_ACTION_PO,
   TRAIN_QA_TO_ACTION_DEV
 }
@@ -317,11 +318,27 @@ export const App: React.FC<Params> = ({database}) => {
 
   const finishPowerUp = (powerUp: PlayerPowerUps) => {
     switch (powerUp) {
-      case PlayerPowerUps.NEW_DEV: {
+      case PlayerPowerUps.NEW_DEV: 
+      case PlayerPowerUps.NEW_PO: 
+      case PlayerPowerUps.NEW_QA: {
+        const powerUpToAction = new Map<PlayerPowerUps, ActionType>([
+          [PlayerPowerUps.NEW_DEV, ActionType.DEVELOPER],
+          [PlayerPowerUps.NEW_PO, ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.NEW_QA, ActionType.QUALITY_ASSURANCE],
+        ]);
+
+        const powerUpToColumnIndex = new Map<PlayerPowerUps, number>([
+          [PlayerPowerUps.NEW_PO, 0],
+          [PlayerPowerUps.NEW_DEV, 1],
+          [PlayerPowerUps.NEW_QA, 2],
+        ]);
+
+        const columnIndex = powerUpToColumnIndex.get(powerUp)!!
+
         const columns = board!.employeeColumns
-        const newDevColumn = board!.employeeColumns[1].employees
-        newDevColumn.push(generateEmployeeByMainAction(ActionType.DEVELOPER))
-        columns[1].employees = newDevColumn
+        const newColumn = board!.employeeColumns[columnIndex].employees
+        newColumn.push(generateEmployeeByMainAction(powerUpToAction.get(powerUp)!!))
+        columns[columnIndex].employees = newColumn
   
         board!.buyPowerUp(round!)
 
@@ -336,6 +353,51 @@ export const App: React.FC<Params> = ({database}) => {
             buyPowerUp: BoardInfo.prototype.buyPowerUp,
             }
         )
+        break;
+      } 
+      case PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA :
+      case PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO :
+      case PlayerPowerUps.TRAIN_PO_TO_ACTION_QA :
+      case PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV :
+      case PlayerPowerUps.TRAIN_QA_TO_ACTION_PO :
+      case PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV : {
+        const newActionMap = new Map<PlayerPowerUps, ActionType>([
+          [PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO,   ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA,   ActionType.QUALITY_ASSURANCE],
+          [PlayerPowerUps.TRAIN_PO_TO_ACTION_QA,   ActionType.QUALITY_ASSURANCE],
+          [PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV,   ActionType.DEVELOPER],
+          [PlayerPowerUps.TRAIN_QA_TO_ACTION_PO,   ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV,   ActionType.DEVELOPER]
+        ]);
+
+        const actualActionMap = new Map<PlayerPowerUps, ActionType>([
+          [PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO,   ActionType.DEVELOPER],
+          [PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA,   ActionType.DEVELOPER],
+          [PlayerPowerUps.TRAIN_PO_TO_ACTION_QA,   ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV,  ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.TRAIN_QA_TO_ACTION_PO,   ActionType.QUALITY_ASSURANCE],
+          [PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV,  ActionType.QUALITY_ASSURANCE]
+        ]);
+
+        const newAction = newActionMap.get(powerUp)!!
+        const actualAction = actualActionMap.get(powerUp)!!
+
+        const columns = pushNewActionToEmployee(board!.employeeColumns, actualAction, newAction)
+
+        setBoard(
+          {
+            ...board,
+            employeeColumns: columns,
+            cardColumns: board!.cardColumns,
+            playerInfo: board!.playerInfo,
+            projectColumns: board!.projectColumns,
+            newCards: BoardInfo.prototype.newCards,
+            buyPowerUp: BoardInfo.prototype.buyPowerUp,
+            }
+        )
+        
+        database.setEmployeeColumns(columns)
+        break;
       }
     }
   }
@@ -348,28 +410,26 @@ export const App: React.FC<Params> = ({database}) => {
     board!.playerInfo.lastPrice = board!.playerInfo.actualPrice
     board!.playerInfo.actualPrice += getPriceByPowerUp(powerUp)
 
-    if(powerUp == PlayerPowerUps.NEW_DEV) {
-      const columns = board!.cardColumns
-      const newBacklogColumn = board!.cardColumns[0].cards
-      newBacklogColumn.push(generateCardPowerUp(powerUp))
-      columns[0].cards = newBacklogColumn
+    const columns = board!.cardColumns
+    const newBacklogColumn = board!.cardColumns[0].cards
+    newBacklogColumn.push(generateCardPowerUp(powerUp))
+    columns[0].cards = newBacklogColumn
 
-      board?.buyPowerUp(round!)
-      
-      setBoard(
-        {
-          ...board,
-          cardColumns: columns,
-          playerInfo: board!.playerInfo,
-          employeeColumns: board!.employeeColumns,
-          projectColumns: board!.projectColumns,
-          newCards: BoardInfo.prototype.newCards,
-          buyPowerUp: BoardInfo.prototype.buyPowerUp,
-          }
-      )
+    board?.buyPowerUp(round!)
+    
+    setBoard(
+      {
+        ...board,
+        cardColumns: columns,
+        playerInfo: board!.playerInfo,
+        employeeColumns: board!.employeeColumns,
+        projectColumns: board!.projectColumns,
+        newCards: BoardInfo.prototype.newCards,
+        buyPowerUp: BoardInfo.prototype.buyPowerUp,
+        }
+    )
 
-      database.setCardColumns(board!.cardColumns)
-    }
+    database.setCardColumns(board!.cardColumns)
   }
 
   return (
@@ -417,6 +477,21 @@ function getEmployeePrice(columns: EmployeeColumn[]) {
   })
 
   return price
+}
+
+function pushNewActionToEmployee(columns: EmployeeColumn[], actionEmployee: ActionType, newAction: ActionType): EmployeeColumn[] {
+  for(let j = 0; j < columns.length;j++) {
+    const column = columns[j]
+    for(let i = 0; i < column.employees.length;i++) {
+      const employee = column.employees[i]
+      if(employee.mainAction == actionEmployee && !employee.actions.some(e => e === newAction)) {
+        employee.actions.push(newAction)
+        return columns
+      }
+    }
+  }
+
+  return columns
 }
 
 function getCardPrice(columns: CardColumn[]) {
