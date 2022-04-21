@@ -80,7 +80,7 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
     const project = start.column.projects[source.index]
 
     if(start.index > finish.index) {
-      setError({bool: true, message: 'Projeto não pode ser movido para trás'})
+      setError({bool: true, message: getText(LanguageText.ERROR_PROJECT_CANNOT_MOVE_TO_BACK, playerInfo.language)})
       return
     }
 
@@ -93,7 +93,7 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
         const cards = database.getCardColumns()!
 
         if(!project.canBeDone(cards)) {
-          setError({bool: true, message: 'Projeto não está pronto'})
+          setError({bool: true, message: getText(LanguageText.ERROR_PROJECT_NOT_DONE, playerInfo.language)})
           return
         }
 

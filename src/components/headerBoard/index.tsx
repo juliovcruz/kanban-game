@@ -87,6 +87,16 @@ export const HeaderBoard: React.FC<Params> = ({
         ) : (
           <div></div>
         )}
+        {roundInfo.day == Day.FRIDAY ? (
+          <div className="info-content-shop">
+            <h3>
+              <WarningIcon fontSize={"small"}></WarningIcon> {getText(LanguageText.SHOP_DAY, playerInfo!.language)}{" "}
+              <WarningIcon fontSize={"small"}></WarningIcon>
+            </h3>
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
       <div className="price">
         <CountUp

@@ -4,16 +4,18 @@ import { PontuationComponent } from "./pontuation";
 import { ActionType } from "../../../model/ActionType";
 import { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { RoundInfo } from "../../../App";
+import { PlayerInfo, RoundInfo } from "../../../App";
 import React from "react";
 import { SnackBarAlert } from "../../snackBarAlert/snackBarAlert";
 import { base } from "../../../styles/colors";
+import { getText, LanguageText } from "../../../model/Language";
 
 export interface Params {
   cardTask: CardTaskClass;
   index: number;
   actualColumnType: ActionType;
   roundInfo: RoundInfo;
+  playerInfo: PlayerInfo,
   usePoint: (type: ActionType) => Boolean;
 }
 
@@ -28,6 +30,7 @@ export const CardTaskComponent: React.FC<Params> = ({
   actualColumnType,
   usePoint,
   roundInfo,
+  playerInfo
 }) => {
   const [card, setState] = useState<CardTaskClass>(cardTask);
   const [stateError, setError] = useState<ErrorState>();
@@ -38,7 +41,7 @@ export const CardTaskComponent: React.FC<Params> = ({
     if (roundInfo.playerRoundPoints.analysis <= 0) {
       setError({
         bool: true,
-        message: "Não há pontos suficientes para utilizar",
+        message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
       });
       return;
     }
@@ -49,7 +52,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       if (!usePoint(actualColumnType)) {
         setError({
           bool: true,
-          message: "Não há pontos suficientes para utilizar",
+          message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
         });
         return;
       }
@@ -67,7 +70,7 @@ export const CardTaskComponent: React.FC<Params> = ({
     if (roundInfo.playerRoundPoints.develop <= 0) {
       setError({
         bool: true,
-        message: "Não há pontos suficientes para utilizar",
+        message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
       });
       return;
     }
@@ -78,7 +81,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       if (!usePoint(actualColumnType)) {
         setError({
           bool: true,
-          message: "Não há pontos suficientes para utilizar",
+          message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
         });
         return;
       }
@@ -96,7 +99,7 @@ export const CardTaskComponent: React.FC<Params> = ({
     if (roundInfo.playerRoundPoints.test <= 0) {
       setError({
         bool: true,
-        message: "Não há pontos suficientes para utilizar",
+        message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
       });
       return;
     }
@@ -107,7 +110,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       if (!usePoint(actualColumnType)) {
         setError({
           bool: true,
-          message: "Não há pontos suficientes para utilizar",
+          message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
         });
         return;
       }

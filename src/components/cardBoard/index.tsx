@@ -84,7 +84,7 @@ export const CardBoard: React.FC<Params> = ({
     const card = start.column.cards[source.index]
 
     if(card.roundEnded != null) {
-      setError({bool: true, message: 'Não pode voltar de produção'})
+      setError({bool: true, message: getText(LanguageText.ERROR_CARD_MOVE_BACK_PRODUCTION, playerInfo.language)})
       return
     }
 
@@ -98,7 +98,7 @@ export const CardBoard: React.FC<Params> = ({
     )
 
     if (!bool.bool) {
-      setError({bool: true, message: bool.message})
+      setError({bool: true, message: getText(bool.text!, playerInfo.language)})
       return;
     }
 

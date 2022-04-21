@@ -28,8 +28,6 @@ export const EmployeeComponent: React.FC<Params> = ({
   roundInfo,
 }) => {
   const [employee, setEmployee] = useState<Employee>(paramEmployee);
-  const [stateError, setError] = useState<ErrorState>();
-
   return (
     <>
       <Draggable key={employee.id} draggableId={employee.id} index={index}>
@@ -58,16 +56,6 @@ export const EmployeeComponent: React.FC<Params> = ({
           </Container>
         )}
       </Draggable>
-      {stateError?.bool ? (
-        <SnackBarAlert
-          onClose={() => {
-            setError({ bool: false });
-          }}
-          message={stateError.message}
-        ></SnackBarAlert>
-      ) : (
-        <></>
-      )}
     </>
   );
 };

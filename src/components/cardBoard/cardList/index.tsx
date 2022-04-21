@@ -44,6 +44,7 @@ export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo, player
               {column.cards?.map((item, index) => (
                 <li key={item.id}>
                   <CardTaskComponent
+                    playerInfo={playerInfo}
                     cardTask={item}
                     index={index}
                     actualColumnType={column.type}

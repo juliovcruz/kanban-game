@@ -1,6 +1,7 @@
 import { RoundInfo } from "../App";
 import { ActionType } from "./ActionType";
 import { BooleanResponse } from "./CardTask";
+import { LanguageText } from "./Language";
 
 export class Employee {
     id!: string
@@ -18,7 +19,7 @@ export class Employee {
         if(!this.actions.some(item => item == destinationType)) {
             return {
                 bool: false,
-                message: 'Esse funcionário não consegue relizar essa função.'
+                text: LanguageText.ERROR_EMPLOYEE_ACTION_WRONG
             }
         }
 

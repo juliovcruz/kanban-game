@@ -31,7 +31,6 @@ export class PlayerRoundPoints {
   nextRound(employeeColumns: EmployeeColumn[]) {
     const analysis = employeeColumns.filter((x) => x.type == ActionType.PRODUCT_OWNER)[0].employees.length;
     const develop = employeeColumns.filter((x) => x.type == ActionType.DEVELOPER)[0].employees.length;
-    console.log(develop)
     const test = employeeColumns.filter((x) => x.type == ActionType.QUALITY_ASSURANCE)[0].employees.length;
 
     // Math.floor(Math.random() * (max - min + 1) + min)
@@ -42,8 +41,8 @@ export class PlayerRoundPoints {
 }
 
 export enum PlayerPowerUps {
-  AUTOMATION, // não precisa ninguem no deploy
-  CI_CD, // pode realizar deploy todo dia
+  AUTOMATION,
+  CI_CD,
   NEW_DEV,
   NEW_PO,
   NEW_QA,
@@ -100,8 +99,6 @@ export class RoundInfo {
     
     if(this.day == Day.FRIDAY || this.number == 0) this.day = Day.MONDAY
     else this.day++;
-
-    console.log(Day[this.day])
 
     this.number++;
     this.playerRoundPoints.nextRound(employeeColumns);
@@ -274,21 +271,25 @@ export const App: React.FC<Params> = ({database}) => {
   }
 
   const updateLanguage = (language: Language) => {
+    const newPlayerInfo = {
+      ...board!.playerInfo,
+      lastPrice: board!.playerInfo.actualPrice,
+      language: language
+    }
+
     setBoard(
       {
       ...board,
       employeeColumns: board!.employeeColumns,
       cardColumns: board!.cardColumns,
-      playerInfo: {
-        ...board!.playerInfo,
-        lastPrice: board!.playerInfo.actualPrice,
-        language: language
-      },
+      playerInfo: newPlayerInfo,
       projectColumns: board!.projectColumns,
       newCards: BoardInfo.prototype.newCards,
       buyPowerUp: BoardInfo.prototype.buyPowerUp,
       }
     )
+
+    database.setPlayerInfo(newPlayerInfo)
   }
 
   const addNewCards = (cards: CardTaskClass[]) => {

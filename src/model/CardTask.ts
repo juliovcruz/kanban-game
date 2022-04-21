@@ -1,9 +1,11 @@
 import { PlayerInfo, PlayerPowerUps, RoundInfo } from "../App";
 import { ActionType } from "./ActionType";
 import { Employee } from "./Employee";
+import { LanguageText } from "./Language";
 
 export type BooleanResponse = {
   bool: Boolean;
+  text?: LanguageText;
   message?: string;
 };
 
@@ -28,12 +30,10 @@ export class CardTaskClass {
 
   start(roundInfo: RoundInfo) {
     this.roundStarted = roundInfo.number
-    console.log('started: ' + this.roundStarted)
   }
 
   end(roundInfo: RoundInfo) {
     this.roundEnded = roundInfo.number
-    console.log('ended: ' + this.roundEnded)
   }
 
   canBeMoveTo(
@@ -52,17 +52,17 @@ export class CardTaskClass {
       case ActionType.DEVELOPER:
         return { 
             bool: this.pontuation.analysis.inserted == this.pontuation.analysis.needed,
-            message: 'Não é possível mover para desenvolvimento.'
+            text: LanguageText.ERROR_CARD_MOVE_DEVELOPER_WRONG
           };
       case ActionType.QUALITY_ASSURANCE:
         return { 
           bool: this.pontuation.develop.inserted == this.pontuation.develop.needed,
-          message: 'Não é possível mover para testes.'
+          text: LanguageText.ERROR_CARD_MOVE_TEST_WRONG
         };
       case ActionType.DEPLOY:
         return { 
           bool: this.pontuation.test.inserted == this.pontuation.test.needed,
-          message: 'Não é possível mover para deploy.'
+          text: LanguageText.ERROR_CARD_MOVE_DEPLOY_WRONG
         };
       case ActionType.PRODUCTION:
         if(playerInfo.powerUps.some(e => e === PlayerPowerUps.AUTOMATION) && deployDay) {
@@ -74,17 +74,16 @@ export class CardTaskClass {
         }
 
         if(employeesDeploy == undefined || !ifCanBeDeploy(employeesDeploy, roundInfo.number)) {
-          console.log('here')
           return { 
             bool: false,
-            message: 'Não é possível realizar o deploy, por que não foi alocado um funcionário para essa função.'
+            text: LanguageText.ERROR_CARD_PRODUCTION_NO_EMPLOYEE
           };
         }
         return { 
           bool: actualColumnType == ActionType.DEPLOY &&
           deployDay &&
           this.pontuation.test.inserted == this.pontuation.test.needed,
-          message: 'Não é possível mover para produção hoje.'
+          text: LanguageText.ERROR_CARD_PRODUCTION_NO_DAY
         };
       case ActionType.ARCHIVED:
         return { bool: true };
@@ -95,21 +94,21 @@ export class CardTaskClass {
     if(this.lastMove == roundInfo.number) {
       return {
         bool: false,
-        message: "Não é possível pontuar em uma tarefa que acabou de ser movida",
+        text: LanguageText.ERROR_CARD_PONTUATION_MOVED_THIS_ROUND
       }
     }
 
     if (actualColumnType != ActionType.PRODUCT_OWNER) {
       return {
         bool: false,
-        message: "Não é possível utilizar nesta coluna.",
+        text: LanguageText.ERROR_CARD_PONTUATION_COLUMN_WRONG
       }
     }
 
     if (this.pontuation.analysis.inserted == this.pontuation.analysis.needed) {
       return {
         bool: false,
-        message: "O máximo de pontuação já foi utilizado.",
+        text: LanguageText.ERROR_CARD_PONTUATION_MAX_PONTUATION
       };
     }
 
@@ -121,28 +120,28 @@ export class CardTaskClass {
     if(this.lastMove == roundInfo.number) {
       return {
         bool: false,
-        message: "Não é possível pontuar em uma tarefa que acabou de ser movida",
+        text: LanguageText.ERROR_CARD_PONTUATION_MOVED_THIS_ROUND
       }
     }
 
     if (actualColumnType != ActionType.DEVELOPER) {
       return {
         bool: false,
-        message: "Não é possível utilizar nesta coluna.",
+        text: LanguageText.ERROR_CARD_PONTUATION_COLUMN_WRONG
       };
     }
 
     if (this.pontuation.develop.inserted == this.pontuation.develop.needed) {
       return {
         bool: false,
-        message: "O máximo de pontuação já foi utilizado.",
+        text: LanguageText.ERROR_CARD_PONTUATION_MAX_PONTUATION
       };
     }
 
     if (this.pontuation.analysis.inserted != this.pontuation.analysis.needed) {
       return {
         bool: false,
-        message: "Necessário realizar a análise.",
+        text: LanguageText.ERROR_CARD_PONTUATION_NEED_ANALYSIS
       };
     }
 
@@ -154,35 +153,35 @@ export class CardTaskClass {
     if(this.lastMove == roundInfo.number) {
       return {
         bool: false,
-        message: "Não é possível pontuar em uma tarefa que acabou de ser movida",
+        text: LanguageText.ERROR_CARD_PONTUATION_MOVED_THIS_ROUND
       }
     }
 
     if (actualColumnType != ActionType.QUALITY_ASSURANCE) {
       return {
         bool: false,
-        message: "Não é possível utilizar nesta coluna.",
+        text: LanguageText.ERROR_CARD_PONTUATION_COLUMN_WRONG
       };
     }
 
     if (this.pontuation.test.inserted == this.pontuation.test.needed) {
       return {
         bool: false,
-        message: "O máximo de pontuação já foi utilizado.",
+        text: LanguageText.ERROR_CARD_PONTUATION_MAX_PONTUATION
       };
     }
 
     if (this.pontuation.analysis.inserted != this.pontuation.analysis.needed) {
       return {
         bool: false,
-        message: "Necessário realizar a análise.",
+        text: LanguageText.ERROR_CARD_PONTUATION_NEED_ANALYSIS
       };
     }
 
     if (this.pontuation.develop.inserted != this.pontuation.develop.needed) {
       return {
         bool: false,
-        message: "Necessário realizar o desenvolvimento.",
+        text: LanguageText.ERROR_CARD_PONTUATION_NEED_DEVELOPMENT
       };
     }
 

@@ -22,6 +22,13 @@ export const Container = styled.div`
         }
     }
 
+    .info-content-shop {
+        h3 {
+            align-items: baseline;
+            color: ${base.yellow}
+        }
+    }
+
     .price {
         color: ${base.green}
     }

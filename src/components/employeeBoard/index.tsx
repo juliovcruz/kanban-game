@@ -85,7 +85,7 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
     )
 
     if (!bool.bool) {
-      setError({bool: true, message: bool.message})
+      setError({bool: true, message: getText(bool.text, playerInfo.language)})
       return;
     }
 
