@@ -44,7 +44,10 @@ export enum LanguageText {
     IN_PRODUCTION,
     DONE,
     RESET_BOARD,
-    RESET_BOARD_DESCRIPTION
+    RESET_BOARD_DESCRIPTION,
+    EMPLOYEES,
+    PROJECTS,
+    TASKS
 }
 
 export type LanguageResult = {
@@ -94,6 +97,9 @@ const textMap = new Map<LanguageText, LanguageResult>([
     [LanguageText.DONE, {br: 'Feito', en: 'Done'}],
     [LanguageText.RESET_BOARD, {br: 'Reiniciar jogo', en: 'Reset game'}],
     [LanguageText.RESET_BOARD_DESCRIPTION, {br: 'Todo o seu progresso será perdido, você tem certeza que deseja reiniciar o jogo?', en: 'Your progress will be lost, are you sure to restart the game?'}],
+    [LanguageText.EMPLOYEES, {br: 'EQUIPE', en: 'TEAM'}],
+    [LanguageText.PROJECTS, {br: 'PROJETOS', en: 'PROJECTS'}],
+    [LanguageText.TASKS, {br: 'TAREFAS', en: 'TASKS'}],
 ]);
 
 export function getText(text: LanguageText, language: Language): string {

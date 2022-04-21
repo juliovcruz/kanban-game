@@ -2,7 +2,7 @@ import { Container } from "./styles";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useState } from "react";
 import React from "react";
-import { RoundInfo } from "../../App";
+import { PlayerInfo, RoundInfo } from "../../App";
 import { ErrorState } from "../cardBoard/cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
@@ -10,6 +10,7 @@ import { Project, ProjectStatus } from "../../model/Project";
 import { ProjectList } from "./projectList";
 import { CardTaskClass } from "../../model/CardTask";
 import { CardColumn } from "../cardBoard";
+import { getText, LanguageText } from "../../model/Language";
 
 type ColumnIndex = {
   column: ProjectColumn;
@@ -19,6 +20,7 @@ type ColumnIndex = {
 export type Params = {
   roundInfo: RoundInfo,
   paramsColumns: ProjectColumn[] | undefined,
+  playerInfo: PlayerInfo,
   database: Database,
   updateProjectColumns: (projectColumns: ProjectColumn[]) => void
   addNewCards: (cards: CardTaskClass[]) => void
@@ -31,7 +33,7 @@ export type ProjectColumn = {
   status: ProjectStatus
 }
 
-export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateProjectColumns, addNewCards}) => {
+export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateProjectColumns, addNewCards, playerInfo}) => {
   const [columns, setColumns] = useState<ProjectColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
@@ -127,6 +129,8 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
 
   return (
     <Container>
+      <h2>{getText(LanguageText.PROJECTS, playerInfo.language)}</h2>
+      <div className="list">
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
           <ProjectList
@@ -135,6 +139,7 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
           ></ProjectList>
         ))}
       </DragDropContext>
+      </div>
       {stateError?.bool ? (
         <SnackBarAlert onClose={() => {
           setError({ bool: false });

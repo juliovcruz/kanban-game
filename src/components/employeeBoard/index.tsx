@@ -10,6 +10,7 @@ import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Employee } from "../../model/Employee";
 import { EmployeeList } from "./employeeList";
 import { Database } from "../../data/database";
+import { getText, Language, LanguageText } from "../../model/Language";
 
 type ColumnIndex = {
   column: EmployeeColumn;
@@ -114,7 +115,9 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
 
   return (
     <Container>
+      <h2>{getText(LanguageText.EMPLOYEES, playerInfo.language)}</h2>
       <DragDropContext onDragEnd={onDragEnd}>
+        <div className="list">
         {columns?.map((item, index) => (
           <EmployeeList
             playerInfo={playerInfo}
@@ -122,6 +125,7 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
             roundInfo={roundInfo}
           ></EmployeeList>
         ))}
+        </div>
       </DragDropContext>
       {stateError?.bool ? (
         <SnackBarAlert onClose={() => {

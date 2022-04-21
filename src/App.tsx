@@ -12,7 +12,7 @@ import { ProjectBoard, ProjectColumn } from "./components/projectBoard";
 import IconButton from '@material-ui/core/IconButton';
 import FlagBR from './assets/flags/br.svg'
 import FlagUS from './assets/flags/us.svg'
-import { Language } from "./model/Language";
+import { getText, Language, LanguageText } from "./model/Language";
 import { getPriceByPowerUp } from "./components/shopDrawer";
 import { FooterBoard } from "./components/footerBoard";
 
@@ -475,6 +475,7 @@ export const App: React.FC<Params> = ({database}) => {
       playerInfo={board!.playerInfo}
       newPowerUp={newPowerUp}></HeaderBoard>
       <ProjectBoard
+      playerInfo={board!.playerInfo}
       roundInfo={round!}
       paramsColumns={board?.projectColumns}
       updateProjectColumns={updateProjectColumns}

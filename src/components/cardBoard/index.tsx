@@ -10,6 +10,7 @@ import { ErrorState } from "./cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
 import { Employee } from "../../model/Employee";
+import { getText, LanguageText } from "../../model/Language";
 
 export type CardColumn = {
   id: string;
@@ -138,6 +139,8 @@ export const CardBoard: React.FC<Params> = ({
 
   return (
     <Container>
+      <h2>{getText(LanguageText.TASKS, playerInfo.language)}</h2>
+      <div className="list">
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
           <CardList
@@ -154,6 +157,7 @@ export const CardBoard: React.FC<Params> = ({
         </SnackBarAlert>
       ) : (
         <></> )}
+        </div>
     </Container>
   );
 };
