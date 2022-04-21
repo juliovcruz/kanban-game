@@ -10,7 +10,7 @@ import { ErrorState } from "./cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
 import { Employee } from "../../model/Employee";
-import { getText, LanguageText } from "../../model/Language";
+import { getText, Language, LanguageText } from "../../model/Language";
 
 export type CardColumn = {
   id: string;
@@ -105,7 +105,10 @@ export const CardBoard: React.FC<Params> = ({
     switch(finish.column.type) {
       case ActionType.PRODUCT_OWNER: card.start(roundInfo); break;
       case ActionType.PRODUCTION: {
-        if(card.powerUp != null) finishPowerUp(card.powerUp)
+        if(card.powerUp != null) {
+          setError({bool: true, message: getFinishTextByPowerUp(card.powerUp, playerInfo.language), info: true})
+          finishPowerUp(card.powerUp)
+        }
         card.end(roundInfo)
         break
       }
@@ -153,8 +156,10 @@ export const CardBoard: React.FC<Params> = ({
       </DragDropContext>
       {stateError?.bool ? (
         <SnackBarAlert onClose={() => {
-          setError({ bool: false });
-        }} message={stateError.message} >
+          setError({ bool: false, info: false });
+        }
+        } message={stateError.message}
+        info={stateError.info} >
         </SnackBarAlert>
       ) : (
         <></> )}
@@ -162,3 +167,16 @@ export const CardBoard: React.FC<Params> = ({
     </Container>
   );
 };
+
+function getFinishTextByPowerUp(powerUp: PlayerPowerUps, language: Language): string {
+  const map = new Map<PlayerPowerUps, LanguageText>([
+    [PlayerPowerUps.AUTOMATION, LanguageText.POWER_UP_AUTOMATION_INFO_FINISH],
+    [PlayerPowerUps.CI_CD, LanguageText.POWER_UP_CI_CD_INFO_FINISH]
+  ]);
+
+  var text = map.get(powerUp)
+  
+  if(text == null) text = LanguageText.POWER_UP_GENERIC_INFO_FINISH
+
+  return getText(text, language);
+}

@@ -22,6 +22,7 @@ export interface Params {
 export type ErrorState = {
   bool: Boolean;
   message?: string;
+  info?: boolean
 };
 
 export const CardTaskComponent: React.FC<Params> = ({
@@ -182,6 +183,7 @@ export const CardTaskComponent: React.FC<Params> = ({
             setError({ bool: false });
           }}
           message={stateError.message}
+          info={stateError.info}
         ></SnackBarAlert>
       ) : (
         <></>

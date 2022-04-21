@@ -85,7 +85,7 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
     )
 
     if (!bool.bool) {
-      setError({bool: true, message: getText(bool.text, playerInfo.language)})
+      setError({bool: true, message: getText(bool.text!, playerInfo.language)})
       return;
     }
 
@@ -130,7 +130,8 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
       {stateError?.bool ? (
         <SnackBarAlert onClose={() => {
           setError({ bool: false });
-        }} message={stateError.message} >
+        }} message={stateError.message}
+        info={stateError.info} >
         </SnackBarAlert>
       ) : (
         <></> )}

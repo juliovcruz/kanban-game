@@ -144,7 +144,8 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
       {stateError?.bool ? (
         <SnackBarAlert onClose={() => {
           setError({ bool: false });
-        }} message={stateError.message} >
+        }} message={stateError.message}
+        info={stateError.info} >
         </SnackBarAlert>
       ) : (
         <></> )}

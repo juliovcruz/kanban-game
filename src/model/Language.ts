@@ -64,6 +64,9 @@ export enum LanguageText {
     ERROR_CARD_PONTUATION_NO_HAVE_POINT,
     ERROR_PROJECT_CANNOT_MOVE_TO_BACK,
     ERROR_PROJECT_NOT_DONE,
+    POWER_UP_AUTOMATION_INFO_FINISH,
+    POWER_UP_CI_CD_INFO_FINISH,
+    POWER_UP_GENERIC_INFO_FINISH
 }
 
 export type LanguageResult = {
@@ -73,6 +76,9 @@ export type LanguageResult = {
 
 const textMap = new Map<LanguageText, LanguageResult>([
     [LanguageText.COST_TOTAL, {br: 'Custo atual do projeto: $', en: 'Actual cost of project: $'}],
+    [LanguageText.POWER_UP_AUTOMATION_INFO_FINISH, {br: 'Agora você não precisa alocar um desenvolvedor para fazer deploy.', en: 'Now you dont need allocate a developer to make deploy.'}],
+    [LanguageText.POWER_UP_CI_CD_INFO_FINISH, {br: 'Agora você pode fazer deploy todos os dias da semana', en: 'Now you can make deploy every day.'}],
+    [LanguageText.POWER_UP_GENERIC_INFO_FINISH, {br: 'Você finalizou uma tarefa de melhoria.', en: 'You finish a power up task.'}],
     [LanguageText.POWER_UP_AUTOMATION, {br: 'Automação', en: 'Automation'}],
     [LanguageText.POWER_UP_CI_CD, {br: 'Entrega conínua', en: 'Continuos Delivery'}],
     [LanguageText.POWER_UP_NEW_DEV, {br: 'Contratar DEV', en: 'To hire DEV'}],
