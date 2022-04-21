@@ -144,6 +144,7 @@ export const CardBoard: React.FC<Params> = ({
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
           <CardList
+            playerInfo={playerInfo}
             column={item}
             usePoint={usePoint}
             roundInfo={roundInfo}

@@ -214,9 +214,6 @@ export const App: React.FC<Params> = ({database}) => {
   const nextRound = () => {
     const newRound = Object.assign({}, round);
     newRound.playerRoundPoints.clear();
-    // TODO: melhorar esse lógica e não consultar do database
-    // const employeeColumns = database.getEmployeeColumns()!;
-    //const cardColumns = database.getCardColumns()!;
     newRound.nextRound(board!.employeeColumns);
 
     if(board != undefined) {
@@ -284,6 +281,7 @@ export const App: React.FC<Params> = ({database}) => {
       cardColumns: board!.cardColumns,
       playerInfo: {
         ...board!.playerInfo,
+        lastPrice: board!.playerInfo.actualPrice,
         language: language
       },
       projectColumns: board!.projectColumns,

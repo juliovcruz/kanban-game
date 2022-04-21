@@ -134,6 +134,7 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
           <ProjectList
+            playerInfo={playerInfo}
             column={item}
             roundInfo={roundInfo}
           ></ProjectList>

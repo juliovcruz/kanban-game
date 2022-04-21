@@ -6,17 +6,19 @@ import { Container } from "./styles";
 import { CardColumn } from "../../cardBoard";
 import { CardTaskClass } from "../../../model/CardTask";
 import { ActionType } from "../../../model/ActionType";
-import { RoundInfo } from "../../../App";
+import { PlayerInfo, RoundInfo } from "../../../App";
 import { ProjectColumn } from "..";
-import { Project } from "../../../model/Project";
+import { Project, ProjectStatus } from "../../../model/Project";
 import { ProjectComponent } from "../projectCard";
+import { getText, Language, LanguageText } from "../../../model/Language";
 
 export interface Params {
   column: ProjectColumn;
+  playerInfo: PlayerInfo;
   roundInfo: RoundInfo;
 }
 
-export const ProjectList: React.FC<Params> = ({ column, roundInfo }) => {
+export const ProjectList: React.FC<Params> = ({ column, roundInfo, playerInfo }) => {
   const [projects, setProjects] = useState<Project[]>();
 
   if (projects == undefined) {
@@ -26,7 +28,7 @@ export const ProjectList: React.FC<Params> = ({ column, roundInfo }) => {
   return (
     <Container>
       <header>
-        <h2>{column.name}</h2>
+        <h2>{getTextByProjectStatus(column.status, playerInfo.language)}</h2>
       </header>
       <Droppable droppableId={column.id}>
         {(provided, snapshot) => (
@@ -57,3 +59,13 @@ export const ProjectList: React.FC<Params> = ({ column, roundInfo }) => {
     </Container>
   );
 };
+
+function getTextByProjectStatus(status: ProjectStatus, language: Language): string {
+  const map = new Map<ProjectStatus, LanguageText>([
+    [ProjectStatus.TO_DO ,LanguageText.BACKLOG],
+    [ProjectStatus.IN_PROGRESS ,LanguageText.IN_DEVELOPMENT],
+    [ProjectStatus.DONE ,LanguageText.DONE],
+]);
+
+  return getText(map.get(status)!, language)
+}

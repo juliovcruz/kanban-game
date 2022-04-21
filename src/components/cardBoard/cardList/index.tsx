@@ -6,15 +6,17 @@ import { Container } from "./styles";
 import { CardColumn } from "..";
 import { CardTaskClass } from "../../../model/CardTask";
 import { ActionType } from "../../../model/ActionType";
-import { RoundInfo } from "../../../App";
+import { PlayerInfo, RoundInfo } from "../../../App";
+import { getText, Language, LanguageText } from "../../../model/Language";
 
 export interface Params {
   column: CardColumn;
   roundInfo: RoundInfo;
+  playerInfo: PlayerInfo
   usePoint: (type: ActionType) => Boolean;
 }
 
-export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo }) => {
+export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo, playerInfo }) => {
   const [cards, setCards] = useState<CardTaskClass[]>();
 
   if (cards == undefined) {
@@ -24,7 +26,7 @@ export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo }) => {
   return (
     <Container>
       <header>
-        <h2>{column.name}</h2>
+        <h2>{getTextByActionType(column.type, playerInfo.language)}</h2>
       </header>
       <Droppable droppableId={column.id}>
         {(provided, snapshot) => (
@@ -57,3 +59,16 @@ export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo }) => {
     </Container>
   );
 };
+
+function getTextByActionType(actionType: ActionType, language: Language): string {
+  const map = new Map<ActionType, LanguageText>([
+    [ActionType.BACKLOG ,LanguageText.BACKLOG],
+    [ActionType.PRODUCT_OWNER ,LanguageText.IN_ANALYSIS],
+    [ActionType.DEVELOPER ,LanguageText.IN_DEVELOPMENT],
+    [ActionType.QUALITY_ASSURANCE ,LanguageText.IN_TESTS],
+    [ActionType.DEPLOY ,LanguageText.WAITING_DEPLOY],
+    [ActionType.PRODUCTION ,LanguageText.IN_PRODUCTION],
+]);
+
+  return getText(map.get(actionType)!, language)
+}
