@@ -140,6 +140,7 @@ export const CardBoard: React.FC<Params> = ({
     })
 
     updateCardColumns(columns!)
+    database.setCardColumns(columns!)
   }
 
   function getColumnById(columns: CardColumn[], id: string): ColumnIndex {

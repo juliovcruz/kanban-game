@@ -93,6 +93,7 @@ export enum Day {
 
 export type RoundEvent = {
   newProject: Project | null
+  newCardBug: CardTaskClass | null
 }
 
 export class RoundInfo {
@@ -228,6 +229,9 @@ export const App: React.FC<Params> = ({database}) => {
       if(event != null) {
         if(event.newProject != null) {
           board.projectColumns[0].projects.push(event.newProject)
+        }
+        if(event.newCardBug != null) {
+          board.cardColumns[0].cards.push(event.newCardBug)
         }
       }
 

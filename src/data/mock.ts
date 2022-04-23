@@ -389,7 +389,29 @@ function generateProjects(): Project[] {
   ]
 }
 
+type PointPowerUpCard = {
+  analysis: number,
+  develop: number,
+  test: number
+}
+
 export function generateCardPowerUp(powerUp: PlayerPowerUps): CardTaskClass {
+    const map = new Map<PlayerPowerUps, PointPowerUpCard>([
+      [PlayerPowerUps.AUTOMATION, {analysis: 3, develop: 2, test: 2}],
+      [PlayerPowerUps.CI_CD, {analysis: 1, develop: 3, test: 2}],
+      [PlayerPowerUps.NEW_DEV, {analysis: 2, develop: 3, test: 2}],
+      [PlayerPowerUps.NEW_PO, {analysis: 3, develop: 2, test: 2}],
+      [PlayerPowerUps.NEW_QA, {analysis: 2, develop: 2, test: 3}],
+      [PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO, {analysis: 3, develop: 0, test: 1}],
+      [PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA, {analysis: 1, develop: 0, test: 3}],
+      [PlayerPowerUps.TRAIN_PO_TO_ACTION_QA, {analysis: 0, develop: 1, test: 3}],
+      [PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV, {analysis: 0, develop: 3, test: 1}],
+      [PlayerPowerUps.TRAIN_QA_TO_ACTION_PO, {analysis: 3, develop: 1, test: 0}],
+      [PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV, {analysis: 1, develop: 3, test: 0}],
+  ]);
+
+  const points = map.get(powerUp)!
+
   return {
     canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
     addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
@@ -399,7 +421,7 @@ export function generateCardPowerUp(powerUp: PlayerPowerUps): CardTaskClass {
     start: CardTaskClass.prototype.start,
     end: CardTaskClass.prototype.end,
     lastMove: -1,
-    name: PlayerPowerUps[powerUp],
+    name: 'IMP',
     projectId: 'P',
     projectName: 'P',
     price: 0,
@@ -412,24 +434,27 @@ export function generateCardPowerUp(powerUp: PlayerPowerUps): CardTaskClass {
     pontuation: {
       analysis: {
         inserted: 0,
-        needed: 1,
+        needed: points.analysis,
       },
       develop: {
         inserted: 0,
-        needed: 1,
+        needed: points.develop,
       },
       test: {
         inserted: 0,
-        needed: 1,
+        needed: points.test,
       },
     },
   }
 }
 
 export function generateEmployeeByMainAction(action: ActionType, cardRoundStart: number): Employee {
+  const actions: ActionType[] = [action]
+  if(action == ActionType.DEVELOPER) actions.push(ActionType.DEPLOY)
+
   return {
     canBeMoveTo: Employee.prototype.canBeMoveTo,
-    actions: [action],
+    actions: actions,
     id: uuidv4(),
     mainAction: action,
     name: getNameByRoundStart(cardRoundStart),
@@ -450,6 +475,10 @@ function getNameByRoundStart(cardRoundStart: number): string {
 
 export function getRoundEvent(roundNumber: number): RoundEvent | undefined {
   const eventMap = new Map<number, RoundEvent>([
+    [2,   {
+      newProject: null,
+      newCardBug: generateCardBug(1, 1, 20)
+    }],
     [5,   {
       newProject: {
         id: uuidv4(),
@@ -462,7 +491,12 @@ export function getRoundEvent(roundNumber: number): RoundEvent | undefined {
         end: Project.prototype.end,
         generateCards: Project.prototype.generateCards,
         canBeDone: Project.prototype.canBeDone
-      }
+      },
+      newCardBug: null
+    }],
+    [8,   {
+      newProject: null,
+      newCardBug: generateCardBug(2, 1, 100)
     }],
     [10,   {
       newProject: {
@@ -476,7 +510,12 @@ export function getRoundEvent(roundNumber: number): RoundEvent | undefined {
         end: Project.prototype.end,
         generateCards: Project.prototype.generateCards,
         canBeDone: Project.prototype.canBeDone
-      }
+      },
+      newCardBug: null
+    }],
+    [11,   {
+      newProject: null,
+      newCardBug: generateCardBug(4, 2, 100)
     }],
     [15,   {
       newProject: {
@@ -490,7 +529,12 @@ export function getRoundEvent(roundNumber: number): RoundEvent | undefined {
         end: Project.prototype.end,
         generateCards: Project.prototype.generateCards,
         canBeDone: Project.prototype.canBeDone
-      }
+      },
+      newCardBug: null
+    }],
+    [18,   {
+      newProject: null,
+      newCardBug: generateCardBug(4, 2, 100)
     }],
     [25,   {
       newProject: {
@@ -504,7 +548,12 @@ export function getRoundEvent(roundNumber: number): RoundEvent | undefined {
         end: Project.prototype.end,
         generateCards: Project.prototype.generateCards,
         canBeDone: Project.prototype.canBeDone
-      }
+      },
+      newCardBug: null
+    }],
+    [22,   {
+      newProject: null,
+      newCardBug: generateCardBug(5, 3, 200)
     }],
     [35,   {
       newProject: {
@@ -518,7 +567,12 @@ export function getRoundEvent(roundNumber: number): RoundEvent | undefined {
         end: Project.prototype.end,
         generateCards: Project.prototype.generateCards,
         canBeDone: Project.prototype.canBeDone
-      }
+      },
+      newCardBug: null
+    }],
+    [47,   {
+      newProject: null,
+      newCardBug: generateCardBug(10, 5, 200)
     }],
     [45,   {
       newProject: {
@@ -532,9 +586,82 @@ export function getRoundEvent(roundNumber: number): RoundEvent | undefined {
         end: Project.prototype.end,
         generateCards: Project.prototype.generateCards,
         canBeDone: Project.prototype.canBeDone
-      }
+      },
+      newCardBug: null
     }],
   ]);
 
   return eventMap.get(roundNumber)
+}
+
+export function generateCard(project: Project, maxPoint: number, minPoint: number, name: string): CardTaskClass {
+  return {
+    canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+    addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+    addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+    addPointTest: CardTaskClass.prototype.addPointTest,
+    setLastMove: CardTaskClass.prototype.setLastMove,
+    start: CardTaskClass.prototype.start,
+    end: CardTaskClass.prototype.end,
+    lastMove: -1,
+    name: name,
+    projectId: project.id,
+    projectName: project.name,
+    price: 0,
+    cardBug: false,
+    archived: false,
+    index: 4,
+    id: uuidv4(),
+    number: 3,
+    pontuation: {
+      analysis: {
+        inserted: 0,
+        needed: Math.floor(Math.random() * (maxPoint - minPoint + 1) + minPoint),
+      },
+      develop: {
+        inserted: 0,
+        needed: Math.floor(Math.random() * (maxPoint - minPoint + 1) + minPoint),
+      },
+      test: {
+        inserted: 0,
+        needed: Math.floor(Math.random() * (maxPoint - minPoint + 1) + minPoint),
+      },
+    },
+  }
+}
+
+export function generateCardBug(maxPoint: number, minPoint: number, price: number): CardTaskClass {
+  return {
+    canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
+    addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
+    addPointDevelop: CardTaskClass.prototype.addPointDevelop,
+    addPointTest: CardTaskClass.prototype.addPointTest,
+    setLastMove: CardTaskClass.prototype.setLastMove,
+    start: CardTaskClass.prototype.start,
+    end: CardTaskClass.prototype.end,
+    lastMove: -1,
+    name: 'BUG',
+    projectId: uuidv4(),
+    projectName: 'BUG',
+    price: price,
+    cardBug: true,
+    archived: false,
+    index: 4,
+    id: uuidv4(),
+    number: 3,
+    pontuation: {
+      analysis: {
+        inserted: 0,
+        needed: Math.floor(Math.random() * (maxPoint - minPoint + 1) + minPoint),
+      },
+      develop: {
+        inserted: 0,
+        needed: Math.floor(Math.random() * (maxPoint - minPoint + 1) + minPoint),
+      },
+      test: {
+        inserted: 0,
+        needed: Math.floor(Math.random() * (maxPoint - minPoint + 1) + minPoint),
+      },
+    },
+  }
 }
