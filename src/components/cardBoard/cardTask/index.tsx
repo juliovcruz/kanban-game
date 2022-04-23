@@ -61,7 +61,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       setState(novoCard);
       return;
     } else {
-      setError({ bool: true, message: response.message });
+      setError({ bool: true, message: getText(response.text!, playerInfo.language) });
     }
   }
 
@@ -90,7 +90,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       setState(novoCard);
       return;
     } else {
-      setError({ bool: true, message: response.message });
+      setError({ bool: true, message: getText(response.text!, playerInfo.language) });
     }
   }
 
@@ -119,7 +119,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       setState(novoCard);
       return;
     } else {
-      setError({ bool: true, message: response.message });
+      setError({ bool: true, message: getText(response.text!, playerInfo.language) });
     }
   }
 

@@ -66,7 +66,8 @@ export enum LanguageText {
     ERROR_PROJECT_NOT_DONE,
     POWER_UP_AUTOMATION_INFO_FINISH,
     POWER_UP_CI_CD_INFO_FINISH,
-    POWER_UP_GENERIC_INFO_FINISH
+    POWER_UP_GENERIC_INFO_FINISH,
+    ARCHIVED
 }
 
 export type LanguageResult = {
@@ -122,6 +123,7 @@ const textMap = new Map<LanguageText, LanguageResult>([
     [LanguageText.EMPLOYEES, {br: 'EQUIPE', en: 'TEAM'}],
     [LanguageText.PROJECTS, {br: 'PROJETOS', en: 'PROJECTS'}],
     [LanguageText.TASKS, {br: 'TAREFAS', en: 'TASKS'}],
+    [LanguageText.ARCHIVED, {br: 'Tarefas Arquivadas', en: 'Tasks Archiveds'}],
     [LanguageText.SHOP_DAY, {br: 'A loja está aberta', en: 'Store is open'}],
     [LanguageText.ERROR_EMPLOYEE_ACTION_WRONG, {br: 'Esse funcionário não consegue relizar essa função.', en: 'This employee cannot perform this function.'}],
     [LanguageText.ERROR_CARD_MOVE_DEVELOPER_WRONG, {br: 'Não é possível mover para desenvolvimento.', en: 'Cannot move to development.'}],

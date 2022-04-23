@@ -22,7 +22,17 @@ export const Container = styled.div`
         justify-content: baseline;
     }
 
-    header {
-        color: ${base.purple}
+    .title-list {
+        display: flex;
+        flex-direction: row;
+
+
+        h2 {
+            color: ${base.purple}
+        }
+
+        .archive-icon {
+            cursor: pointer;
+        }
     }
 `;

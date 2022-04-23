@@ -10,9 +10,14 @@ import Box from "@mui/material/Box";
 import { useState } from "react";
 import { DescriptionModal } from "../shopDrawer/shopModal";
 import { base } from "../../styles/colors";
+import InventoryIcon from '@mui/icons-material/Inventory';
+import { CardColumn } from "../cardBoard";
+import { CardTaskClass } from "../../model/CardTask";
+import { ArchiveModal } from "./archiveModal";
 
 export type Params = {
   playerInfo: PlayerInfo;
+  cardColumns: CardColumn[];
   updateLanguage: (language: Language) => void;
   resetBoard: () => void;
 };
@@ -33,18 +38,29 @@ const style = {
 export const FooterBoard: React.FC<Params> = ({
   playerInfo,
   updateLanguage,
-  resetBoard
+  resetBoard,
+  cardColumns
 }) => {
   const [modal, setModal] = useState(false);
+  const [archive, setArchive] = useState(false);
 
   return (
     <Container>
       <div className="language">
       {playerInfo.language == Language.BR ? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
       </div>
-      <div className="reset">
-        <RestartAltIcon onClick={() => setModal(true)}></RestartAltIcon>
+
+      <div className="icons">
+        <div className="archive">
+          <InventoryIcon onClick={() => setArchive(true)}></InventoryIcon>
+        </div>
+
+        <div className="reset">
+          <RestartAltIcon onClick={() => setModal(true)}></RestartAltIcon>
+        </div>
       </div>
+
+      
       <Modal
         open={modal}
         onClose={() => setModal(false)}
@@ -60,10 +76,37 @@ export const FooterBoard: React.FC<Params> = ({
               salary: undefined,
               increase: undefined,
               description: getText(LanguageText.RESET_BOARD_DESCRIPTION, playerInfo.language)
-            }}            >
+            }} >
           </DescriptionModal>
+        </Box>
+      </Modal>
+      <Modal
+        open={archive}
+        onClose={() => setArchive(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+        <h2>{getText(LanguageText.ARCHIVED, playerInfo.language)}</h2>
+        {getArchivedCads(cardColumns).map((item, index) => (
+          <ArchiveModal
+            card={item}
+          ></ArchiveModal>
+        ))}
         </Box>
       </Modal>
     </Container>
   );
 };
+
+function getArchivedCads(columns: CardColumn[]): CardTaskClass[] {
+  let cards: CardTaskClass[] = []
+
+  columns.forEach((column) => {
+    column.cards.forEach((card) => {
+      if(card.archived) cards.push(card)
+    })
+  })
+
+  return cards.sort((n1, n2) => n1.projectName.localeCompare(n2.projectName))
+}

@@ -23,6 +23,7 @@ export class CardTaskClass {
   roundStarted?: number;
   roundEnded?: number;
   powerUp?: PlayerPowerUps
+  archived: boolean = false
 
   setLastMove(roundInfo: RoundInfo) {
     this.lastMove = roundInfo.number
@@ -65,6 +66,10 @@ export class CardTaskClass {
           text: LanguageText.ERROR_CARD_MOVE_DEPLOY_WRONG
         };
       case ActionType.PRODUCTION:
+        if(this.pontuation.test.inserted != this.pontuation.test.needed) {
+          return {bool: false, text: LanguageText.ERROR_CARD_PRODUCTION_NO_DAY}
+        }
+
         if(playerInfo.powerUps.some(e => e === PlayerPowerUps.AUTOMATION) && deployDay) {
           return { bool: true }
         }
@@ -79,10 +84,9 @@ export class CardTaskClass {
             text: LanguageText.ERROR_CARD_PRODUCTION_NO_EMPLOYEE
           };
         }
+
         return { 
-          bool: actualColumnType == ActionType.DEPLOY &&
-          deployDay &&
-          this.pontuation.test.inserted == this.pontuation.test.needed,
+          bool: deployDay,
           text: LanguageText.ERROR_CARD_PRODUCTION_NO_DAY
         };
       case ActionType.ARCHIVED:

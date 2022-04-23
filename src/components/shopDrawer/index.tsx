@@ -273,9 +273,9 @@ function getDescriptionByPowerUp(powerUp: PlayerPowerUps, language: Language): s
 
 export function getSalaryByPowerUp(powerUp: PlayerPowerUps): number | undefined{
   const map = new Map<PlayerPowerUps, number>([
-    [PlayerPowerUps.NEW_DEV, 400],
-    [PlayerPowerUps.NEW_PO, 400],
-    [PlayerPowerUps.NEW_QA, 400],
+    [PlayerPowerUps.NEW_DEV, 150],
+    [PlayerPowerUps.NEW_PO, 150],
+    [PlayerPowerUps.NEW_QA, 150],
   ]);
 
   return map.get(powerUp)

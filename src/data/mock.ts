@@ -2,7 +2,7 @@ import { CardColumn } from "../components/cardBoard";
 import { ActionType } from "../model/ActionType";
 import { CardTaskClass } from "../model/CardTask";
 import { v4 as uuidv4 } from "uuid";
-import { Day, PlayerPowerUps, PlayerRoundPoints, RoundInfo } from "../App";
+import { Day, PlayerPowerUps, PlayerRoundPoints, RoundEvent, RoundInfo } from "../App";
 import { EmployeeColumn } from "../components/employeeBoard";
 import { Employee } from "../model/Employee";
 import { Project, ProjectDifficulty, ProjectStatus } from "../model/Project";
@@ -85,6 +85,7 @@ export function generateColumns(): CardColumn[] {
         index: 1,
         id: uuidv4(),
         number: 3,
+        archived: false,
         pontuation: {
           analysis: {
             inserted: 0,
@@ -114,6 +115,7 @@ export function generateColumns(): CardColumn[] {
         price: 0,
         cardBug: false,
         name: "UST02",
+        archived: false,
         index: 2,
         id: uuidv4(),
         number: 3,
@@ -146,6 +148,7 @@ export function generateColumns(): CardColumn[] {
         projectName: project.name,
         price: 1000,
         cardBug: true,
+        archived: false,
         index: 4,
         id: uuidv4(),
         number: 3,
@@ -180,6 +183,7 @@ export function generateColumns(): CardColumn[] {
         name: "UST04",
         index: 5,
         id: uuidv4(),
+        archived: false,
         number: 3,
         pontuation: {
           analysis: {
@@ -211,6 +215,7 @@ export function generateColumns(): CardColumn[] {
         cardBug: true,
         name: "UST04",
         index: 5,
+        archived: false,
         id: uuidv4(),
         number: 3,
         pontuation: {
@@ -244,6 +249,7 @@ export function generateColumns(): CardColumn[] {
         name: "UST04",
         index: 5,
         id: uuidv4(),
+        archived: false,
         number: 3,
         pontuation: {
           analysis: {
@@ -274,7 +280,7 @@ export function generateColumns(): CardColumn[] {
             mainAction: ActionType.PRODUCT_OWNER,
             name: 'Tali',
             roundMovedToDeploy: 0,
-            price: 100
+            price: 150
           }
         ],
         id: uuidv4(),
@@ -288,9 +294,9 @@ export function generateColumns(): CardColumn[] {
             actions: [ActionType.DEVELOPER, ActionType.DEPLOY],
             id: uuidv4(),
             mainAction: ActionType.DEVELOPER,
-            name: 'Dani',
+            name: 'Julin',
             roundMovedToDeploy: 0,
-            price: 100
+            price: 120
           },
           {
             canBeMoveTo: Employee.prototype.canBeMoveTo,
@@ -299,7 +305,7 @@ export function generateColumns(): CardColumn[] {
             name: 'Esther',
             mainAction: ActionType.DEVELOPER,
             roundMovedToDeploy: 0,
-            price: 100
+            price: 140
           },
         ],
         id: uuidv4(),
@@ -315,7 +321,7 @@ export function generateColumns(): CardColumn[] {
             name: 'Gui',
             mainAction: ActionType.QUALITY_ASSURANCE,
             roundMovedToDeploy: 0,
-            price: 100
+            price: 130
           }
         ],
         id: uuidv4(),
@@ -361,8 +367,8 @@ function generateProjects(): Project[] {
       name: 'A',
       status: ProjectStatus.TO_DO,
       difficulty: ProjectDifficulty.EASY,
-      price: 250,
-      deadLine: 10,
+      price: 200,
+      deadLine: 15,
       start: Project.prototype.start,
       end: Project.prototype.end,
       generateCards: Project.prototype.generateCards,
@@ -373,8 +379,8 @@ function generateProjects(): Project[] {
       name: 'B',
       status: ProjectStatus.TO_DO,
       difficulty: ProjectDifficulty.MEDIUM,
-      price: 250,
-      deadLine: 10,
+      price: 200,
+      deadLine: 15,
       start: Project.prototype.start,
       end: Project.prototype.end,
       generateCards: Project.prototype.generateCards,
@@ -399,6 +405,7 @@ export function generateCardPowerUp(powerUp: PlayerPowerUps): CardTaskClass {
     price: 0,
     cardBug: false,
     powerUp: powerUp,
+    archived: false,
     index: 4,
     id: uuidv4(),
     number: 3,
@@ -419,16 +426,115 @@ export function generateCardPowerUp(powerUp: PlayerPowerUps): CardTaskClass {
   }
 }
 
-export function generateEmployeeByMainAction(action: ActionType): Employee {
-  let name = 'Julin'
-
+export function generateEmployeeByMainAction(action: ActionType, cardRoundStart: number): Employee {
   return {
     canBeMoveTo: Employee.prototype.canBeMoveTo,
     actions: [action],
     id: uuidv4(),
     mainAction: action,
-    name: name,
+    name: getNameByRoundStart(cardRoundStart),
     roundMovedToDeploy: 0,
-    price: 100
+    price: 150
   }
+}
+
+function getNameByRoundStart(cardRoundStart: number): string {
+  if(cardRoundStart < 6) return 'Fafa'
+  if(cardRoundStart < 11) return 'Lucas'
+  if(cardRoundStart < 16) return 'Dayane'
+  if(cardRoundStart < 21) return 'Dani'
+  if(cardRoundStart < 26) return 'Marcos'
+  if(cardRoundStart < 31) return 'Lander'
+  return 'Victor'
+}
+
+export function getRoundEvent(roundNumber: number): RoundEvent | undefined {
+  const eventMap = new Map<number, RoundEvent>([
+    [5,   {
+      newProject: {
+        id: uuidv4(),
+        name: 'C',
+        status: ProjectStatus.TO_DO,
+        difficulty: ProjectDifficulty.MEDIUM,
+        price: 220,
+        deadLine: 25,
+        start: Project.prototype.start,
+        end: Project.prototype.end,
+        generateCards: Project.prototype.generateCards,
+        canBeDone: Project.prototype.canBeDone
+      }
+    }],
+    [10,   {
+      newProject: {
+        id: uuidv4(),
+        name: 'D',
+        status: ProjectStatus.TO_DO,
+        difficulty: ProjectDifficulty.MEDIUM,
+        price: 320,
+        deadLine: 25,
+        start: Project.prototype.start,
+        end: Project.prototype.end,
+        generateCards: Project.prototype.generateCards,
+        canBeDone: Project.prototype.canBeDone
+      }
+    }],
+    [15,   {
+      newProject: {
+        id: uuidv4(),
+        name: 'E',
+        status: ProjectStatus.TO_DO,
+        difficulty: ProjectDifficulty.EASY,
+        price: 400,
+        deadLine: 25,
+        start: Project.prototype.start,
+        end: Project.prototype.end,
+        generateCards: Project.prototype.generateCards,
+        canBeDone: Project.prototype.canBeDone
+      }
+    }],
+    [25,   {
+      newProject: {
+        id: uuidv4(),
+        name: 'F',
+        status: ProjectStatus.TO_DO,
+        difficulty: ProjectDifficulty.HARD,
+        price: 280,
+        deadLine: 35,
+        start: Project.prototype.start,
+        end: Project.prototype.end,
+        generateCards: Project.prototype.generateCards,
+        canBeDone: Project.prototype.canBeDone
+      }
+    }],
+    [35,   {
+      newProject: {
+        id: uuidv4(),
+        name: 'G',
+        status: ProjectStatus.TO_DO,
+        difficulty: ProjectDifficulty.HARD,
+        price: 280,
+        deadLine: 45,
+        start: Project.prototype.start,
+        end: Project.prototype.end,
+        generateCards: Project.prototype.generateCards,
+        canBeDone: Project.prototype.canBeDone
+      }
+    }],
+    [45,   {
+      newProject: {
+        id: uuidv4(),
+        name: 'H',
+        status: ProjectStatus.TO_DO,
+        difficulty: ProjectDifficulty.HARD,
+        price: 500,
+        deadLine: 50,
+        start: Project.prototype.start,
+        end: Project.prototype.end,
+        generateCards: Project.prototype.generateCards,
+        canBeDone: Project.prototype.canBeDone
+      }
+    }],
+  ]);
+
+  return eventMap.get(roundNumber)
 }

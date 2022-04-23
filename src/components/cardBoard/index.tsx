@@ -32,7 +32,7 @@ export type Params = {
   playerInfo: PlayerInfo,
   usePoint: (type: ActionType) => Boolean,
   updateCardColumns: (cardColumns: CardColumn[]) => void
-  finishPowerUp: (powerUp: PlayerPowerUps) => void
+  finishPowerUp: (powerUp: PlayerPowerUps, cardRoundStart: number) => void
 };
 
 export const CardBoard: React.FC<Params> = ({ 
@@ -107,7 +107,7 @@ export const CardBoard: React.FC<Params> = ({
       case ActionType.PRODUCTION: {
         if(card.powerUp != null) {
           setError({bool: true, message: getFinishTextByPowerUp(card.powerUp, playerInfo.language), info: true})
-          finishPowerUp(card.powerUp)
+          finishPowerUp(card.powerUp, card.roundStarted!)
         }
         card.end(roundInfo)
         break
@@ -132,6 +132,16 @@ export const CardBoard: React.FC<Params> = ({
     database.setCardColumns(columns)
   };
 
+  const archiveCards = () => {
+    columns!.forEach((column) => {
+      column.cards.forEach((card) => {
+        if(card.roundEnded != null) card.archived = true
+      })
+    })
+
+    updateCardColumns(columns!)
+  }
+
   function getColumnById(columns: CardColumn[], id: string): ColumnIndex {
     const column = columns.filter((x) => x.id == id)[0];
     return {
@@ -147,6 +157,7 @@ export const CardBoard: React.FC<Params> = ({
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
           <CardList
+            archiveCards={archiveCards}
             playerInfo={playerInfo}
             column={item}
             usePoint={usePoint}

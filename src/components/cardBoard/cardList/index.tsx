@@ -8,15 +8,17 @@ import { CardTaskClass } from "../../../model/CardTask";
 import { ActionType } from "../../../model/ActionType";
 import { PlayerInfo, RoundInfo } from "../../../App";
 import { getText, Language, LanguageText } from "../../../model/Language";
+import ArchiveIcon from '@mui/icons-material/Archive';
 
 export interface Params {
   column: CardColumn;
   roundInfo: RoundInfo;
   playerInfo: PlayerInfo
   usePoint: (type: ActionType) => Boolean;
+  archiveCards: () => void;
 }
 
-export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo, playerInfo }) => {
+export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo, playerInfo, archiveCards }) => {
   const [cards, setCards] = useState<CardTaskClass[]>();
 
   if (cards == undefined) {
@@ -25,9 +27,11 @@ export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo, player
 
   return (
     <Container>
-      <header>
-        <h2>{getTextByActionType(column.type, playerInfo.language)}</h2>
-      </header>
+      <div className="title-list">
+        <h2>{getTextByActionType(column.type, playerInfo.language)}
+        {column.type == ActionType.PRODUCTION ? <div onClick={() => archiveCards()}className="archive-icon"><ArchiveIcon fontSize="small"></ArchiveIcon></div> : ""}
+        </h2>
+      </div>
       <Droppable droppableId={column.id}>
         {(provided, snapshot) => (
           <div
@@ -42,6 +46,7 @@ export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo, player
             {provided.placeholder}
             <ul key={column.id}>
               {column.cards?.map((item, index) => (
+                !item.archived ?
                 <li key={item.id}>
                   <CardTaskComponent
                     playerInfo={playerInfo}
@@ -51,7 +56,7 @@ export const CardList: React.FC<Params> = ({ column, usePoint, roundInfo, player
                     usePoint={usePoint}
                     roundInfo={roundInfo}
                   ></CardTaskComponent>
-                </li>
+                </li> : ""
               ))}
             </ul>
           </div>

@@ -8,9 +8,14 @@ export const Container = styled.div`
     
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
 
     position: static;
+
+    .icons {
+        display: flex;
+        flex-direction: row;
+    }
 
     .language {
         cursor: pointer;
@@ -19,6 +24,12 @@ export const Container = styled.div`
 
     .reset {
         cursor: pointer;
-        color: ${base.white}
+        color: ${base.white};
+    }
+
+    .archive {
+        cursor: pointer;
+        color: ${base.light_purple};
+        margin-right: 30px;
     }
 `;

@@ -3,7 +3,7 @@ import { CardBoard, CardColumn } from "./components/cardBoard";
 import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
-import { generateCardPowerUp, generateColumns, generateEmployeeByMainAction, generateEmployeeColumns, generateProjectColumns, startRound } from "./data/mock";
+import { generateCardPowerUp, generateColumns, generateEmployeeByMainAction, generateEmployeeColumns, generateProjectColumns, getRoundEvent, startRound } from "./data/mock";
 import { Database } from "./data/database";
 import { CardTaskClass } from "./model/CardTask";
 import { v4 as uuidv4 } from "uuid";
@@ -15,6 +15,7 @@ import FlagUS from './assets/flags/us.svg'
 import { getText, Language, LanguageText } from "./model/Language";
 import { getPriceByPowerUp } from "./components/shopDrawer";
 import { FooterBoard } from "./components/footerBoard";
+import { Project } from "./model/Project";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -90,6 +91,10 @@ export enum Day {
   FRIDAY
 }
 
+export type RoundEvent = {
+  newProject: Project | null
+}
+
 export class RoundInfo {
   number!: number;
   playerRoundPoints!: PlayerRoundPoints;
@@ -145,7 +150,7 @@ export const App: React.FC<Params> = ({database}) => {
         lastPrice: 0,
         actualPrice: 0,
         powerUps: [],
-        language: Language.EN,
+        language: board.playerInfo.language,
         lastBuy: 0
       },
       newCards: BoardInfo.prototype.newCards,
@@ -218,6 +223,13 @@ export const App: React.FC<Params> = ({database}) => {
       board.playerInfo.actualPrice += getEmployeePrice(board.employeeColumns)
       board.playerInfo.actualPrice += getCardPrice(board.cardColumns)
       board.playerInfo.actualPrice += getProjectPrice(board.projectColumns, newRound)
+
+      const event = getRoundEvent(round.number)
+      if(event != null) {
+        if(event.newProject != null) {
+          board.projectColumns[0].projects.push(event.newProject)
+        }
+      }
 
       setBoard(board)
       database.setCardColumns(board.cardColumns)
@@ -329,7 +341,7 @@ export const App: React.FC<Params> = ({database}) => {
     return true;
   };
 
-  const finishPowerUp = (powerUp: PlayerPowerUps) => {
+  const finishPowerUp = (powerUp: PlayerPowerUps, cardRoundStart: number) => {
     switch (powerUp) {
       case PlayerPowerUps.AUTOMATION: 
       case PlayerPowerUps.CI_CD: {
@@ -371,7 +383,7 @@ export const App: React.FC<Params> = ({database}) => {
 
         const columns = board!.employeeColumns
         const newColumn = board!.employeeColumns[columnIndex].employees
-        newColumn.push(generateEmployeeByMainAction(powerUpToAction.get(powerUp)!!))
+        newColumn.push(generateEmployeeByMainAction(powerUpToAction.get(powerUp)!!, cardRoundStart))
         columns[columnIndex].employees = newColumn
   
         board!.buyPowerUp(round!)
@@ -498,7 +510,12 @@ export const App: React.FC<Params> = ({database}) => {
         finishPowerUp={finishPowerUp}
         playerInfo={board!.playerInfo}
       ></CardBoard>
-      <FooterBoard playerInfo={board!.playerInfo} updateLanguage={updateLanguage} resetBoard={resetBoard}></FooterBoard>
+      <FooterBoard 
+      playerInfo={board!.playerInfo} 
+      updateLanguage={updateLanguage} 
+      resetBoard={resetBoard}
+      cardColumns={board!.cardColumns}
+      ></FooterBoard>
       <GlobalStyle />
     </>
   );
@@ -548,7 +565,7 @@ function getProjectPrice(columns: ProjectColumn[], roundInfo: RoundInfo) {
 
   columns.forEach((column) => {
     column.projects.forEach((project) => {
-      if(project.roundStarted != null && project.roundEnded == null) price+= project.price
+      if(project.roundEnded == null) price+= project.price
       if(project.deadLine > roundInfo.number) price+= project.price
     })
   })
