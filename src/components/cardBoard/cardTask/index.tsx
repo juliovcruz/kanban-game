@@ -4,22 +4,25 @@ import { PontuationComponent } from "./pontuation";
 import { ActionType } from "../../../model/ActionType";
 import { useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
-import { RoundInfo } from "../../../App";
+import { PlayerInfo, RoundInfo } from "../../../App";
 import React from "react";
 import { SnackBarAlert } from "../../snackBarAlert/snackBarAlert";
 import { base } from "../../../styles/colors";
+import { getText, LanguageText } from "../../../model/Language";
 
 export interface Params {
   cardTask: CardTaskClass;
   index: number;
   actualColumnType: ActionType;
   roundInfo: RoundInfo;
+  playerInfo: PlayerInfo,
   usePoint: (type: ActionType) => Boolean;
 }
 
 export type ErrorState = {
   bool: Boolean;
   message?: string;
+  info?: boolean
 };
 
 export const CardTaskComponent: React.FC<Params> = ({
@@ -28,6 +31,7 @@ export const CardTaskComponent: React.FC<Params> = ({
   actualColumnType,
   usePoint,
   roundInfo,
+  playerInfo
 }) => {
   const [card, setState] = useState<CardTaskClass>(cardTask);
   const [stateError, setError] = useState<ErrorState>();
@@ -38,7 +42,7 @@ export const CardTaskComponent: React.FC<Params> = ({
     if (roundInfo.playerRoundPoints.analysis <= 0) {
       setError({
         bool: true,
-        message: "Não há pontos suficientes para utilizar",
+        message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
       });
       return;
     }
@@ -49,7 +53,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       if (!usePoint(actualColumnType)) {
         setError({
           bool: true,
-          message: "Não há pontos suficientes para utilizar",
+          message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
         });
         return;
       }
@@ -57,7 +61,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       setState(novoCard);
       return;
     } else {
-      setError({ bool: true, message: response.message });
+      setError({ bool: true, message: getText(response.text!, playerInfo.language) });
     }
   }
 
@@ -67,7 +71,7 @@ export const CardTaskComponent: React.FC<Params> = ({
     if (roundInfo.playerRoundPoints.develop <= 0) {
       setError({
         bool: true,
-        message: "Não há pontos suficientes para utilizar",
+        message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
       });
       return;
     }
@@ -78,7 +82,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       if (!usePoint(actualColumnType)) {
         setError({
           bool: true,
-          message: "Não há pontos suficientes para utilizar",
+          message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
         });
         return;
       }
@@ -86,7 +90,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       setState(novoCard);
       return;
     } else {
-      setError({ bool: true, message: response.message });
+      setError({ bool: true, message: getText(response.text!, playerInfo.language) });
     }
   }
 
@@ -96,7 +100,7 @@ export const CardTaskComponent: React.FC<Params> = ({
     if (roundInfo.playerRoundPoints.test <= 0) {
       setError({
         bool: true,
-        message: "Não há pontos suficientes para utilizar",
+        message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
       });
       return;
     }
@@ -107,7 +111,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       if (!usePoint(actualColumnType)) {
         setError({
           bool: true,
-          message: "Não há pontos suficientes para utilizar",
+          message: getText(LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, playerInfo.language)
         });
         return;
       }
@@ -115,7 +119,7 @@ export const CardTaskComponent: React.FC<Params> = ({
       setState(novoCard);
       return;
     } else {
-      setError({ bool: true, message: response.message });
+      setError({ bool: true, message: getText(response.text!, playerInfo.language) });
     }
   }
 
@@ -124,7 +128,7 @@ export const CardTaskComponent: React.FC<Params> = ({
     <>
       <Draggable key={card.id} draggableId={card.id} index={index}>
         {(provided, snapshot) => (
-          <Container color={card.cardBug ? base.red : base.dark_purple}
+          <Container color={colorCard(card)}
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -141,6 +145,7 @@ export const CardTaskComponent: React.FC<Params> = ({
                 <div className="pontuations">
                   <div className="analysis-points">
                     <PontuationComponent
+                      onlyActual={false}
                       actual={card.pontuation.analysis.inserted}
                       needed={card.pontuation.analysis.needed}
                       onChange={addAnalysis}
@@ -149,6 +154,7 @@ export const CardTaskComponent: React.FC<Params> = ({
                   </div>
                   <div className="dev-points">
                     <PontuationComponent
+                      onlyActual={false}
                       actual={card.pontuation.develop.inserted}
                       needed={card.pontuation.develop.needed}
                       onChange={addDeveloper}
@@ -157,6 +163,7 @@ export const CardTaskComponent: React.FC<Params> = ({
                   </div>
                   <div className="test-points">
                     <PontuationComponent
+                      onlyActual={false}
                       actual={card.pontuation.test.inserted}
                       needed={card.pontuation.test.needed}
                       onChange={addTest}
@@ -176,6 +183,7 @@ export const CardTaskComponent: React.FC<Params> = ({
             setError({ bool: false });
           }}
           message={stateError.message}
+          info={stateError.info}
         ></SnackBarAlert>
       ) : (
         <></>
@@ -183,3 +191,9 @@ export const CardTaskComponent: React.FC<Params> = ({
     </>
   );
 };
+
+function colorCard(card: CardTaskClass): string {
+  if (card.cardBug) return base.red
+  if (card.powerUp != null ) return base.yellow
+  return base.dark_purple
+}

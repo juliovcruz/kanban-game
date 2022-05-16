@@ -4,12 +4,13 @@ import { CardTaskClass } from "../../model/CardTask";
 import { useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
-import { RoundInfo } from "../../App";
+import { PlayerInfo, RoundInfo } from "../../App";
 import { ErrorState } from "../cardBoard/cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Employee } from "../../model/Employee";
 import { EmployeeList } from "./employeeList";
 import { Database } from "../../data/database";
+import { getText, Language, LanguageText } from "../../model/Language";
 
 type ColumnIndex = {
   column: EmployeeColumn;
@@ -20,6 +21,7 @@ export type Params = {
   roundInfo: RoundInfo,
   paramsColumns: EmployeeColumn[] | undefined,
   database: Database,
+  playerInfo: PlayerInfo,
   updateEmployeeColumns: (employeeColumns: EmployeeColumn[]) => void
 };
 
@@ -30,7 +32,7 @@ export type EmployeeColumn = {
   type: ActionType;
 }
 
-export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateEmployeeColumns}) => {
+export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateEmployeeColumns, playerInfo}) => {
   const [columns, setColumns] = useState<EmployeeColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
@@ -83,7 +85,7 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
     )
 
     if (!bool.bool) {
-      setError({bool: true, message: bool.message})
+      setError({bool: true, message: getText(bool.text!, playerInfo.language)})
       return;
     }
 
@@ -111,21 +113,25 @@ export const EmployeeBoard: React.FC<Params> = ({ roundInfo, paramsColumns, data
     };
   }
 
-
   return (
     <Container>
+      <h2>{getText(LanguageText.EMPLOYEES, playerInfo.language)}</h2>
       <DragDropContext onDragEnd={onDragEnd}>
+        <div className="list">
         {columns?.map((item, index) => (
           <EmployeeList
+            playerInfo={playerInfo}
             column={item}
             roundInfo={roundInfo}
           ></EmployeeList>
         ))}
+        </div>
       </DragDropContext>
       {stateError?.bool ? (
         <SnackBarAlert onClose={() => {
           setError({ bool: false });
-        }} message={stateError.message} >
+        }} message={stateError.message}
+        info={stateError.info} >
         </SnackBarAlert>
       ) : (
         <></> )}

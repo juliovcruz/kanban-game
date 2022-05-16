@@ -5,11 +5,12 @@ import { CardTaskClass } from "../../model/CardTask";
 import { useState } from "react";
 import React from "react";
 import { ActionType } from "../../model/ActionType";
-import { PlayerPowerUps, RoundInfo } from "../../App";
+import { PlayerInfo, PlayerPowerUps, RoundInfo } from "../../App";
 import { ErrorState } from "./cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
 import { Employee } from "../../model/Employee";
+import { getText, Language, LanguageText } from "../../model/Language";
 
 export type CardColumn = {
   id: string;
@@ -27,14 +28,15 @@ export type Params = {
   roundInfo: RoundInfo,
   paramsColumns: CardColumn[] | undefined,
   database: Database,
-  employeesDeploy: Employee[] | undefined
+  employeesDeploy: Employee[] | undefined,
+  playerInfo: PlayerInfo,
   usePoint: (type: ActionType) => Boolean,
   updateCardColumns: (cardColumns: CardColumn[]) => void
-  finishPowerUp: (powerUp: PlayerPowerUps) => void
+  finishPowerUp: (powerUp: PlayerPowerUps, cardRoundStart: number) => void
 };
 
 export const CardBoard: React.FC<Params> = ({ 
-  roundInfo, usePoint, paramsColumns, database, employeesDeploy, updateCardColumns, finishPowerUp
+  roundInfo, usePoint, paramsColumns, database, employeesDeploy, updateCardColumns, finishPowerUp, playerInfo
 }) => {
   const [columns, setColumns] = useState<CardColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
@@ -82,7 +84,7 @@ export const CardBoard: React.FC<Params> = ({
     const card = start.column.cards[source.index]
 
     if(card.roundEnded != null) {
-      setError({bool: true, message: 'Não pode voltar de produção'})
+      setError({bool: true, message: getText(LanguageText.ERROR_CARD_MOVE_BACK_PRODUCTION, playerInfo.language)})
       return
     }
 
@@ -91,18 +93,22 @@ export const CardBoard: React.FC<Params> = ({
       start.column.type,
       roundInfo.todayCanBeDeploy(),
       employeesDeploy,
-      roundInfo
+      roundInfo,
+      playerInfo
     )
 
     if (!bool.bool) {
-      setError({bool: true, message: bool.message})
+      setError({bool: true, message: getText(bool.text!, playerInfo.language)})
       return;
     }
 
     switch(finish.column.type) {
       case ActionType.PRODUCT_OWNER: card.start(roundInfo); break;
       case ActionType.PRODUCTION: {
-        if(card.powerUp != null) finishPowerUp(card.powerUp)
+        if(card.powerUp != null) {
+          setError({bool: true, message: getFinishTextByPowerUp(card.powerUp, playerInfo.language), info: true})
+          finishPowerUp(card.powerUp, card.roundStarted!)
+        }
         card.end(roundInfo)
         break
       }
@@ -126,6 +132,17 @@ export const CardBoard: React.FC<Params> = ({
     database.setCardColumns(columns)
   };
 
+  const archiveCards = () => {
+    columns!.forEach((column) => {
+      column.cards.forEach((card) => {
+        if(card.roundEnded != null) card.archived = true
+      })
+    })
+
+    updateCardColumns(columns!)
+    database.setCardColumns(columns!)
+  }
+
   function getColumnById(columns: CardColumn[], id: string): ColumnIndex {
     const column = columns.filter((x) => x.id == id)[0];
     return {
@@ -136,9 +153,13 @@ export const CardBoard: React.FC<Params> = ({
 
   return (
     <Container>
+      <h2>{getText(LanguageText.TASKS, playerInfo.language)}</h2>
+      <div className="list">
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
           <CardList
+            archiveCards={archiveCards}
+            playerInfo={playerInfo}
             column={item}
             usePoint={usePoint}
             roundInfo={roundInfo}
@@ -147,11 +168,27 @@ export const CardBoard: React.FC<Params> = ({
       </DragDropContext>
       {stateError?.bool ? (
         <SnackBarAlert onClose={() => {
-          setError({ bool: false });
-        }} message={stateError.message} >
+          setError({ bool: false, info: false });
+        }
+        } message={stateError.message}
+        info={stateError.info} >
         </SnackBarAlert>
       ) : (
         <></> )}
+        </div>
     </Container>
   );
 };
+
+function getFinishTextByPowerUp(powerUp: PlayerPowerUps, language: Language): string {
+  const map = new Map<PlayerPowerUps, LanguageText>([
+    [PlayerPowerUps.AUTOMATION, LanguageText.POWER_UP_AUTOMATION_INFO_FINISH],
+    [PlayerPowerUps.CI_CD, LanguageText.POWER_UP_CI_CD_INFO_FINISH]
+  ]);
+
+  var text = map.get(powerUp)
+  
+  if(text == null) text = LanguageText.POWER_UP_GENERIC_INFO_FINISH
+
+  return getText(text, language);
+}

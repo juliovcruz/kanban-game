@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { base } from '../../../styles/colors';
 
-export const Container = styled.div`
+export const Container = styled.div<{lined: boolean}>`
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -21,6 +21,10 @@ export const Container = styled.div`
     }
 
     header {
-        color: ${base.purple}
+        color: ${base.purple};
+
+        h2 {
+            text-decoration: ${({ lined }) => (lined ? 'line-through' : 'none')};
+        }
     }
 `;

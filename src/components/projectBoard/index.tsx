@@ -2,7 +2,7 @@ import { Container } from "./styles";
 import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { useState } from "react";
 import React from "react";
-import { RoundInfo } from "../../App";
+import { PlayerInfo, RoundInfo } from "../../App";
 import { ErrorState } from "../cardBoard/cardTask";
 import { SnackBarAlert } from "../snackBarAlert/snackBarAlert";
 import { Database } from "../../data/database";
@@ -10,6 +10,7 @@ import { Project, ProjectStatus } from "../../model/Project";
 import { ProjectList } from "./projectList";
 import { CardTaskClass } from "../../model/CardTask";
 import { CardColumn } from "../cardBoard";
+import { getText, LanguageText } from "../../model/Language";
 
 type ColumnIndex = {
   column: ProjectColumn;
@@ -19,6 +20,7 @@ type ColumnIndex = {
 export type Params = {
   roundInfo: RoundInfo,
   paramsColumns: ProjectColumn[] | undefined,
+  playerInfo: PlayerInfo,
   database: Database,
   updateProjectColumns: (projectColumns: ProjectColumn[]) => void
   addNewCards: (cards: CardTaskClass[]) => void
@@ -31,7 +33,7 @@ export type ProjectColumn = {
   status: ProjectStatus
 }
 
-export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateProjectColumns, addNewCards}) => {
+export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, database, updateProjectColumns, addNewCards, playerInfo}) => {
   const [columns, setColumns] = useState<ProjectColumn[] | undefined>(paramsColumns);
   const [stateError, setError] = useState<ErrorState>();
 
@@ -78,7 +80,7 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
     const project = start.column.projects[source.index]
 
     if(start.index > finish.index) {
-      setError({bool: true, message: 'Projeto não pode ser movido para trás'})
+      setError({bool: true, message: getText(LanguageText.ERROR_PROJECT_CANNOT_MOVE_TO_BACK, playerInfo.language)})
       return
     }
 
@@ -91,7 +93,7 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
         const cards = database.getCardColumns()!
 
         if(!project.canBeDone(cards)) {
-          setError({bool: true, message: 'Projeto não está pronto'})
+          setError({bool: true, message: getText(LanguageText.ERROR_PROJECT_NOT_DONE, playerInfo.language)})
           return
         }
 
@@ -127,18 +129,23 @@ export const ProjectBoard: React.FC<Params> = ({ roundInfo, paramsColumns, datab
 
   return (
     <Container>
+      <h2>{getText(LanguageText.PROJECTS, playerInfo.language)}</h2>
+      <div className="list">
       <DragDropContext onDragEnd={onDragEnd}>
         {columns?.map((item, index) => (
           <ProjectList
+            playerInfo={playerInfo}
             column={item}
             roundInfo={roundInfo}
           ></ProjectList>
         ))}
       </DragDropContext>
+      </div>
       {stateError?.bool ? (
         <SnackBarAlert onClose={() => {
           setError({ bool: false });
-        }} message={stateError.message} >
+        }} message={stateError.message}
+        info={stateError.info} >
         </SnackBarAlert>
       ) : (
         <></> )}

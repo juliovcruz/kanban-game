@@ -3,7 +3,7 @@ import { CardBoard, CardColumn } from "./components/cardBoard";
 import { HeaderBoard } from "./components/headerBoard";
 import { useState } from "react";
 import { ActionType } from "./model/ActionType";
-import { generateCardPowerUp, generateColumns, generateEmployeeByMainAction, generateEmployeeColumns, generateProjectColumns, startRound } from "./data/mock";
+import { generateCardPowerUp, generateColumns, generateEmployeeByMainAction, generateEmployeeColumns, generateProjectColumns, getRoundEvent, startRound } from "./data/mock";
 import { Database } from "./data/database";
 import { CardTaskClass } from "./model/CardTask";
 import { v4 as uuidv4 } from "uuid";
@@ -12,8 +12,10 @@ import { ProjectBoard, ProjectColumn } from "./components/projectBoard";
 import IconButton from '@material-ui/core/IconButton';
 import FlagBR from './assets/flags/br.svg'
 import FlagUS from './assets/flags/us.svg'
-import { Language } from "./model/Language";
+import { getText, Language, LanguageText } from "./model/Language";
 import { getPriceByPowerUp } from "./components/shopDrawer";
+import { FooterBoard } from "./components/footerBoard";
+import { Project } from "./model/Project";
 
 export class PlayerRoundPoints {
   analysis!: number;
@@ -30,7 +32,6 @@ export class PlayerRoundPoints {
   nextRound(employeeColumns: EmployeeColumn[]) {
     const analysis = employeeColumns.filter((x) => x.type == ActionType.PRODUCT_OWNER)[0].employees.length;
     const develop = employeeColumns.filter((x) => x.type == ActionType.DEVELOPER)[0].employees.length;
-    console.log(develop)
     const test = employeeColumns.filter((x) => x.type == ActionType.QUALITY_ASSURANCE)[0].employees.length;
 
     // Math.floor(Math.random() * (max - min + 1) + min)
@@ -41,14 +42,15 @@ export class PlayerRoundPoints {
 }
 
 export enum PlayerPowerUps {
-  AUTOMATION, // não precisa ninguem no deploy
-  CI_CD, // pode realizar deploy todo dia
+  AUTOMATION,
+  CI_CD,
   NEW_DEV,
   NEW_PO,
   NEW_QA,
   TRAIN_DEV_TO_ACTION_PO,
   TRAIN_DEV_TO_ACTION_QA,
   TRAIN_PO_TO_ACTION_QA,
+  TRAIN_PO_TO_ACTION_DEV,
   TRAIN_QA_TO_ACTION_PO,
   TRAIN_QA_TO_ACTION_DEV
 }
@@ -81,51 +83,35 @@ export class BoardInfo {
   }
 }
 
+export enum Day {
+  MONDAY,
+  TUESDAY,
+  WEDNESDAY,
+  THURSDAY,
+  FRIDAY
+}
+
+export type RoundEvent = {
+  newProject: Project | null
+  newCardBug: CardTaskClass | null
+}
+
 export class RoundInfo {
   number!: number;
   playerRoundPoints!: PlayerRoundPoints;
+  day!: Day;
 
   nextRound(employeeColumns: EmployeeColumn[]) {
+    
+    if(this.day == Day.FRIDAY || this.number == 0) this.day = Day.MONDAY
+    else this.day++;
+
     this.number++;
     this.playerRoundPoints.nextRound(employeeColumns);
   }
 
-  getDayName(): string {
-    if (this.number == 0) {
-      return "";
-    }
-
-    switch (this.number % 10) {
-      case 0:
-        return "Sexta-Feira";
-      case 1:
-        return "Segunda-Feira";
-      case 2:
-        return "Terça-Feira";
-      case 3:
-        return "Quarta-Feira";
-      case 4:
-        return "Quinta-Feira";
-      case 5:
-        return "Sexta-Feira";
-      case 6:
-        return "Segunda-Feira";
-      case 7:
-        return "Terça-Feira";
-      case 8:
-        return "Quarta-Feira";
-      case 9:
-        return "Quinta-Feira";
-      case 10:
-        return "Sexta-Feira";
-    }
-    return "";
-  }
-
   todayCanBeDeploy(): Boolean {
-    const day = this.number % 10;
-    if (day == 2 || day == 4 || day == 7 || day == 10) return true;
-    return false;
+    return this.day == Day.TUESDAY || this.day == Day.THURSDAY
   }
 }
 
@@ -156,6 +142,38 @@ export const App: React.FC<Params> = ({database}) => {
     }
   }
 
+  const resetBoard = () => {
+    const boardInfo = {
+      cardColumns: generateColumns(), 
+      employeeColumns: generateEmployeeColumns(),
+      projectColumns: generateProjectColumns(),
+      playerInfo: {
+        lastPrice: 0,
+        actualPrice: 0,
+        powerUps: [],
+        language: board.playerInfo.language,
+        lastBuy: 0
+      },
+      newCards: BoardInfo.prototype.newCards,
+      buyPowerUp: BoardInfo.prototype.buyPowerUp,
+    }
+
+    database.setCardColumns(boardInfo.cardColumns)
+    database.setEmployeeColumns(boardInfo.employeeColumns)
+    database.setPlayerInfo(boardInfo.playerInfo)
+    database.setProjectColumns(boardInfo.projectColumns)
+
+    setBoard(boardInfo)
+
+    const roundInfo = startRound()
+
+    database.setRound(roundInfo)
+
+    setRound(roundInfo)
+
+    window.location.reload();
+  }
+
   function startBoard(): BoardInfo {
     const cardColumns = database.getCardColumns()
     const employeeColumns = database.getEmployeeColumns()
@@ -180,7 +198,7 @@ export const App: React.FC<Params> = ({database}) => {
           lastPrice: 0,
           actualPrice: 0,
           powerUps: [],
-          language: Language.BR,
+          language: Language.EN,
           lastBuy: 0
         },
         newCards: BoardInfo.prototype.newCards,
@@ -199,9 +217,6 @@ export const App: React.FC<Params> = ({database}) => {
   const nextRound = () => {
     const newRound = Object.assign({}, round);
     newRound.playerRoundPoints.clear();
-    // TODO: melhorar esse lógica e não consultar do database
-    // const employeeColumns = database.getEmployeeColumns()!;
-    //const cardColumns = database.getCardColumns()!;
     newRound.nextRound(board!.employeeColumns);
 
     if(board != undefined) {
@@ -209,6 +224,16 @@ export const App: React.FC<Params> = ({database}) => {
       board.playerInfo.actualPrice += getEmployeePrice(board.employeeColumns)
       board.playerInfo.actualPrice += getCardPrice(board.cardColumns)
       board.playerInfo.actualPrice += getProjectPrice(board.projectColumns, newRound)
+
+      const event = getRoundEvent(round.number)
+      if(event != null) {
+        if(event.newProject != null) {
+          board.projectColumns[0].projects.push(event.newProject)
+        }
+        if(event.newCardBug != null) {
+          board.cardColumns[0].cards.push(event.newCardBug)
+        }
+      }
 
       setBoard(board)
       database.setCardColumns(board.cardColumns)
@@ -262,20 +287,25 @@ export const App: React.FC<Params> = ({database}) => {
   }
 
   const updateLanguage = (language: Language) => {
+    const newPlayerInfo = {
+      ...board!.playerInfo,
+      lastPrice: board!.playerInfo.actualPrice,
+      language: language
+    }
+
     setBoard(
       {
       ...board,
       employeeColumns: board!.employeeColumns,
       cardColumns: board!.cardColumns,
-      playerInfo: {
-        ...board!.playerInfo,
-        language: language
-      },
+      playerInfo: newPlayerInfo,
       projectColumns: board!.projectColumns,
       newCards: BoardInfo.prototype.newCards,
       buyPowerUp: BoardInfo.prototype.buyPowerUp,
       }
     )
+
+    database.setPlayerInfo(newPlayerInfo)
   }
 
   const addNewCards = (cards: CardTaskClass[]) => {
@@ -315,13 +345,50 @@ export const App: React.FC<Params> = ({database}) => {
     return true;
   };
 
-  const finishPowerUp = (powerUp: PlayerPowerUps) => {
+  const finishPowerUp = (powerUp: PlayerPowerUps, cardRoundStart: number) => {
     switch (powerUp) {
-      case PlayerPowerUps.NEW_DEV: {
+      case PlayerPowerUps.AUTOMATION: 
+      case PlayerPowerUps.CI_CD: {
+        const playerInfo = board!.playerInfo
+
+        playerInfo.powerUps.push(powerUp)
+
+        setBoard(
+          {
+            ...board,
+            playerInfo: playerInfo,
+            employeeColumns: board!.employeeColumns,
+            cardColumns: board!.cardColumns,
+            projectColumns: board!.projectColumns,
+            newCards: BoardInfo.prototype.newCards,
+            buyPowerUp: BoardInfo.prototype.buyPowerUp,
+            }
+        )
+
+        database.setPlayerInfo(playerInfo)
+        break;
+      }
+      case PlayerPowerUps.NEW_DEV: 
+      case PlayerPowerUps.NEW_PO: 
+      case PlayerPowerUps.NEW_QA: {
+        const powerUpToAction = new Map<PlayerPowerUps, ActionType>([
+          [PlayerPowerUps.NEW_DEV, ActionType.DEVELOPER],
+          [PlayerPowerUps.NEW_PO, ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.NEW_QA, ActionType.QUALITY_ASSURANCE],
+        ]);
+
+        const powerUpToColumnIndex = new Map<PlayerPowerUps, number>([
+          [PlayerPowerUps.NEW_PO, 0],
+          [PlayerPowerUps.NEW_DEV, 1],
+          [PlayerPowerUps.NEW_QA, 2],
+        ]);
+
+        const columnIndex = powerUpToColumnIndex.get(powerUp)!!
+
         const columns = board!.employeeColumns
-        const newDevColumn = board!.employeeColumns[1].employees
-        newDevColumn.push(generateEmployeeByMainAction(ActionType.DEVELOPER))
-        columns[1].employees = newDevColumn
+        const newColumn = board!.employeeColumns[columnIndex].employees
+        newColumn.push(generateEmployeeByMainAction(powerUpToAction.get(powerUp)!!, cardRoundStart))
+        columns[columnIndex].employees = newColumn
   
         board!.buyPowerUp(round!)
 
@@ -336,6 +403,51 @@ export const App: React.FC<Params> = ({database}) => {
             buyPowerUp: BoardInfo.prototype.buyPowerUp,
             }
         )
+        break;
+      } 
+      case PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA :
+      case PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO :
+      case PlayerPowerUps.TRAIN_PO_TO_ACTION_QA :
+      case PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV :
+      case PlayerPowerUps.TRAIN_QA_TO_ACTION_PO :
+      case PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV : {
+        const newActionMap = new Map<PlayerPowerUps, ActionType>([
+          [PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO,   ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA,   ActionType.QUALITY_ASSURANCE],
+          [PlayerPowerUps.TRAIN_PO_TO_ACTION_QA,   ActionType.QUALITY_ASSURANCE],
+          [PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV,   ActionType.DEVELOPER],
+          [PlayerPowerUps.TRAIN_QA_TO_ACTION_PO,   ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV,   ActionType.DEVELOPER]
+        ]);
+
+        const actualActionMap = new Map<PlayerPowerUps, ActionType>([
+          [PlayerPowerUps.TRAIN_DEV_TO_ACTION_PO,   ActionType.DEVELOPER],
+          [PlayerPowerUps.TRAIN_DEV_TO_ACTION_QA,   ActionType.DEVELOPER],
+          [PlayerPowerUps.TRAIN_PO_TO_ACTION_QA,   ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.TRAIN_PO_TO_ACTION_DEV,  ActionType.PRODUCT_OWNER],
+          [PlayerPowerUps.TRAIN_QA_TO_ACTION_PO,   ActionType.QUALITY_ASSURANCE],
+          [PlayerPowerUps.TRAIN_QA_TO_ACTION_DEV,  ActionType.QUALITY_ASSURANCE]
+        ]);
+
+        const newAction = newActionMap.get(powerUp)!!
+        const actualAction = actualActionMap.get(powerUp)!!
+
+        const columns = pushNewActionToEmployee(board!.employeeColumns, actualAction, newAction)
+
+        setBoard(
+          {
+            ...board,
+            employeeColumns: columns,
+            cardColumns: board!.cardColumns,
+            playerInfo: board!.playerInfo,
+            projectColumns: board!.projectColumns,
+            newCards: BoardInfo.prototype.newCards,
+            buyPowerUp: BoardInfo.prototype.buyPowerUp,
+            }
+        )
+
+        database.setEmployeeColumns(columns)
+        break;
       }
     }
   }
@@ -348,28 +460,26 @@ export const App: React.FC<Params> = ({database}) => {
     board!.playerInfo.lastPrice = board!.playerInfo.actualPrice
     board!.playerInfo.actualPrice += getPriceByPowerUp(powerUp)
 
-    if(powerUp == PlayerPowerUps.NEW_DEV) {
-      const columns = board!.cardColumns
-      const newBacklogColumn = board!.cardColumns[0].cards
-      newBacklogColumn.push(generateCardPowerUp(powerUp))
-      columns[0].cards = newBacklogColumn
+    const columns = board!.cardColumns
+    const newBacklogColumn = board!.cardColumns[0].cards
+    newBacklogColumn.push(generateCardPowerUp(powerUp))
+    columns[0].cards = newBacklogColumn
 
-      board?.buyPowerUp(round!)
-      
-      setBoard(
-        {
-          ...board,
-          cardColumns: columns,
-          playerInfo: board!.playerInfo,
-          employeeColumns: board!.employeeColumns,
-          projectColumns: board!.projectColumns,
-          newCards: BoardInfo.prototype.newCards,
-          buyPowerUp: BoardInfo.prototype.buyPowerUp,
-          }
-      )
+    board?.buyPowerUp(round!)
+    
+    setBoard(
+      {
+        ...board,
+        cardColumns: columns,
+        playerInfo: board!.playerInfo,
+        employeeColumns: board!.employeeColumns,
+        projectColumns: board!.projectColumns,
+        newCards: BoardInfo.prototype.newCards,
+        buyPowerUp: BoardInfo.prototype.buyPowerUp,
+        }
+    )
 
-      database.setCardColumns(board!.cardColumns)
-    }
+    database.setCardColumns(board!.cardColumns)
   }
 
   return (
@@ -380,6 +490,7 @@ export const App: React.FC<Params> = ({database}) => {
       playerInfo={board!.playerInfo}
       newPowerUp={newPowerUp}></HeaderBoard>
       <ProjectBoard
+      playerInfo={board!.playerInfo}
       roundInfo={round!}
       paramsColumns={board?.projectColumns}
       updateProjectColumns={updateProjectColumns}
@@ -391,6 +502,7 @@ export const App: React.FC<Params> = ({database}) => {
         paramsColumns={board?.employeeColumns}
         updateEmployeeColumns={updateEmployeeColumns}
         database={database}
+        playerInfo={board!.playerInfo}
       ></EmployeeBoard>
       <CardBoard
         employeesDeploy={board?.employeeColumns[3].employees}
@@ -400,8 +512,14 @@ export const App: React.FC<Params> = ({database}) => {
         updateCardColumns={updateCardColumns}
         database={database}
         finishPowerUp={finishPowerUp}
+        playerInfo={board!.playerInfo}
       ></CardBoard>
-      {board!.playerInfo.language == Language.BR ? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
+      <FooterBoard 
+      playerInfo={board!.playerInfo} 
+      updateLanguage={updateLanguage} 
+      resetBoard={resetBoard}
+      cardColumns={board!.cardColumns}
+      ></FooterBoard>
       <GlobalStyle />
     </>
   );
@@ -417,6 +535,21 @@ function getEmployeePrice(columns: EmployeeColumn[]) {
   })
 
   return price
+}
+
+function pushNewActionToEmployee(columns: EmployeeColumn[], actionEmployee: ActionType, newAction: ActionType): EmployeeColumn[] {
+  for(let j = 0; j < columns.length;j++) {
+    const column = columns[j]
+    for(let i = 0; i < column.employees.length;i++) {
+      const employee = column.employees[i]
+      if(employee.mainAction == actionEmployee && !employee.actions.some(e => e === newAction)) {
+        employee.actions.push(newAction)
+        return columns
+      }
+    }
+  }
+
+  return columns
 }
 
 function getCardPrice(columns: CardColumn[]) {
@@ -436,7 +569,7 @@ function getProjectPrice(columns: ProjectColumn[], roundInfo: RoundInfo) {
 
   columns.forEach((column) => {
     column.projects.forEach((project) => {
-      if(project.roundStarted != null && project.roundEnded == null) price+= project.price
+      if(project.roundEnded == null) price+= project.price
       if(project.deadLine > roundInfo.number) price+= project.price
     })
   })

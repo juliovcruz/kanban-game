@@ -1,6 +1,6 @@
 import { RoundInfo } from "../App"
 import { CardColumn } from "../components/cardBoard"
-import { generateCards } from "../data/mock"
+import { generateCard, generateCards } from "../data/mock"
 import { CardTaskClass } from "./CardTask"
 import { v4 as uuidv4 } from "uuid";
 
@@ -25,48 +25,49 @@ export class Project {
     }
 
     generateCards(): CardTaskClass[] {
+      const cards: CardTaskClass[] = []
+
+      let cardsEasy = 0;
+      let cardsMedium = 0;
+      let cardsHard = 0;
+
         switch(this.difficulty) {
             case ProjectDifficulty.EASY: {
-                return generateCards(this)
+                cardsEasy = 7
+                break;
             }
             case ProjectDifficulty.MEDIUM: {
-                return [
-                    {
-                        canBeMoveTo: CardTaskClass.prototype.canBeMoveTo,
-                        addPointAnalysis: CardTaskClass.prototype.addPointAnalysis,
-                        addPointDevelop: CardTaskClass.prototype.addPointDevelop,
-                        addPointTest: CardTaskClass.prototype.addPointTest,
-                        setLastMove: CardTaskClass.prototype.setLastMove,
-                        start: CardTaskClass.prototype.start,
-                        end: CardTaskClass.prototype.end,
-                        projectId: this.id,
-                        projectName: this.name,
-                        price: 0,
-                        cardBug: false,
-                        lastMove: -1,
-                        name: "UST01",
-                        index: 1,
-                        id: uuidv4(),
-                        number: 3,
-                        pontuation: {
-                          analysis: {
-                            inserted: 0,
-                            needed: 1,
-                          },
-                          develop: {
-                            inserted: 0,
-                            needed: 1,
-                          },
-                          test: {
-                            inserted: 0,
-                            needed: 1,
-                          },
-                        },
-                      }
-                ]
+              cardsEasy = 4
+              cardsMedium = 5
+              break;
+            }
+            case ProjectDifficulty.HARD: {
+              cardsEasy = 3
+              cardsMedium = 6
+              cardsHard = 5
+              break;
             }
         }
-        return generateCards(this)
+
+        for(let i = 1; i <= cardsEasy; i++) {
+          cards.push(
+            generateCard(this, 3, 1, "TST"+i)
+          )
+        }
+
+        for(let i = 1; i <= cardsMedium; i++) {
+          cards.push(
+            generateCard(this, 8, 4, "TST"+i)
+          )
+        }
+
+        for(let i = 1; i <= cardsHard; i++) {
+          cards.push(
+            generateCard(this, 15, 8, "TST"+i)
+          )
+        }
+
+        return cards
     }
 
     canBeDone(columns: CardColumn[]): Boolean {

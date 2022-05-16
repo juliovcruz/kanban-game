@@ -8,17 +8,13 @@ import { Project } from "../../../model/Project";
 import PersonIcon from "@mui/icons-material/Person";
 import { base, ColorByActionType } from "../../../styles/colors";
 import { Container } from "./styles";
+import { ErrorState } from "../../cardBoard/cardTask";
 
 export interface Params {
   paramProject: Project;
   index: number;
   roundInfo: RoundInfo;
 }
-
-export type ErrorState = {
-  bool: Boolean;
-  message?: string;
-};
 
 export const ProjectComponent: React.FC<Params> = ({
   paramProject,
@@ -32,7 +28,7 @@ export const ProjectComponent: React.FC<Params> = ({
     <>
       <Draggable key={project.id} draggableId={project.id} index={index}>
         {(provided, snapshot) => (
-          <Container color={base.dark_purple}
+          <Container color={getColorProjectCard(project, roundInfo)}
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
@@ -56,6 +52,7 @@ export const ProjectComponent: React.FC<Params> = ({
       </Draggable>
       {stateError?.bool ? (
         <SnackBarAlert
+          info={stateError.info}
           onClose={() => {
             setError({ bool: false });
           }}
@@ -67,3 +64,11 @@ export const ProjectComponent: React.FC<Params> = ({
     </>
   );
 };
+
+function getColorProjectCard(project: Project, roundInfo: RoundInfo): string {
+  if(project.deadLine < roundInfo.number && project.roundEnded == null) {
+    return base.red
+  }
+  if(project.roundEnded != null) return base.green
+  return base.dark_purple
+}

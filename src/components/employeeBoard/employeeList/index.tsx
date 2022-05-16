@@ -6,7 +6,7 @@ import { Container } from "./styles";
 import { CardColumn } from "../../cardBoard";
 import { CardTaskClass } from "../../../model/CardTask";
 import { ActionType } from "../../../model/ActionType";
-import { RoundInfo } from "../../../App";
+import { PlayerInfo, PlayerPowerUps, RoundInfo } from "../../../App";
 import { EmployeeColumn } from "..";
 import { Employee } from "../../../model/Employee";
 import { EmployeeComponent } from "../employeeCard";
@@ -14,9 +14,10 @@ import { EmployeeComponent } from "../employeeCard";
 export interface Params {
   column: EmployeeColumn;
   roundInfo: RoundInfo;
+  playerInfo: PlayerInfo
 }
 
-export const EmployeeList: React.FC<Params> = ({ column, roundInfo }) => {
+export const EmployeeList: React.FC<Params> = ({ column, roundInfo, playerInfo }) => {
   const [employees, setEmployees] = useState<Employee[]>();
 
   if (employees == undefined) {
@@ -24,7 +25,7 @@ export const EmployeeList: React.FC<Params> = ({ column, roundInfo }) => {
   }
 
   return (
-    <Container>
+    <Container lined={playerHaveAutomation(playerInfo, column.type)}>
       <header>
         <h2>{column.name}</h2>
       </header>
@@ -58,3 +59,7 @@ export const EmployeeList: React.FC<Params> = ({ column, roundInfo }) => {
     </Container>
   );
 };
+
+function playerHaveAutomation(playerInfo: PlayerInfo, columnType: ActionType): boolean {
+  return playerInfo.powerUps.some(e => e === PlayerPowerUps.AUTOMATION && columnType == ActionType.DEPLOY)
+}
