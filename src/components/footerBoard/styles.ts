@@ -27,6 +27,16 @@ export const Container = styled.div`
         color: ${base.white};
     }
 
+    .footer-description {
+        color: ${base.light_purple}
+    }
+
+    .help {
+        cursor: pointer;
+        color: ${base.white};
+        margin-right: 30px;
+    }
+
     .archive {
         cursor: pointer;
         color: ${base.light_purple};

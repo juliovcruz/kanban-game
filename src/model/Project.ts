@@ -33,18 +33,18 @@ export class Project {
 
         switch(this.difficulty) {
             case ProjectDifficulty.EASY: {
-                cardsEasy = 7
+                cardsEasy = 3
                 break;
             }
             case ProjectDifficulty.MEDIUM: {
-              cardsEasy = 4
-              cardsMedium = 5
+              cardsEasy = 2
+              cardsMedium = 2
               break;
             }
             case ProjectDifficulty.HARD: {
-              cardsEasy = 3
-              cardsMedium = 6
-              cardsHard = 5
+              cardsEasy = 1
+              cardsMedium = 3
+              cardsHard = 4
               break;
             }
         }

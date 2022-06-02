@@ -4,6 +4,7 @@ import FlagBR from '../../assets/flags/br.svg'
 import FlagUS from '../../assets/flags/us.svg'
 import { Container } from "./styles";
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import Modal from "@mui/material/Modal";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -50,7 +51,15 @@ export const FooterBoard: React.FC<Params> = ({
       {playerInfo.language == Language.BR ? <img src={FlagBR} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.EN)}></img> : <img src={FlagUS} style={{ height: 53, width: 36 }} onClick={() => updateLanguage(Language.BR)}></img>}
       </div>
 
+      <div className="footer-description">
+      {getText(LanguageText.MADE_WITH_LOVE, playerInfo!.language)}
+      </div>
+
       <div className="icons">
+        <div className="help">
+          <HelpOutlineIcon onClick={() => window.open("https://github.com/juliovcruz/kanban-game", "_blank")}></HelpOutlineIcon>
+        </div>
+
         <div className="archive">
           <InventoryIcon onClick={() => setArchive(true)}></InventoryIcon>
         </div>

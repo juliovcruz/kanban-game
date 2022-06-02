@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { makeStyles } from '@mui/styles';
 import { base } from "../../../styles/colors";
 
 export const Container = styled.div`

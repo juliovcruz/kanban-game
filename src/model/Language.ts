@@ -67,7 +67,8 @@ export enum LanguageText {
     POWER_UP_AUTOMATION_INFO_FINISH,
     POWER_UP_CI_CD_INFO_FINISH,
     POWER_UP_GENERIC_INFO_FINISH,
-    ARCHIVED
+    ARCHIVED,
+    MADE_WITH_LOVE
 }
 
 export type LanguageResult = {
@@ -140,7 +141,7 @@ const textMap = new Map<LanguageText, LanguageResult>([
     [LanguageText.ERROR_CARD_PONTUATION_NO_HAVE_POINT, {br: 'Não há pontos suficientes para utilizar.', en: 'No have points to use.'}],
     [LanguageText.ERROR_PROJECT_CANNOT_MOVE_TO_BACK, {br: 'Projeto não pode ser movido para trás.', en: 'Cannot move project to back.'}],
     [LanguageText.ERROR_PROJECT_NOT_DONE, {br: 'Não é possível mover para testes.', en: 'Projet is not done.'}],
-    
+    [LanguageText.MADE_WITH_LOVE, {br: 'Feito com ❤️ por Julio Cruz', en: 'Made with ❤️ by Julio Cruz'}],
 ]);
 
 export function getText(text: LanguageText, language: Language): string {
