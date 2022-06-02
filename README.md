@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./src/assets/docs/gif_move_card.gif" />
+</p>
+
 # Rules of game
 
 1. Each day is one round
@@ -9,7 +13,7 @@
 7. Cards that are in production can be archived
 
 <p align="center">
-  <img src="./src/assets/docs/cardBug.png" />
+  <img src="./src/assets/docs/card_bug.png" />
 </p>
 
-![cardBug](./src/assets/docs/cardBug.png)
+![cardBug](./src/assets/docs/card_bug.png)
