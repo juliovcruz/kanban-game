@@ -30,9 +30,9 @@ You and your team need move all tasks in all columns, analysing, development and
 
 7. Cards that are in production can be archived
 
-8. You don't know everything, it's part of the game
+8. In footer you can change language, see all archive cards and reset game
 
-9. In footer you can change language, see all archive cards and reset game
+9. You don't know everything, it's part of the game
 
 <p align="center">
     <a href="https://juliovcruz.github.io/kanban-game/">GO TO GAME</a>
