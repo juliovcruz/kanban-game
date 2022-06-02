@@ -1,5 +1,3 @@
-
-
 # Rules of game
 
 1. Each day is one round
@@ -10,4 +8,4 @@
 6. Cards need apply point's of analysis(green), development(blue) and test(red)
 7. Cards that are in production can be archived
 
-[cardBug](./src/assets/docs/cardBug.png)
+![cardBug](./src/assets/docs/cardBug.png)
