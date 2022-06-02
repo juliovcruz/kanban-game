@@ -8,4 +8,8 @@
 6. Cards need apply point's of analysis(green), development(blue) and test(red)
 7. Cards that are in production can be archived
 
+<p align="center">
+  <img src="./src/assets/docs/cardBug.png" />
+</p>
+
 ![cardBug](./src/assets/docs/cardBug.png)
