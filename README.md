@@ -12,31 +12,35 @@ You and your team need move all tasks in all columns, analysing, development and
 
 ## Some rules of game
 
-1. To start thee game, move one project to Development, when all cards of this project are in production, you need move project to Done
+1. To start the game, move one project to Development
 
-2. New projects will appear as you progress through the rounds
+2. You need move tasks column by column to finally move to production
 
-3. Each day is one round
+3. When all cards of one project are in production, you need move project to Done
 
-4. Deploy is only allowed on tuesdays and thursdays
+4. New projects will appear as you progress through the rounds
 
-5. Every friday is allowed to buy an upgrade
+5. Each day is one round
 
-6. Projects, Employees and Bug Cards have a cost then calculated daily
+6. Deploy is only allowed on tuesdays and thursdays
 
-7. Bug Cards are the only cards that have a cost
+7. Every friday is allowed to buy an upgrade
+
+8. Projects, Employees and Bug Cards have a cost then calculated daily
+
+9. Bug Cards are the only cards that have a cost
 
 <p align="center">
   <img src="./src/assets/docs/card_bug.png" />
 </p>
 
-8. Cards need apply point's of analysis(green), development(blue) and test(red)
+10. Cards need apply point's of analysis(green), development(blue) and test(red)
 
-9. Cards that are in production can be archived
+11. Cards that are in production can be archived
 
-10. In footer you can change language, see all archive cards and reset game
+12. In footer you can change language, see all archive cards and reset game
 
-11. You don't know everything, it's part of the game
+13. You don't know everything, it's part of the game
 
 <p align="center">
     <a href="https://juliovcruz.github.io/kanban-game/">GO TO GAME</a>
